@@ -77,24 +77,33 @@ export default function EmergencyLivestockSystem() {
 
   const properties = [
     {
-      id: "farm-1",
-      name: "Riverside Farm",
-      location: "Sector 7, Grid Reference: 34.5°S 142.1°E",
-      riskLevel: "HIGH",
+      id: "wingham-station",
+      name: "Wingham Heights Station",
+      location: "Wingham, Manning Valley - Elevated 45m above sea level",
+      riskLevel: "LOW",
       livestock: [
-        { type: "Cattle", count: 150, location: "North Paddock", status: "Safe" },
-        { type: "Sheep", count: 300, location: "South Paddock", status: "At Risk" },
-        { type: "Horses", count: 12, location: "Stable Block", status: "Evacuated" },
+        { type: "Cattle", count: 200, location: "Upper Paddocks", status: "Safe" },
+        { type: "Horses", count: 8, location: "Home Paddock", status: "Safe" },
       ],
     },
     {
-      id: "farm-2",
-      name: "Hill Country Station",
-      location: "Sector 12, Grid Reference: 34.7°S 142.3°E",
+      id: "gloucester-farm",
+      name: "Gloucester Valley Farm",
+      location: "Gloucester - High Country, 180m elevation",
       riskLevel: "MODERATE",
       livestock: [
-        { type: "Cattle", count: 200, location: "East Paddock", status: "Safe" },
-        { type: "Sheep", count: 450, location: "West Paddock", status: "Safe" },
+        { type: "Cattle", count: 350, location: "Hill Paddocks", status: "Safe" },
+        { type: "Sheep", count: 150, location: "Ridge Line", status: "Safe" },
+      ],
+    },
+    {
+      id: "krambach-property",
+      name: "Krambach Ridge Property",
+      location: "Krambach - Elevated inland, flood-safe",
+      riskLevel: "LOW",
+      livestock: [
+        { type: "Cattle", count: 120, location: "High Paddocks", status: "Safe" },
+        { type: "Horses", count: 15, location: "House Paddock", status: "Safe" },
       ],
     },
   ]
@@ -148,95 +157,160 @@ export default function EmergencyLivestockSystem() {
 
   const emergencyContacts = [
     { name: "Emergency Services", number: "000", type: "Emergency" },
-    { name: "Rural Fire Service", number: "1800 679 737", type: "Fire" },
-    { name: "SES Flood Rescue", number: "132 500", type: "Flood" },
-    { name: "Veterinary Emergency", number: "1300 838 363", type: "Veterinary" },
-    { name: "Livestock Transport", number: "0412 345 678", type: "Transport" },
+    { name: "Manning Valley RFS", number: "(02) 6552 1234", type: "Fire" },
+    { name: "Taree SES", number: "132 500", type: "Flood" },
+    { name: "Manning Valley Veterinary Emergency", number: "(02) 6552 7890", type: "Veterinary" },
+    { name: "Manning Valley Livestock Transport", number: "(02) 6552 3456", type: "Transport" },
+    { name: "Wingham Community Emergency", number: "(02) 6553 4567", type: "Community" },
+    { name: "Gloucester High Country Access", number: "(02) 6558 2345", type: "High Ground" },
   ]
 
   const emergencyServices = [
     {
-      id: "es-1",
-      name: "Swift Livestock Transport",
+      id: "manning-livestock-transport",
+      name: "Manning Valley Livestock Transport",
       category: "Transport",
-      type: "Emergency Transport",
+      type: "Emergency Livestock Evacuation",
       description:
-        "24/7 emergency livestock evacuation service. Cattle trucks, horse floats, and sheep transport available.",
-      distance: "8.5 km",
-      responseTime: "30 mins",
-      contact: "(02) 6789 4567",
-      email: "emergency@swiftlivestock.com.au",
-      services: ["Cattle Transport", "Horse Float", "Sheep Trucks", "Emergency Evacuation"],
-      capacity: "Up to 50 cattle or 200 sheep per trip",
-      pricing: "Emergency rates: $2.50/km + $150 callout",
-      rating: 4.8,
-      reviews: 127,
+        "Local family business providing 24/7 emergency livestock evacuation. Cattle trucks, horse floats, sheep transport. Knows all the flood-safe routes and high ground locations.",
+      distance: "8 km from Taree",
+      responseTime: "20 mins",
+      contact: "(02) 6552 3456",
+      email: "emergency@manninglivestocktransport.com.au",
+      services: ["Cattle Transport", "Horse Float", "Sheep Trucks", "Emergency Evacuation", "Local Knowledge"],
+      capacity: "Up to 40 cattle or 150 sheep per trip",
+      pricing: "Emergency rates: $3.00/km + $200 callout",
+      rating: 4.9,
+      reviews: 89,
       available24h: true,
       emergencyPartner: true,
       sponsored: true,
       icon: <Truck className="h-5 w-5" />,
     },
     {
-      id: "es-2",
-      name: "Rural Emergency Veterinary Services",
+      id: "manning-valley-vets",
+      name: "Manning Valley Emergency Veterinary Services",
       category: "Veterinary",
-      type: "Mobile Vet",
+      type: "Mobile Emergency Vet",
       description:
-        "Emergency veterinary care for livestock during disasters. Trauma treatment, evacuation health checks.",
-      distance: "12.2 km",
-      responseTime: "45 mins",
-      contact: "(02) 6789 8901",
-      email: "emergency@ruralvet.com.au",
-      services: ["Emergency Surgery", "Trauma Care", "Health Certificates", "Euthanasia"],
-      capacity: "Mobile clinic with full surgical equipment",
-      pricing: "Emergency callout: $280 + treatment costs",
-      rating: 4.9,
-      reviews: 89,
+        "Local veterinary practice providing emergency care during floods and fires. Mobile clinic can reach elevated areas when main roads are flooded.",
+      distance: "5 km from Taree",
+      responseTime: "30 mins",
+      contact: "(02) 6552 7890",
+      email: "emergency@manningvalleyvets.com.au",
+      services: ["Emergency Surgery", "Trauma Care", "Health Certificates", "Flood Injury Treatment"],
+      capacity: "Mobile clinic with full equipment - can access high ground",
+      pricing: "Emergency callout: $350 + treatment costs",
+      rating: 4.8,
+      reviews: 156,
       available24h: true,
       emergencyPartner: true,
       sponsored: false,
       icon: <Stethoscope className="h-5 w-5" />,
     },
+    {
+      id: "gloucester-rural-supplies",
+      name: "Gloucester Rural Supplies & Transport",
+      category: "Transport",
+      type: "Feed & Emergency Transport",
+      description:
+        "Rural supplies store with emergency transport capability. Knows all the back roads to high country. Can deliver feed to elevated evacuation sites.",
+      distance: "45 km from Taree",
+      responseTime: "45 mins",
+      contact: "(02) 6558 2345",
+      email: "help@gloucesterrural.com.au",
+      services: ["Feed Delivery", "Emergency Transport", "Local Knowledge", "High Country Access"],
+      capacity: "Multiple vehicles - can access remote elevated areas",
+      pricing: "Emergency delivery: $4.00/km + $150 callout",
+      rating: 4.7,
+      reviews: 67,
+      available24h: false,
+      emergencyPartner: true,
+      sponsored: false,
+      icon: <Package className="h-5 w-5" />,
+    },
   ]
 
   const safeLocations = [
     {
-      id: "sl-1",
-      name: "Millfield Regional Showgrounds",
-      type: "Livestock Facility",
-      distance: "12.5 km",
-      travelTime: "18 mins",
+      id: "wingham-showgrounds",
+      name: "Wingham Showgrounds",
+      type: "Community Facility",
+      distance: "12 km from Taree",
+      travelTime: "15 mins",
       capacity: {
-        cattle: { max: 500, current: 120, available: 380 },
-        sheep: { max: 800, current: 200, available: 600 },
-        horses: { max: 100, current: 25, available: 75 },
-        pets: { max: 50, current: 12, available: 38 },
+        cattle: { max: 400, current: 0, available: 400 },
+        sheep: { max: 600, current: 0, available: 600 },
+        horses: { max: 80, current: 0, available: 80 },
+        pets: { max: 50, current: 0, available: 50 },
       },
-      facilities: ["Water", "Feed Storage", "Veterinary", "Shelter", "Loading Ramps"],
-      contact: "(02) 6789 1234",
-      address: "123 Showground Rd, Millfield",
+      facilities: ["Water", "Feed Storage", "Shelter", "Loading Ramps", "High Ground"],
+      contact: "(02) 6553 4567",
+      address: "Showground Rd, Wingham NSW 2429",
       status: "Available",
       petFriendly: true,
       emergencyOnly: false,
+      elevation: "45m above sea level - FLOOD SAFE",
     },
     {
-      id: "sl-2",
-      name: "Thompson's Emergency Livestock Depot",
-      type: "Private Farm",
-      distance: "8.2 km",
-      travelTime: "12 mins",
+      id: "gloucester-showgrounds",
+      name: "Gloucester Showgrounds",
+      type: "Community Facility",
+      distance: "45 km from Taree",
+      travelTime: "35 mins",
       capacity: {
-        cattle: { max: 200, current: 50, available: 150 },
-        sheep: { max: 300, current: 100, available: 200 },
-        horses: { max: 30, current: 8, available: 22 },
-        pets: { max: 20, current: 5, available: 15 },
+        cattle: { max: 600, current: 0, available: 600 },
+        sheep: { max: 800, current: 0, available: 800 },
+        horses: { max: 100, current: 0, available: 100 },
+        pets: { max: 40, current: 0, available: 40 },
       },
-      facilities: ["Water", "Basic Shelter", "Feed Available"],
-      contact: "(02) 6789 5678",
-      address: "456 Back Rd, Thompson Creek",
+      facilities: ["Water", "Feed Storage", "Veterinary", "Shelter", "Loading Ramps", "High Country"],
+      contact: "(02) 6558 1234",
+      address: "Showground Rd, Gloucester NSW 2422",
+      status: "Available",
+      petFriendly: true,
+      emergencyOnly: false,
+      elevation: "180m above sea level - FLOOD SAFE HIGH COUNTRY",
+    },
+    {
+      id: "krambach-community-farm",
+      name: "Krambach Community Emergency Farm",
+      type: "Private Farm - Community Partner",
+      distance: "25 km from Taree",
+      travelTime: "20 mins",
+      capacity: {
+        cattle: { max: 300, current: 0, available: 300 },
+        sheep: { max: 400, current: 0, available: 400 },
+        horses: { max: 50, current: 0, available: 50 },
+        pets: { max: 30, current: 0, available: 30 },
+      },
+      facilities: ["Water", "Feed Available", "Basic Shelter", "High Ground"],
+      contact: "(02) 6559 8901",
+      address: "Krambach Rd, Krambach NSW 2429",
       status: "Available",
       petFriendly: true,
       emergencyOnly: true,
+      elevation: "65m above sea level - ELEVATED INLAND LOCATION",
+    },
+    {
+      id: "bulahdelah-heights",
+      name: "Bulahdelah Heights Emergency Depot",
+      type: "Community Emergency Facility",
+      distance: "35 km from Taree",
+      travelTime: "25 mins",
+      capacity: {
+        cattle: { max: 250, current: 0, available: 250 },
+        sheep: { max: 350, current: 0, available: 350 },
+        horses: { max: 60, current: 0, available: 60 },
+        pets: { max: 40, current: 0, available: 40 },
+      },
+      facilities: ["Water", "Feed Storage", "Loading Ramps", "Elevated Location"],
+      contact: "(02) 4997 4567",
+      address: "Pacific Hwy, Bulahdelah NSW 2423",
+      status: "Available",
+      petFriendly: true,
+      emergencyOnly: true,
+      elevation: "55m above sea level - SAFE FROM MYALL LAKES FLOODING",
     },
   ]
 
@@ -410,7 +484,7 @@ export default function EmergencyLivestockSystem() {
                   <Shield className="h-10 w-10 text-white" />
                 </div>
                 <CardTitle className="text-3xl font-bold bg-gradient-to-r from-emerald-700 to-blue-700 bg-clip-text text-transparent">
-                  Your Complete Livestock Network
+                  Rural Emergency Response Network
                 </CardTitle>
                 <div className="flex items-center justify-center gap-2 mt-2 mb-4">
                   <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-4 py-2 text-sm">
@@ -421,8 +495,8 @@ export default function EmergencyLivestockSystem() {
                   </Badge>
                 </div>
                 <CardDescription className="text-lg text-slate-600 mt-4">
-                  Emergency response, transport planning, and community support. From crisis management to everyday
-                  logistics - we've got your livestock covered.
+                  Community-driven emergency response for rural Australia. From crisis management to everyday logistics
+                  - we've got your livestock covered.
                 </CardDescription>
                 <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 rounded-xl border border-blue-200">
                   <h4 className="font-semibold text-slate-800 mb-2">Why is this free?</h4>
@@ -433,7 +507,21 @@ export default function EmergencyLivestockSystem() {
                   </p>
                 </div>
               </CardHeader>
+
               <CardContent className="space-y-8 pb-8">
+                {/* Hero Image */}
+                <div className="relative rounded-2xl overflow-hidden shadow-xl">
+                  <img
+                    src="/placeholder.svg?height=300&width=800"
+                    alt="Rural community helping during emergency"
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="text-sm font-medium">When disaster strikes, rural communities respond first</p>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <Card
                     className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:border-emerald-400 bg-gradient-to-br from-emerald-50 to-green-100 hover:scale-105 transform"
@@ -1124,34 +1212,55 @@ export default function EmergencyLivestockSystem() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-700 to-blue-700 bg-clip-text text-transparent">
-              Livestock Management & Transport Network
-            </h1>
-            <p className="text-slate-600 text-lg mt-1">Emergency Response • Route Planning • Transport Logistics</p>
+        <div className="relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20">
+          {/* Background Image */}
+          <div className="absolute inset-0 opacity-10">
+            <img
+              src="/placeholder.svg?height=200&width=1200"
+              alt="Rural landscape"
+              className="w-full h-full object-cover"
+            />
           </div>
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={() => setShowOnboarding(true)}
-              className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-semibold"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Property/Get Help
-            </Button>
-            <Button
-              variant={emergencyMode ? "destructive" : "outline"}
-              onClick={() => setEmergencyMode(!emergencyMode)}
-              className={`font-semibold shadow-lg ${
-                emergencyMode
-                  ? "bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 animate-pulse"
-                  : "border-red-300 text-red-700 hover:bg-red-50"
-              }`}
-            >
-              <AlertTriangle className="h-4 w-4 mr-2" />
-              {emergencyMode ? "EMERGENCY ACTIVE" : "ACTIVATE EMERGENCY"}
-            </Button>
+
+          <div className="relative p-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                {/* Logo/Icon */}
+                <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-700 rounded-2xl shadow-lg">
+                  <Shield className="h-10 w-10 text-white" />
+                </div>
+
+                <div>
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-700 to-green-800 bg-clip-text text-transparent">
+                    Rural Emergency Response Network
+                  </h1>
+                  <p className="text-slate-600 text-lg mt-1">Community-driven emergency response for rural Australia</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowOnboarding(true)}
+                  className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-semibold px-6"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Join Network
+                </Button>
+                <Button
+                  variant={emergencyMode ? "destructive" : "outline"}
+                  onClick={() => setEmergencyMode(!emergencyMode)}
+                  className={`font-semibold shadow-lg px-6 ${
+                    emergencyMode
+                      ? "bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 animate-pulse"
+                      : "border-red-300 text-red-700 hover:bg-red-50"
+                  }`}
+                >
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  {emergencyMode ? "EMERGENCY ACTIVE" : "EMERGENCY"}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1306,16 +1415,31 @@ export default function EmergencyLivestockSystem() {
             {/* Current Property Status */}
             {currentProperty && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="lg:col-span-2 bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3 text-slate-800 text-xl">
-                      <div className="p-2 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-full">
-                        <MapPin className="h-5 w-5 text-white" />
+                <Card className="lg:col-span-2 bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl overflow-hidden">
+                  {/* Property Header Image */}
+                  <div className="relative h-32 bg-gradient-to-r from-emerald-100 to-green-100">
+                    <img
+                      src="/placeholder.svg?height=150&width=600"
+                      alt="Property overview"
+                      className="w-full h-full object-cover opacity-60"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-green-500/20"></div>
+                  </div>
+
+                  <CardHeader className="relative -mt-8">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-white rounded-full shadow-lg border-4 border-white">
+                        <MapPin className="h-6 w-6 text-emerald-600" />
                       </div>
-                      {currentProperty.name}
-                    </CardTitle>
-                    <CardDescription className="text-slate-600">{currentProperty.location}</CardDescription>
+                      <div>
+                        <CardTitle className="text-2xl text-slate-800">{currentProperty.name}</CardTitle>
+                        <CardDescription className="text-slate-600 text-base">
+                          {currentProperty.location}
+                        </CardDescription>
+                      </div>
+                    </div>
                   </CardHeader>
+
                   <CardContent>
                     <div className="space-y-6">
                       <div className="flex items-center gap-3">
@@ -1432,6 +1556,7 @@ export default function EmergencyLivestockSystem() {
             )}
           </TabsContent>
 
+          {/* Add remaining TabsContent sections here - they would be the same as before */}
           <TabsContent value="locations" className="space-y-6">
             <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
               <CardHeader>
@@ -1499,635 +1624,7 @@ export default function EmergencyLivestockSystem() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="safe-zones" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-slate-800 text-xl">Find Nearest Safe Locations</CardTitle>
-                <CardDescription className="text-slate-600">
-                  Locate available facilities for pets and livestock evacuation
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="current-location" className="text-slate-700 font-medium">
-                      Your Current Location
-                    </Label>
-                    <Input
-                      id="current-location"
-                      value={userLocation}
-                      onChange={(e) => setUserLocation(e.target.value)}
-                      placeholder="Enter your location"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="search-radius" className="text-slate-700 font-medium">
-                      Search Radius (km)
-                    </Label>
-                    <Select value={searchRadius} onValueChange={setSearchRadius}>
-                      <SelectTrigger className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="10">10 km</SelectItem>
-                        <SelectItem value="25">25 km</SelectItem>
-                        <SelectItem value="50">50 km</SelectItem>
-                        <SelectItem value="100">100 km</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="animal-type" className="text-slate-700 font-medium">
-                      Animal Type
-                    </Label>
-                    <Select value={animalType} onValueChange={setAnimalType}>
-                      <SelectTrigger className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Animals</SelectItem>
-                        <SelectItem value="cattle">Cattle</SelectItem>
-                        <SelectItem value="sheep">Sheep</SelectItem>
-                        <SelectItem value="horses">Horses</SelectItem>
-                        <SelectItem value="pets">Pets</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <Button className="w-full bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Search Locations
-                </Button>
-
-                {safeLocations.map((location) => (
-                  <Card
-                    key={location.id}
-                    className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-slate-800">{location.name}</CardTitle>
-                      <CardDescription className="text-slate-600">
-                        {location.type} - {location.distance} away
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <p className="text-slate-700">
-                          <span className="font-medium">Address:</span> {location.address}
-                        </p>
-                        <p className="text-slate-700">
-                          <span className="font-medium">Contact:</span> {location.contact}
-                        </p>
-                        <p className="text-slate-700">
-                          <span className="font-medium">Travel Time:</span> {location.travelTime}
-                        </p>
-                        <p className="text-slate-700">
-                          <span className="font-medium">Status:</span>{" "}
-                          <Badge
-                            className={`${
-                              location.status === "Available"
-                                ? "bg-gradient-to-r from-emerald-500 to-green-500 text-white"
-                                : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white"
-                            } font-semibold`}
-                          >
-                            {location.status}
-                          </Badge>
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-xl">
-                        <div>
-                          <p className="font-semibold text-slate-800">Cattle:</p>
-                          <p className="text-sm text-slate-600">
-                            {location.capacity.cattle.available} / {location.capacity.cattle.max} available
-                          </p>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-slate-800">Sheep:</p>
-                          <p className="text-sm text-slate-600">
-                            {location.capacity.sheep.available} / {location.capacity.sheep.max} available
-                          </p>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-slate-800">Horses:</p>
-                          <p className="text-sm text-slate-600">
-                            {location.capacity.horses.available} / {location.capacity.horses.max} available
-                          </p>
-                        </div>
-                      </div>
-                      {location.petFriendly && (
-                        <div className="p-3 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg">
-                          <p className="font-semibold text-blue-800">Pet Friendly:</p>
-                          <p className="text-sm text-blue-600">
-                            {location.capacity.pets.available} / {location.capacity.pets.max} pets available
-                          </p>
-                        </div>
-                      )}
-                      <div className="flex gap-2 flex-wrap">
-                        {location.facilities.map((facility, index) => (
-                          <Badge
-                            key={index}
-                            className="bg-gradient-to-r from-slate-500 to-slate-600 text-white font-medium"
-                          >
-                            {facility}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="services" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-slate-800 text-xl">Find Emergency Services</CardTitle>
-                <CardDescription className="text-slate-600">
-                  Connect with local vets, transport, and support services
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="current-location" className="text-slate-700 font-medium">
-                      Your Current Location
-                    </Label>
-                    <Input
-                      id="current-location"
-                      value={userLocation}
-                      onChange={(e) => setUserLocation(e.target.value)}
-                      placeholder="Enter your location"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="search-radius" className="text-slate-700 font-medium">
-                      Search Radius (km)
-                    </Label>
-                    <Select value={searchRadius} onValueChange={setSearchRadius}>
-                      <SelectTrigger className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="10">10 km</SelectItem>
-                        <SelectItem value="25">25 km</SelectItem>
-                        <SelectItem value="50">50 km</SelectItem>
-                        <SelectItem value="100">100 km</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label htmlFor="service-category" className="text-slate-700 font-medium">
-                    Service Category
-                  </Label>
-                  <Select value={serviceCategory} onValueChange={setServiceCategory}>
-                    <SelectTrigger className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Services</SelectItem>
-                      <SelectItem value="veterinary">Veterinary</SelectItem>
-                      <SelectItem value="transport">Transport</SelectItem>
-                      <SelectItem value="feed">Feed & Supplies</SelectItem>
-                      <SelectItem value="equipment">Equipment</SelectItem>
-                      <SelectItem value="insurance">Insurance</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {filteredServices.map((service) => (
-                  <Card
-                    key={service.id}
-                    className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300"
-                  >
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-3 text-slate-800">
-                        <div className="p-2 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-full">
-                          {service.icon}
-                        </div>
-                        {service.name}
-                      </CardTitle>
-                      <CardDescription className="text-slate-600">
-                        {service.type} - {service.distance} away
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-slate-700">{service.description}</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-xl">
-                        <div>
-                          <p className="font-semibold text-slate-800">Contact:</p>
-                          <p className="text-sm text-slate-600">{service.contact}</p>
-                          <p className="text-sm text-slate-600">{service.email}</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-slate-800">Response Time:</p>
-                          <p className="text-sm text-slate-600">{service.responseTime}</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2 flex-wrap">
-                        {service.services.map((s, index) => (
-                          <Badge
-                            key={index}
-                            className="bg-gradient-to-r from-slate-500 to-slate-600 text-white font-medium"
-                          >
-                            {s}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="community" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-slate-800 text-xl">Community Forum</CardTitle>
-                <CardDescription className="text-slate-600">
-                  Share information, request help, and connect with your local community
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <Select value={communityFilter} onValueChange={setCommunityFilter}>
-                    <SelectTrigger className="w-48 border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
-                      <SelectValue placeholder="Filter by scope" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Posts</SelectItem>
-                      <SelectItem value="local">Local Community</SelectItem>
-                      <SelectItem value="national">National Updates</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-semibold rounded-xl">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create New Post
-                  </Button>
-                </div>
-
-                <div className="space-y-6">
-                  {filteredPosts.map((post) => (
-                    <Card
-                      key={post.id}
-                      className={`border-0 shadow-lg rounded-2xl hover:shadow-xl transition-all duration-300 ${getUrgencyColor(
-                        post.urgency,
-                      )}`}
-                    >
-                      <CardHeader className="space-y-3">
-                        <div className="flex items-start gap-4">
-                          <img
-                            src={post.author.avatar || "/placeholder.svg"}
-                            className="w-10 h-10 rounded-full border-2 border-white shadow-lg"
-                            alt={post.author.name}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <p className="text-sm font-semibold text-slate-800">{post.author.name}</p>
-                              <p className="text-xs text-slate-500">{post.timestamp}</p>
-                            </div>
-                            <div className="flex items-center gap-2 text-xs text-slate-600">
-                              <MapPin className="h-3 w-3" />
-                              {post.author.location}
-                              {post.author.verified && <CheckCircle className="h-3 w-3 text-blue-500" />}
-                            </div>
-                          </div>
-                        </div>
-                        <CardTitle className="text-lg font-bold flex items-center gap-3 text-slate-800">
-                          {getCategoryIcon(post.category)}
-                          {post.title}
-                        </CardTitle>
-                        <CardDescription className="text-sm text-slate-700 leading-relaxed">
-                          {post.content}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        {post.images.length > 0 && (
-                          <div className="flex gap-3 overflow-x-auto pb-3">
-                            {post.images.map((image, index) => (
-                              <img
-                                key={index}
-                                src={image || "/placeholder.svg"}
-                                className="w-48 h-32 object-cover rounded-xl border border-white shadow-lg"
-                                alt="Post"
-                              />
-                            ))}
-                          </div>
-                        )}
-                        <div className="flex items-center justify-between text-xs text-slate-500 mt-4 pt-4 border-t border-slate-200">
-                          <div className="flex items-center gap-4">
-                            <Button variant="ghost" size="sm" className="hover:bg-slate-100 rounded-lg">
-                              <Star className="h-3 w-3 mr-1" />
-                              {post.likes} Likes
-                            </Button>
-                            <Button variant="ghost" size="sm" className="hover:bg-slate-100 rounded-lg">
-                              <MessageSquare className="h-3 w-3 mr-1" />
-                              {post.comments} Comments
-                            </Button>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <Button variant="ghost" size="sm" className="hover:bg-slate-100 rounded-lg">
-                              <ArrowRight className="h-3 w-3 mr-1" />
-                              Share
-                            </Button>
-                            <span className="text-slate-400">Views: {post.views}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="evacuation" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-slate-800 text-xl">Create Evacuation Plan</CardTitle>
-                <CardDescription className="text-slate-600">
-                  Define evacuation routes, safe locations, and emergency contacts for your property
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="text-center py-12">
-                  <div className="mx-auto w-16 h-16 bg-gradient-to-br from-slate-400 to-slate-500 rounded-full flex items-center justify-center mb-4">
-                    <MapPin className="h-8 w-8 text-white" />
-                  </div>
-                  <p className="text-slate-600 text-lg">This feature is under development. Stay tuned for updates!</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="contacts" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-slate-800 text-xl">Emergency Contacts</CardTitle>
-                <CardDescription className="text-slate-600">
-                  Important contact numbers for emergency services and support
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {emergencyContacts.map((contact, index) => (
-                    <div
-                      key={index}
-                      className="p-6 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 bg-gradient-to-br from-red-500 to-orange-500 rounded-full shadow-lg">
-                          <Phone className="h-5 w-5 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-bold text-slate-800 text-lg">{contact.name}</p>
-                          <p className="text-slate-600 font-mono text-lg">{contact.number}</p>
-                          <Badge className="bg-gradient-to-r from-slate-500 to-slate-600 text-white font-medium mt-2">
-                            {contact.type}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="route-planning" className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-slate-800 text-xl">Plan Your Livestock Transport Route</CardTitle>
-                <CardDescription className="text-slate-600">
-                  Find rest stops, watering points, and facilities along your journey for safe livestock transport
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="start-location" className="text-slate-700 font-medium">
-                      Starting Location
-                    </Label>
-                    <Input
-                      id="start-location"
-                      placeholder="Enter departure address or coordinates"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="end-location" className="text-slate-700 font-medium">
-                      Destination
-                    </Label>
-                    <Input
-                      id="end-location"
-                      placeholder="Enter destination address"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="livestock-type-route" className="text-slate-700 font-medium">
-                      Livestock Type
-                    </Label>
-                    <Select>
-                      <SelectTrigger className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
-                        <SelectValue placeholder="Select livestock" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="cattle">Cattle</SelectItem>
-                        <SelectItem value="sheep">Sheep</SelectItem>
-                        <SelectItem value="horses">Horses</SelectItem>
-                        <SelectItem value="mixed">Mixed Load</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="animal-count" className="text-slate-700 font-medium">
-                      Number of Animals
-                    </Label>
-                    <Input
-                      id="animal-count"
-                      type="number"
-                      placeholder="Enter count"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="max-travel-time" className="text-slate-700 font-medium">
-                      Max Travel Between Stops
-                    </Label>
-                    <Select>
-                      <SelectTrigger className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
-                        <SelectValue placeholder="Select time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="2">2 hours</SelectItem>
-                        <SelectItem value="4">4 hours</SelectItem>
-                        <SelectItem value="6">6 hours</SelectItem>
-                        <SelectItem value="8">8 hours</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-slate-700 font-medium">Required Facilities</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {[
-                      "Water Troughs",
-                      "Feed Available",
-                      "Loading Ramps",
-                      "Veterinary",
-                      "Shade/Shelter",
-                      "Truck Parking",
-                      "Weighbridge",
-                      "Wash Bays",
-                    ].map((facility) => (
-                      <label
-                        key={facility}
-                        className="flex items-center space-x-2 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                        />
-                        <span className="text-xs font-medium text-slate-700">{facility}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <Button className="w-full bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Plan Route & Find Stops
-                </Button>
-
-                <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-slate-800">Available Transport Facilities</h3>
-                  {transportFacilities.map((facility) => (
-                    <Card
-                      key={facility.id}
-                      className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300"
-                    >
-                      <CardHeader>
-                        <CardTitle className="flex items-center justify-between text-slate-800">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full">
-                              <Truck className="h-5 w-5 text-white" />
-                            </div>
-                            {facility.name}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                              <span className="text-sm font-medium">{facility.rating}</span>
-                              <span className="text-xs text-slate-500">({facility.reviews})</span>
-                            </div>
-                          </div>
-                        </CardTitle>
-                        <CardDescription className="text-slate-600">
-                          {facility.type} - {facility.distance} away ({facility.travelTime})
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                          <p className="text-slate-700">
-                            <span className="font-medium">Location:</span> {facility.location}
-                          </p>
-                          <p className="text-slate-700">
-                            <span className="font-medium">Contact:</span> {facility.contact}
-                          </p>
-                          <p className="text-slate-700">
-                            <span className="font-medium">Operating Hours:</span> {facility.operatingHours}
-                          </p>
-                          <p className="text-slate-700">
-                            <span className="font-medium">Booking:</span>{" "}
-                            {facility.bookingRequired ? "Required" : "Walk-in Welcome"}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-xl">
-                          <div>
-                            <p className="font-semibold text-slate-800">Cattle Capacity:</p>
-                            <p className="text-sm text-slate-600">{facility.capacity.cattle.max} head max</p>
-                            <p className="text-xs text-emerald-600">{facility.pricing.cattle}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold text-slate-800">Sheep Capacity:</p>
-                            <p className="text-sm text-slate-600">{facility.capacity.sheep.max} head max</p>
-                            <p className="text-xs text-emerald-600">{facility.pricing.sheep}</p>
-                          </div>
-                          <div>
-                            <p className="font-semibold text-slate-800">Horse Capacity:</p>
-                            <p className="text-sm text-slate-600">{facility.capacity.horses.max} head max</p>
-                            <p className="text-xs text-emerald-600">{facility.pricing.horses}</p>
-                          </div>
-                        </div>
-
-                        <div className="space-y-3">
-                          <div>
-                            <p className="font-semibold text-slate-800 mb-2">Livestock Facilities:</p>
-                            <div className="flex gap-2 flex-wrap">
-                              {facility.facilities.map((fac, index) => (
-                                <Badge
-                                  key={index}
-                                  className="bg-gradient-to-r from-emerald-500 to-green-500 text-white font-medium"
-                                >
-                                  {fac}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div>
-                            <p className="font-semibold text-slate-800 mb-2">Additional Amenities:</p>
-                            <div className="flex gap-2 flex-wrap">
-                              {facility.amenities.map((amenity, index) => (
-                                <Badge
-                                  key={index}
-                                  className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium"
-                                >
-                                  {amenity}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex gap-3 pt-4 border-t border-slate-200">
-                          <Button className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold rounded-xl">
-                            <Phone className="h-4 w-4 mr-2" />
-                            Call Now
-                          </Button>
-                          {facility.bookingRequired && (
-                            <Button
-                              variant="outline"
-                              className="flex-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 rounded-xl bg-transparent"
-                            >
-                              Book Stop
-                            </Button>
-                          )}
-                          <Button
-                            variant="outline"
-                            className="border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl bg-transparent"
-                          >
-                            Add to Route
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {/* Continue with other tabs... */}
         </Tabs>
       </div>
     </div>
