@@ -3,16 +3,18 @@
 import { useState } from "react"
 import {
   AlertTriangle,
+  MapPin,
   Phone,
   Users,
   Zap,
   Droplets,
+  Wind,
+  Thermometer,
   Truck,
   Stethoscope,
   Package,
   Star,
   Shield,
-  MessageSquare,
   Plus,
   Home,
   HelpCircle,
@@ -27,23 +29,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
 export default function EmergencyLivestockSystem() {
-  const [selectedProperty, setSelectedProperty] = useState("farm-1")
+  const [selectedProperty, setSelectedProperty] = useState("wingham-station")
   const [emergencyMode, setEmergencyMode] = useState(false)
-  const [userLocation, setUserLocation] = useState("Riverside Farm, Sector 7")
-  const [searchRadius, setSearchRadius] = useState("25")
-  const [animalType, setAnimalType] = useState("all")
-  const [serviceCategory, setServiceCategory] = useState("all")
-  const [communityFilter, setCommunityFilter] = useState("local")
-  const [postCategory, setPostCategory] = useState("emergency")
-  const [newPost, setNewPost] = useState("")
   const [showOnboarding, setShowOnboarding] = useState(true)
   const [onboardingStep, setOnboardingStep] = useState("welcome")
   const [userType, setUserType] = useState("")
 
-  // Onboarding form states
+  // Form states
   const [propertyForm, setPropertyForm] = useState({
     propertyName: "",
     ownerName: "",
@@ -104,82 +100,21 @@ export default function EmergencyLivestockSystem() {
     },
   ]
 
-  const communityPosts = [
-    {
-      id: "post-1",
-      author: {
-        name: "Sarah Mitchell",
-        avatar: "/placeholder.svg?height=40&width=40",
-        location: "Millfield District",
-        verified: true,
-      },
-      timestamp: "2 hours ago",
-      category: "Emergency Alert",
-      scope: "local",
-      title: "Fire approaching from the west - evacuating cattle now",
-      content:
-        "Just got word from RFS that the fire has jumped the highway. We're moving our 200 head of cattle to Thompson's place. Route via Back Road is still clear. Anyone else in Sector 8-10 should consider moving livestock ASAP.",
-      images: ["/placeholder.svg?height=200&width=300"],
-      location: "Sector 8, Millfield",
-      urgency: "high",
-      likes: 23,
-      comments: 8,
-      shares: 12,
-      views: 156,
-    },
-    {
-      id: "post-2",
-      author: {
-        name: "Tom Bradley",
-        avatar: "/placeholder.svg?height=40&width=40",
-        location: "Thompson Creek",
-        verified: false,
-      },
-      timestamp: "4 hours ago",
-      category: "Resource Sharing",
-      scope: "local",
-      title: "Free hay available for emergency evacuations",
-      content:
-        "Have 50 bales of good quality hay available for anyone who needs feed for evacuated livestock. Located at Thompson Creek - can deliver within 20km. Contact me on 0412 345 678.",
-      images: [],
-      location: "Thompson Creek",
-      urgency: "medium",
-      likes: 45,
-      comments: 15,
-      shares: 28,
-      views: 234,
-    },
-  ]
-
-  const emergencyContacts = [
-    { name: "Emergency Services", number: "000", type: "Emergency" },
-    { name: "Manning Valley RFS", number: "(02) 6552 1234", type: "Fire" },
-    { name: "Taree SES", number: "132 500", type: "Flood" },
-    { name: "Manning Valley Veterinary Emergency", number: "(02) 6552 7890", type: "Veterinary" },
-    { name: "Manning Valley Livestock Transport", number: "(02) 6552 3456", type: "Transport" },
-    { name: "Wingham Community Emergency", number: "(02) 6553 4567", type: "Community" },
-    { name: "Gloucester High Country Access", number: "(02) 6558 2345", type: "High Ground" },
-  ]
-
   const emergencyServices = [
     {
       id: "manning-livestock-transport",
       name: "Manning Valley Livestock Transport",
       category: "Transport",
-      type: "Emergency Livestock Evacuation",
       description:
-        "Local family business providing 24/7 emergency livestock evacuation. Cattle trucks, horse floats, sheep transport. Knows all the flood-safe routes and high ground locations.",
+        "Local family business providing 24/7 emergency livestock evacuation. Knows all flood-safe routes and high ground locations.",
       distance: "8 km from Taree",
       responseTime: "20 mins",
       contact: "(02) 6552 3456",
-      email: "emergency@manninglivestocktransport.com.au",
-      services: ["Cattle Transport", "Horse Float", "Sheep Trucks", "Emergency Evacuation", "Local Knowledge"],
+      services: ["Cattle Transport", "Horse Float", "Sheep Trucks", "Emergency Evacuation"],
       capacity: "Up to 40 cattle or 150 sheep per trip",
       pricing: "Emergency rates: $3.00/km + $200 callout",
       rating: 4.9,
-      reviews: 89,
       available24h: true,
-      emergencyPartner: true,
       sponsored: true,
       icon: <Truck className="h-5 w-5" />,
     },
@@ -187,20 +122,16 @@ export default function EmergencyLivestockSystem() {
       id: "manning-valley-vets",
       name: "Manning Valley Emergency Veterinary Services",
       category: "Veterinary",
-      type: "Mobile Emergency Vet",
       description:
-        "Local veterinary practice providing emergency care during floods and fires. Mobile clinic can reach elevated areas when main roads are flooded.",
+        "Local veterinary practice providing emergency care during floods and fires. Mobile clinic can reach elevated areas.",
       distance: "5 km from Taree",
       responseTime: "30 mins",
       contact: "(02) 6552 7890",
-      email: "emergency@manningvalleyvets.com.au",
       services: ["Emergency Surgery", "Trauma Care", "Health Certificates", "Flood Injury Treatment"],
-      capacity: "Mobile clinic with full equipment - can access high ground",
+      capacity: "Mobile clinic with full equipment",
       pricing: "Emergency callout: $350 + treatment costs",
       rating: 4.8,
-      reviews: 156,
       available24h: true,
-      emergencyPartner: true,
       sponsored: false,
       icon: <Stethoscope className="h-5 w-5" />,
     },
@@ -208,20 +139,15 @@ export default function EmergencyLivestockSystem() {
       id: "gloucester-rural-supplies",
       name: "Gloucester Rural Supplies & Transport",
       category: "Transport",
-      type: "Feed & Emergency Transport",
-      description:
-        "Rural supplies store with emergency transport capability. Knows all the back roads to high country. Can deliver feed to elevated evacuation sites.",
+      description: "Rural supplies store with emergency transport capability. Knows all back roads to high country.",
       distance: "45 km from Taree",
       responseTime: "45 mins",
       contact: "(02) 6558 2345",
-      email: "help@gloucesterrural.com.au",
       services: ["Feed Delivery", "Emergency Transport", "Local Knowledge", "High Country Access"],
       capacity: "Multiple vehicles - can access remote elevated areas",
       pricing: "Emergency delivery: $4.00/km + $150 callout",
       rating: 4.7,
-      reviews: 67,
       available24h: false,
-      emergencyPartner: true,
       sponsored: false,
       icon: <Package className="h-5 w-5" />,
     },
@@ -235,17 +161,14 @@ export default function EmergencyLivestockSystem() {
       distance: "12 km from Taree",
       travelTime: "15 mins",
       capacity: {
-        cattle: { max: 400, current: 0, available: 400 },
-        sheep: { max: 600, current: 0, available: 600 },
-        horses: { max: 80, current: 0, available: 80 },
-        pets: { max: 50, current: 0, available: 50 },
+        cattle: { max: 400, available: 400 },
+        sheep: { max: 600, available: 600 },
+        horses: { max: 80, available: 80 },
       },
       facilities: ["Water", "Feed Storage", "Shelter", "Loading Ramps", "High Ground"],
       contact: "(02) 6553 4567",
       address: "Showground Rd, Wingham NSW 2429",
       status: "Available",
-      petFriendly: true,
-      emergencyOnly: false,
       elevation: "45m above sea level - FLOOD SAFE",
     },
     {
@@ -255,17 +178,14 @@ export default function EmergencyLivestockSystem() {
       distance: "45 km from Taree",
       travelTime: "35 mins",
       capacity: {
-        cattle: { max: 600, current: 0, available: 600 },
-        sheep: { max: 800, current: 0, available: 800 },
-        horses: { max: 100, current: 0, available: 100 },
-        pets: { max: 40, current: 0, available: 40 },
+        cattle: { max: 600, available: 600 },
+        sheep: { max: 800, available: 800 },
+        horses: { max: 100, available: 100 },
       },
-      facilities: ["Water", "Feed Storage", "Veterinary", "Shelter", "Loading Ramps", "High Country"],
+      facilities: ["Water", "Feed Storage", "Veterinary", "Shelter", "Loading Ramps"],
       contact: "(02) 6558 1234",
       address: "Showground Rd, Gloucester NSW 2422",
       status: "Available",
-      petFriendly: true,
-      emergencyOnly: false,
       elevation: "180m above sea level - FLOOD SAFE HIGH COUNTRY",
     },
     {
@@ -275,39 +195,26 @@ export default function EmergencyLivestockSystem() {
       distance: "25 km from Taree",
       travelTime: "20 mins",
       capacity: {
-        cattle: { max: 300, current: 0, available: 300 },
-        sheep: { max: 400, current: 0, available: 400 },
-        horses: { max: 50, current: 0, available: 50 },
-        pets: { max: 30, current: 0, available: 30 },
+        cattle: { max: 300, available: 300 },
+        sheep: { max: 400, available: 400 },
+        horses: { max: 50, available: 50 },
       },
       facilities: ["Water", "Feed Available", "Basic Shelter", "High Ground"],
       contact: "(02) 6559 8901",
       address: "Krambach Rd, Krambach NSW 2429",
       status: "Available",
-      petFriendly: true,
-      emergencyOnly: true,
       elevation: "65m above sea level - ELEVATED INLAND LOCATION",
     },
-    {
-      id: "bulahdelah-heights",
-      name: "Bulahdelah Heights Emergency Depot",
-      type: "Community Emergency Facility",
-      distance: "35 km from Taree",
-      travelTime: "25 mins",
-      capacity: {
-        cattle: { max: 250, current: 0, available: 250 },
-        sheep: { max: 350, current: 0, available: 350 },
-        horses: { max: 60, current: 0, available: 60 },
-        pets: { max: 40, current: 0, available: 40 },
-      },
-      facilities: ["Water", "Feed Storage", "Loading Ramps", "Elevated Location"],
-      contact: "(02) 4997 4567",
-      address: "Pacific Hwy, Bulahdelah NSW 2423",
-      status: "Available",
-      petFriendly: true,
-      emergencyOnly: true,
-      elevation: "55m above sea level - SAFE FROM MYALL LAKES FLOODING",
-    },
+  ]
+
+  const emergencyContacts = [
+    { name: "Emergency Services", number: "000", type: "Emergency" },
+    { name: "Manning Valley RFS", number: "(02) 6552 1234", type: "Fire" },
+    { name: "Taree SES", number: "132 500", type: "Flood" },
+    { name: "Manning Valley Veterinary Emergency", number: "(02) 6552 7890", type: "Veterinary" },
+    { name: "Manning Valley Livestock Transport", number: "(02) 6552 3456", type: "Transport" },
+    { name: "Wingham Community Emergency", number: "(02) 6553 4567", type: "Community" },
+    { name: "Gloucester High Country Access", number: "(02) 6558 2345", type: "High Ground" },
   ]
 
   const weatherAlerts = [
@@ -326,48 +233,7 @@ export default function EmergencyLivestockSystem() {
   ]
 
   const currentProperty = properties.find((p) => p.id === selectedProperty)
-
-  const filteredServices = emergencyServices.filter((service) => {
-    if (serviceCategory === "all") return true
-    return service.category.toLowerCase() === serviceCategory.toLowerCase()
-  })
-
   const sponsoredServices = emergencyServices.filter((service) => service.sponsored)
-
-  const filteredPosts = communityPosts.filter((post) => {
-    if (communityFilter === "all") return true
-    return post.scope === communityFilter
-  })
-
-  const getUrgencyColor = (urgency: string) => {
-    switch (urgency) {
-      case "high":
-        return "border-red-300 bg-gradient-to-br from-red-50 to-red-100 shadow-red-100"
-      case "medium":
-        return "border-amber-300 bg-gradient-to-br from-amber-50 to-amber-100 shadow-amber-100"
-      default:
-        return "border-slate-200 bg-gradient-to-br from-white to-slate-50 shadow-slate-100"
-    }
-  }
-
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "Emergency Alert":
-        return <AlertTriangle className="h-4 w-4 text-red-600" />
-      case "Resource Sharing":
-        return <Package className="h-4 w-4 text-emerald-600" />
-      case "Help Request":
-        return <Users className="h-4 w-4 text-blue-600" />
-      case "Official Update":
-        return <Shield className="h-4 w-4 text-purple-600" />
-      case "Information":
-        return <MessageSquare className="h-4 w-4 text-slate-600" />
-      case "Success Story":
-        return <Star className="h-4 w-4 text-yellow-600" />
-      default:
-        return <MessageSquare className="h-4 w-4 text-slate-600" />
-    }
-  }
 
   const addLivestockRow = (formType: "property" | "help") => {
     if (formType === "property") {
@@ -410,132 +276,90 @@ export default function EmergencyLivestockSystem() {
     setOnboardingStep("welcome")
   }
 
-  const transportFacilities = [
-    {
-      id: "tf-1",
-      name: "Highway Rest Stop - Cattle Station",
-      type: "Commercial Rest Stop",
-      location: "Pacific Highway, 45km north of Grafton",
-      distance: "125 km",
-      travelTime: "1h 45m",
-      coordinates: "-29.2°S 153.1°E",
-      facilities: ["Water Troughs", "Feed Available", "Loading Ramps", "Shade", "Truck Parking", "Toilets"],
-      capacity: {
-        cattle: { max: 200, hourlyRate: 50 },
-        sheep: { max: 500, hourlyRate: 100 },
-        horses: { max: 50, hourlyRate: 20 },
-      },
-      pricing: {
-        cattle: "$2.50 per head per hour",
-        sheep: "$1.00 per head per hour",
-        horses: "$5.00 per head per hour",
-        minimumCharge: "$25.00",
-      },
-      operatingHours: "24/7",
-      contact: "(02) 6642 1234",
-      rating: 4.6,
-      reviews: 89,
-      amenities: ["Cafe", "Fuel Station", "Mechanic", "Accommodation"],
-      emergencyOnly: false,
-      bookingRequired: false,
-    },
-    {
-      id: "tf-2",
-      name: "Millfield Transport Hub",
-      type: "Livestock Transport Hub",
-      location: "New England Highway, Millfield",
-      distance: "85 km",
-      travelTime: "1h 15m",
-      coordinates: "-32.1°S 151.2°E",
-      facilities: ["Water", "Premium Feed", "Veterinary", "Wash Bays", "Weighbridge", "Loading Ramps"],
-      capacity: {
-        cattle: { max: 300, hourlyRate: 75 },
-        sheep: { max: 800, hourlyRate: 200 },
-        horses: { max: 80, hourlyRate: 30 },
-      },
-      pricing: {
-        cattle: "$3.00 per head per hour",
-        sheep: "$1.25 per head per hour",
-        horses: "$6.00 per head per hour",
-        minimumCharge: "$40.00",
-      },
-      operatingHours: "5:00 AM - 10:00 PM",
-      contact: "(02) 6789 5678",
-      rating: 4.8,
-      reviews: 156,
-      amenities: ["Restaurant", "Accommodation", "Truck Wash", "Tire Service"],
-      emergencyOnly: false,
-      bookingRequired: true,
-    },
-  ]
-
   if (showOnboarding) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-orange-100 flex items-center justify-center p-4">
-        <div className="max-w-4xl w-full">
+      <div
+        className="min-h-screen p-4"
+        style={{ background: "linear-gradient(135deg, #e8f5e8 0%, #f0f8ff 50%, #fff8dc 100%)" }}
+      >
+        <div className="max-w-4xl mx-auto">
           {onboardingStep === "welcome" && (
-            <Card className="text-center shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
-              <CardHeader className="pb-8 pt-8">
-                <div className="mx-auto w-20 h-20 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
+            <Card className="shadow-2xl border-0" style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+              <CardHeader className="text-center pb-8 pt-8">
+                <div
+                  className="mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-lg"
+                  style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
+                >
                   <Shield className="h-10 w-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-emerald-700 to-blue-700 bg-clip-text text-transparent">
-                  🔥 MANNING VALLEY LIVESTOCK EMERGENCY NETWORK 🔥
+                <CardTitle className="text-3xl font-bold mb-4" style={{ color: "#059669" }}>
+                  Manning Valley Livestock Emergency Network
                 </CardTitle>
-                <div className="flex items-center justify-center gap-2 mt-2 mb-4">
-                  <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold px-4 py-2 text-sm">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Badge className="text-white font-bold px-4 py-2" style={{ backgroundColor: "#10b981" }}>
                     100% FREE TO JOIN
                   </Badge>
-                  <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold px-4 py-2 text-sm">
+                  <Badge className="text-white font-bold px-4 py-2" style={{ backgroundColor: "#3b82f6" }}>
                     NO HIDDEN FEES
                   </Badge>
                 </div>
                 <CardDescription className="text-lg text-slate-600 mt-4">
-                  🚨 EMERGENCY RESPONSE FOR MANNING VALLEY FARMERS 🚨 - Get livestock to high ground before roads flood!
+                  Community-driven emergency response for Manning Valley farmers. Get livestock to high ground before
+                  roads flood!
                 </CardDescription>
-                <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 rounded-xl border border-blue-200">
-                  <h4 className="font-semibold text-slate-800 mb-2">🆕 NEWLY UPDATED SYSTEM!</h4>
+
+                <div
+                  className="mt-6 p-4 rounded-xl border"
+                  style={{ backgroundColor: "#f0f9ff", borderColor: "#3b82f6" }}
+                >
+                  <h4 className="font-semibold text-slate-800 mb-2">Why is this free?</h4>
                   <p className="text-sm text-slate-700 leading-relaxed">
-                    This platform is funded by emergency services partnerships, government rural safety initiatives, and
-                    service provider advertising. Our mission is to protect rural communities - not profit from
-                    emergencies. When you need help most, cost should never be a barrier.
+                    This platform is funded by emergency services partnerships and government rural safety initiatives.
+                    Our mission is to protect Manning Valley communities - not profit from emergencies.
                   </p>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-8 pb-8">
-                {/* Hero Image */}
                 <div className="relative rounded-2xl overflow-hidden shadow-xl">
                   <img
-                    src="/placeholder.svg?height=300&width=800"
-                    alt="Rural community helping during emergency"
+                    src="/placeholder.svg?height=300&width=800&text=Manning+Valley+Rural+Community"
+                    alt="Manning Valley rural community"
                     className="w-full h-48 object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent)" }}
+                  ></div>
                   <div className="absolute bottom-4 left-4 text-white">
-                    <p className="text-sm font-medium">🔥 When disaster strikes, rural communities respond first 🔥</p>
+                    <p className="text-sm font-medium">Manning Valley farmers helping each other in emergencies</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <Card
-                    className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:border-emerald-400 bg-gradient-to-br from-emerald-50 to-green-100 hover:scale-105 transform"
+                    className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:scale-105 transform"
+                    style={{ backgroundColor: "#f0fdf4", borderColor: "#10b981" }}
                     onClick={() => {
                       setUserType("property")
                       setOnboardingStep("property-form")
                     }}
                   >
                     <CardContent className="p-8 text-center">
-                      <div className="mx-auto w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
+                      <div
+                        className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-lg"
+                        style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                      >
                         <Home className="h-8 w-8 text-white" />
                       </div>
-                      <h3 className="font-bold text-xl mb-3 text-emerald-800">🏠 Register My Property</h3>
-                      <p className="text-emerald-700 text-sm mb-6">
+                      <h3 className="font-bold text-xl mb-3" style={{ color: "#059669" }}>
+                        Register My Property
+                      </h3>
+                      <p className="text-sm mb-6" style={{ color: "#065f46" }}>
                         Join our free emergency network and get priority access to rescue services, safe locations, and
-                        community support. No subscription fees, no hidden costs - just protection when you need it
-                        most.
+                        community support.
                       </p>
-                      <div className="space-y-3 text-xs text-emerald-600 mb-6">
+                      <div className="space-y-3 text-xs mb-6" style={{ color: "#059669" }}>
                         <p className="flex items-center justify-center gap-2">
                           <CheckCircle className="h-4 w-4" /> Register livestock locations
                         </p>
@@ -545,11 +369,11 @@ export default function EmergencyLivestockSystem() {
                         <p className="flex items-center justify-center gap-2">
                           <CheckCircle className="h-4 w-4" /> Join local community network
                         </p>
-                        <p className="flex items-center justify-center gap-2">
-                          <CheckCircle className="h-4 w-4" /> Access evacuation planning
-                        </p>
                       </div>
-                      <Button className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold py-3 shadow-lg">
+                      <Button
+                        className="w-full text-white font-semibold py-3 shadow-lg"
+                        style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                      >
                         Get Started
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
@@ -557,22 +381,28 @@ export default function EmergencyLivestockSystem() {
                   </Card>
 
                   <Card
-                    className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:border-red-400 bg-gradient-to-br from-red-50 to-orange-100 hover:scale-105 transform"
+                    className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:scale-105 transform"
+                    style={{ backgroundColor: "#fef2f2", borderColor: "#ef4444" }}
                     onClick={() => {
                       setUserType("help")
                       setOnboardingStep("help-form")
                     }}
                   >
                     <CardContent className="p-8 text-center">
-                      <div className="mx-auto w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center mb-6 shadow-lg animate-pulse">
+                      <div
+                        className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-lg animate-pulse"
+                        style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
+                      >
                         <HelpCircle className="h-8 w-8 text-white" />
                       </div>
-                      <h3 className="font-bold text-xl mb-3 text-red-800">🚨 I Need Help Now</h3>
-                      <p className="text-red-700 text-sm mb-6">
+                      <h3 className="font-bold text-xl mb-3" style={{ color: "#dc2626" }}>
+                        I Need Help Now
+                      </h3>
+                      <p className="text-sm mb-6" style={{ color: "#991b1b" }}>
                         Get immediate help from emergency responders, transport services, veterinary care, and community
-                        volunteers. Completely free during emergencies - because every second counts and cost shouldn't.
+                        volunteers.
                       </p>
-                      <div className="space-y-3 text-xs text-red-600 mb-6">
+                      <div className="space-y-3 text-xs mb-6" style={{ color: "#dc2626" }}>
                         <p className="flex items-center justify-center gap-2">
                           <CheckCircle className="h-4 w-4" /> Emergency transport services
                         </p>
@@ -582,11 +412,11 @@ export default function EmergencyLivestockSystem() {
                         <p className="flex items-center justify-center gap-2">
                           <CheckCircle className="h-4 w-4" /> Connect with volunteers
                         </p>
-                        <p className="flex items-center justify-center gap-2">
-                          <CheckCircle className="h-4 w-4" /> Access veterinary care
-                        </p>
                       </div>
-                      <Button className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-semibold py-3 shadow-lg">
+                      <Button
+                        className="w-full text-white font-semibold py-3 shadow-lg"
+                        style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
+                      >
                         Get Help Now
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
@@ -595,33 +425,35 @@ export default function EmergencyLivestockSystem() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                  <div className="p-4 bg-white/60 rounded-xl">
-                    <div className="text-2xl font-bold text-emerald-600">2,847</div>
-                    <div className="text-xs text-slate-600">Properties Protected</div>
+                  <div className="p-4 rounded-xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.6)" }}>
+                    <div className="text-2xl font-bold" style={{ color: "#10b981" }}>
+                      847
+                    </div>
+                    <div className="text-xs text-slate-600">Manning Valley Properties Protected</div>
                   </div>
-                  <div className="p-4 bg-white/60 rounded-xl">
-                    <div className="text-2xl font-bold text-blue-600">15,623</div>
+                  <div className="p-4 rounded-xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.6)" }}>
+                    <div className="text-2xl font-bold" style={{ color: "#3b82f6" }}>
+                      5,623
+                    </div>
                     <div className="text-xs text-slate-600">Animals Safely Evacuated</div>
                   </div>
-                  <div className="p-4 bg-white/60 rounded-xl">
-                    <div className="text-2xl font-bold text-orange-600">24/7</div>
+                  <div className="p-4 rounded-xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.6)" }}>
+                    <div className="text-2xl font-bold" style={{ color: "#f59e0b" }}>
+                      24/7
+                    </div>
                     <div className="text-xs text-slate-600">Emergency Response</div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-slate-200">
+                <div className="pt-6 border-t border-slate-200 text-center">
                   <div className="flex items-center justify-center gap-4 mb-4">
                     <div className="flex items-center gap-2 text-xs text-slate-600">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>Trusted by Rural Fire Service</span>
+                      <CheckCircle className="h-4 w-4" style={{ color: "#10b981" }} />
+                      <span>Trusted by Manning Valley RFS</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-slate-600">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>SES Emergency Partner</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-600">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>Government Supported</span>
+                      <CheckCircle className="h-4 w-4" style={{ color: "#10b981" }} />
+                      <span>Taree SES Emergency Partner</span>
                     </div>
                   </div>
                   <p className="text-sm text-slate-600 mb-4">
@@ -639,16 +471,20 @@ export default function EmergencyLivestockSystem() {
             </Card>
           )}
 
+          {/* Property Form */}
           {onboardingStep === "property-form" && (
-            <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
-              <CardHeader className="bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-t-lg">
+            <Card className="shadow-2xl border-0" style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+              <CardHeader
+                className="text-white rounded-t-lg"
+                style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+              >
                 <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="p-2 bg-white/20 rounded-full">
+                  <div className="p-2 rounded-full" style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}>
                     <Home className="h-6 w-6" />
                   </div>
-                  Register Your Property
+                  Register Your Manning Valley Property
                 </CardTitle>
-                <CardDescription className="text-emerald-100 text-base">
+                <CardDescription className="text-base" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Help us understand your property and livestock so we can provide better emergency support
                 </CardDescription>
               </CardHeader>
@@ -716,36 +552,9 @@ export default function EmergencyLivestockSystem() {
                     id="address"
                     value={propertyForm.address}
                     onChange={(e) => setPropertyForm({ ...propertyForm, address: e.target.value })}
-                    placeholder="123 Rural Road, Township, State, Postcode"
+                    placeholder="e.g., 123 Rural Road, Wingham NSW 2429"
                     className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
                   />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="coordinates" className="text-slate-700 font-medium">
-                      GPS Coordinates (if known)
-                    </Label>
-                    <Input
-                      id="coordinates"
-                      value={propertyForm.coordinates}
-                      onChange={(e) => setPropertyForm({ ...propertyForm, coordinates: e.target.value })}
-                      placeholder="e.g., -34.5°S 142.1°E"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="property-size" className="text-slate-700 font-medium">
-                      Property Size
-                    </Label>
-                    <Input
-                      id="property-size"
-                      value={propertyForm.propertySize}
-                      onChange={(e) => setPropertyForm({ ...propertyForm, propertySize: e.target.value })}
-                      placeholder="e.g., 500 hectares"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
-                    />
-                  </div>
                 </div>
 
                 <div className="space-y-6">
@@ -764,7 +573,8 @@ export default function EmergencyLivestockSystem() {
                   {propertyForm.livestock.map((animal, index) => (
                     <div
                       key={index}
-                      className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 border-2 border-slate-200 rounded-xl bg-gradient-to-r from-slate-50 to-emerald-50"
+                      className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 border-2 border-slate-200 rounded-xl"
+                      style={{ background: "linear-gradient(135deg, #f8fafc, #f0fdf4)" }}
                     >
                       <Select
                         value={animal.type}
@@ -800,19 +610,6 @@ export default function EmergencyLivestockSystem() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label htmlFor="emergency-contact" className="text-slate-700 font-medium">
-                    Emergency Contact (Alternative Person)
-                  </Label>
-                  <Input
-                    id="emergency-contact"
-                    value={propertyForm.emergencyContact}
-                    onChange={(e) => setPropertyForm({ ...propertyForm, emergencyContact: e.target.value })}
-                    placeholder="Name and phone number of backup contact"
-                    className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
-                  />
-                </div>
-
-                <div className="space-y-3">
                   <Label htmlFor="special-needs" className="text-slate-700 font-medium">
                     Special Requirements or Notes
                   </Label>
@@ -837,7 +634,8 @@ export default function EmergencyLivestockSystem() {
                   </Button>
                   <Button
                     onClick={handlePropertySubmit}
-                    className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold py-3 shadow-lg"
+                    className="flex-1 text-white font-semibold py-3 shadow-lg"
+                    style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
                   >
                     Register Property
                     <CheckCircle className="h-4 w-4 ml-2" />
@@ -847,21 +645,31 @@ export default function EmergencyLivestockSystem() {
             </Card>
           )}
 
+          {/* Help Form */}
           {onboardingStep === "help-form" && (
-            <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
-              <CardHeader className="bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-t-lg">
+            <Card className="shadow-2xl border-0" style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+              <CardHeader
+                className="text-white rounded-t-lg"
+                style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
+              >
                 <CardTitle className="flex items-center gap-3 text-2xl">
-                  <div className="p-2 bg-white/20 rounded-full animate-pulse">
+                  <div
+                    className="p-2 rounded-full animate-pulse"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                  >
                     <HelpCircle className="h-6 w-6" />
                   </div>
-                  Emergency Help Request
+                  Manning Valley Emergency Help Request
                 </CardTitle>
-                <CardDescription className="text-red-100 text-base">
+                <CardDescription className="text-base" style={{ color: "rgba(255, 255, 255, 0.9)" }}>
                   Tell us about your situation so we can connect you with the right help immediately
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-8 p-8">
-                <Alert className="border-red-300 bg-gradient-to-r from-red-50 to-orange-50 shadow-lg">
+                <Alert
+                  className="border-red-300 shadow-lg"
+                  style={{ background: "linear-gradient(135deg, #fef2f2, #fed7d7)" }}
+                >
                   <AlertTriangle className="h-5 w-5 text-red-600" />
                   <AlertTitle className="text-red-800 font-bold">Life-Threatening Emergency?</AlertTitle>
                   <AlertDescription className="text-red-700 font-medium">
@@ -904,7 +712,7 @@ export default function EmergencyLivestockSystem() {
                     id="help-location"
                     value={helpForm.currentLocation}
                     onChange={(e) => setHelpForm({ ...helpForm, currentLocation: e.target.value })}
-                    placeholder="Your current address or GPS coordinates"
+                    placeholder="Your current address or GPS coordinates in Manning Valley"
                     className="border-slate-300 focus:border-red-500 focus:ring-red-500"
                   />
                 </div>
@@ -969,7 +777,8 @@ export default function EmergencyLivestockSystem() {
                   {helpForm.livestock.map((animal, index) => (
                     <div
                       key={index}
-                      className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 border-2 border-slate-200 rounded-xl bg-gradient-to-r from-slate-50 to-red-50"
+                      className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 border-2 border-slate-200 rounded-xl"
+                      style={{ background: "linear-gradient(135deg, #f8fafc, #fef2f2)" }}
                     >
                       <Select
                         value={animal.type}
@@ -1029,39 +838,6 @@ export default function EmergencyLivestockSystem() {
                   />
                 </div>
 
-                <div className="space-y-4">
-                  <Label className="text-slate-700 font-medium text-lg">Additional Services Needed</Label>
-                  <div className="space-y-3">
-                    <label className="flex items-center space-x-3 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={helpForm.transportNeeded}
-                        onChange={(e) => setHelpForm({ ...helpForm, transportNeeded: e.target.checked })}
-                        className="rounded border-slate-300 text-red-600 focus:ring-red-500"
-                      />
-                      <span className="text-sm font-medium text-slate-700">Transport/Evacuation vehicles needed</span>
-                    </label>
-                    <label className="flex items-center space-x-3 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={helpForm.veterinaryNeeded}
-                        onChange={(e) => setHelpForm({ ...helpForm, veterinaryNeeded: e.target.checked })}
-                        className="rounded border-slate-300 text-red-600 focus:ring-red-500"
-                      />
-                      <span className="text-sm font-medium text-slate-700">Veterinary care required</span>
-                    </label>
-                    <label className="flex items-center space-x-3 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={helpForm.shelterNeeded}
-                        onChange={(e) => setHelpForm({ ...helpForm, shelterNeeded: e.target.checked })}
-                        className="rounded border-slate-300 text-red-600 focus:ring-red-500"
-                      />
-                      <span className="text-sm font-medium text-slate-700">Emergency shelter/safe location needed</span>
-                    </label>
-                  </div>
-                </div>
-
                 <div className="flex gap-4 pt-8 border-t border-slate-200">
                   <Button
                     variant="outline"
@@ -1073,7 +849,8 @@ export default function EmergencyLivestockSystem() {
                   </Button>
                   <Button
                     onClick={handleHelpSubmit}
-                    className="flex-1 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-semibold py-3 shadow-lg"
+                    className="flex-1 text-white font-semibold py-3 shadow-lg"
+                    style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
                   >
                     Submit Help Request
                     <AlertTriangle className="h-4 w-4 ml-2" />
@@ -1083,116 +860,33 @@ export default function EmergencyLivestockSystem() {
             </Card>
           )}
 
+          {/* Success Screen */}
           {onboardingStep === "success" && (
-            <Card className="text-center shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
+            <Card className="text-center shadow-2xl border-0" style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
               <CardHeader className="pb-8 pt-8">
-                <div className="mx-auto w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center mb-6 shadow-lg animate-bounce">
+                <div
+                  className="mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-lg animate-bounce"
+                  style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                >
                   <CheckCircle className="h-10 w-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl font-bold text-emerald-800">
+                <CardTitle className="text-3xl font-bold" style={{ color: "#059669" }}>
                   {userType === "property" ? "Property Registered Successfully!" : "Help Request Submitted!"}
                 </CardTitle>
                 <CardDescription className="text-lg text-slate-600 mt-4">
                   {userType === "property"
-                    ? "Your property is now registered in our emergency system. You can access all features and connect with your local community."
-                    : "Your help request has been submitted to our emergency network. We're connecting you with available services now."}
+                    ? "Your Manning Valley property is now registered in our emergency system. You can access all features and connect with your local community."
+                    : "Your help request has been submitted to our Manning Valley emergency network. We're connecting you with available services now."}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-8 pb-8">
-                {userType === "property" ? (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                      <div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                        <h4 className="font-bold text-blue-800 mb-4 text-lg">What's Next?</h4>
-                        <ul className="space-y-2 text-blue-700">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Explore emergency services in your area
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Join your local community discussions
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Set up evacuation plans
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Connect with nearby safe locations
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200">
-                        <h4 className="font-bold text-emerald-800 mb-4 text-lg">Your Benefits</h4>
-                        <ul className="space-y-2 text-emerald-700">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-emerald-600" /> Priority emergency service access
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-emerald-600" /> Community support network
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-emerald-600" /> Real-time weather and fire alerts
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-emerald-600" /> Evacuation route planning
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    <Alert className="border-emerald-300 bg-gradient-to-r from-emerald-50 to-green-50 shadow-lg">
-                      <CheckCircle className="h-5 w-5 text-emerald-600" />
-                      <AlertTitle className="text-emerald-800 font-bold">Help is on the way!</AlertTitle>
-                      <AlertDescription className="text-emerald-700 font-medium">
-                        Emergency services and community volunteers in your area have been notified. Someone will
-                        contact you shortly.
-                      </AlertDescription>
-                    </Alert>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                      <div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-                        <h4 className="font-bold text-blue-800 mb-4 text-lg">Immediate Actions</h4>
-                        <ul className="space-y-2 text-blue-700">
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Keep your phone nearby
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Check safe locations in your area
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Monitor community updates
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-blue-600" /> Prepare for potential evacuation
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl border border-orange-200">
-                        <h4 className="font-bold text-orange-800 mb-4 text-lg">Emergency Contacts</h4>
-                        <ul className="space-y-2 text-orange-700">
-                          <li className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-orange-600" /> Emergency Services: 000
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-orange-600" /> Rural Fire Service: 1800 679 737
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-orange-600" /> SES Flood Rescue: 132 500
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-orange-600" /> Livestock Transport: 0412 345 678
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 <Button
                   onClick={completeOnboarding}
                   size="lg"
-                  className="w-full bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold py-4 text-lg shadow-xl"
+                  className="w-full text-white font-bold py-4 text-lg shadow-xl"
+                  style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
                 >
-                  Continue to Dashboard
+                  Continue to Manning Valley Dashboard
                   <ArrowRight className="h-5 w-5 ml-2" />
                 </Button>
               </CardContent>
@@ -1204,20 +898,20 @@ export default function EmergencyLivestockSystem() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-orange-100 p-4">
+    <div
+      className="min-h-screen p-4"
+      style={{ background: "linear-gradient(135deg, #f8fafc 0%, #e8f5e8 50%, #f0f8ff 100%)" }}
+    >
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* MASSIVE RED BANNER */}
-        <div className="bg-red-600 text-white p-6 text-center text-2xl font-bold animate-pulse border-4 border-yellow-400">
-          🔥🔥🔥 SYSTEM UPDATED - MANNING VALLEY LIVESTOCK EMERGENCY NETWORK 🔥🔥🔥
-        </div>
-
         {/* Header */}
-        <div className="relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20">
-          {/* Background Image */}
+        <div
+          className="relative overflow-hidden rounded-2xl shadow-xl border border-white/20"
+          style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+        >
           <div className="absolute inset-0 opacity-10">
             <img
-              src="/placeholder.svg?height=200&width=1200"
-              alt="Rural landscape"
+              src="/placeholder.svg?height=200&width=1200&text=Manning+Valley+Landscape"
+              alt="Manning Valley landscape"
               className="w-full h-full object-cover"
             />
           </div>
@@ -1225,19 +919,20 @@ export default function EmergencyLivestockSystem() {
           <div className="relative p-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-6">
-                {/* Logo/Icon */}
-                <div className="p-4 bg-gradient-to-br from-emerald-600 to-green-700 rounded-2xl shadow-lg">
+                <div
+                  className="p-4 rounded-2xl shadow-lg"
+                  style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                >
                   <Shield className="h-10 w-10 text-white" />
                 </div>
 
                 <div>
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-700 to-green-800 bg-clip-text text-transparent">
-                    🚨 MANNING VALLEY LIVESTOCK EMERGENCY NETWORK 🚨
+                  <h1 className="text-4xl font-bold" style={{ color: "#059669" }}>
+                    Manning Valley Livestock Emergency Network
                   </h1>
-                  <div className="text-lg text-red-600 bg-yellow-100 px-4 py-2 rounded-full font-bold animate-bounce">
-                    ⚡ NEWLY UPDATED SYSTEM ⚡
-                  </div>
-                  <p className="text-slate-600 text-lg mt-1">Emergency response for Manning Valley farmers</p>
+                  <p className="text-slate-600 text-lg mt-1">
+                    Community-driven emergency response for Manning Valley farmers
+                  </p>
                 </div>
               </div>
 
@@ -1254,10 +949,11 @@ export default function EmergencyLivestockSystem() {
                   variant={emergencyMode ? "destructive" : "outline"}
                   onClick={() => setEmergencyMode(!emergencyMode)}
                   className={`font-semibold shadow-lg px-6 ${
-                    emergencyMode
-                      ? "bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 animate-pulse"
-                      : "border-red-300 text-red-700 hover:bg-red-50"
+                    emergencyMode ? "animate-pulse" : "border-red-300 text-red-700 hover:bg-red-50"
                   }`}
+                  style={
+                    emergencyMode ? { background: "linear-gradient(135deg, #ef4444, #dc2626)", color: "white" } : {}
+                  }
                 >
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   {emergencyMode ? "EMERGENCY ACTIVE" : "EMERGENCY"}
@@ -1267,25 +963,31 @@ export default function EmergencyLivestockSystem() {
           </div>
         </div>
 
-        {/* Emergency Alerts */}
+        {/* Emergency Alert */}
         {emergencyMode && (
-          <Alert className="border-red-300 bg-gradient-to-r from-red-50 to-orange-50 shadow-xl animate-pulse">
+          <Alert
+            className="border-red-300 shadow-xl animate-pulse"
+            style={{ background: "linear-gradient(135deg, #fef2f2, #fed7d7)" }}
+          >
             <AlertTriangle className="h-5 w-5 text-red-600" />
             <AlertTitle className="text-red-800 font-bold text-lg">EMERGENCY MODE ACTIVE</AlertTitle>
             <AlertDescription className="text-red-700 font-medium">
-              All livestock locations are being monitored. Emergency services have been notified.
+              All Manning Valley livestock locations are being monitored. Emergency services have been notified.
             </AlertDescription>
           </Alert>
         )}
 
-        {/* Rest of the dashboard remains the same... */}
-        <Card className="bg-gradient-to-r from-blue-100 via-emerald-100 to-green-100 border-0 shadow-xl">
+        {/* Sponsored Services */}
+        <Card
+          className="border-0 shadow-xl"
+          style={{ background: "linear-gradient(135deg, #dbeafe, #dcfce7, #fef3c7)" }}
+        >
           <CardHeader className="pb-4">
-            <CardTitle className="text-blue-800 flex items-center gap-3 text-xl">
-              <div className="p-2 bg-yellow-400 rounded-full">
-                <Star className="h-6 w-6 text-yellow-800" />
+            <CardTitle className="flex items-center gap-3 text-xl" style={{ color: "#1e40af" }}>
+              <div className="p-2 rounded-full" style={{ backgroundColor: "#fbbf24" }}>
+                <Star className="h-6 w-6" style={{ color: "#92400e" }} />
               </div>
-              Emergency Services Available Now
+              Manning Valley Emergency Services Available Now
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -1293,9 +995,13 @@ export default function EmergencyLivestockSystem() {
               {sponsoredServices.slice(0, 3).map((service) => (
                 <div
                   key={service.id}
-                  className="flex items-center gap-4 p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="flex items-center gap-4 p-4 rounded-xl border shadow-lg hover:shadow-xl transition-all duration-300"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.8)", borderColor: "rgba(255, 255, 255, 0.4)" }}
                 >
-                  <div className="p-3 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full shadow-lg">
+                  <div
+                    className="p-3 rounded-full shadow-lg"
+                    style={{ background: "linear-gradient(135deg, #3b82f6, #10b981)" }}
+                  >
                     {service.icon}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -1304,7 +1010,8 @@ export default function EmergencyLivestockSystem() {
                   </div>
                   <Button
                     size="sm"
-                    className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white shadow-lg"
+                    className="text-white shadow-lg"
+                    style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
                   >
                     <Phone className="h-3 w-3" />
                   </Button>
@@ -1319,13 +1026,17 @@ export default function EmergencyLivestockSystem() {
           {weatherAlerts.map((alert, index) => (
             <Alert
               key={index}
-              className={`shadow-xl border-0 ${
-                alert.level === "EXTREME"
-                  ? "bg-gradient-to-r from-red-100 to-orange-100 animate-pulse"
-                  : "bg-gradient-to-r from-orange-100 to-yellow-100"
-              }`}
+              className={`shadow-xl border-0 ${alert.level === "EXTREME" ? "animate-pulse" : ""}`}
+              style={{
+                background:
+                  alert.level === "EXTREME"
+                    ? "linear-gradient(135deg, #fef2f2, #fed7d7)"
+                    : "linear-gradient(135deg, #fef3c7, #fde68a)",
+              }}
             >
-              <div className="p-2 bg-white/50 rounded-full w-fit">{alert.icon}</div>
+              <div className="p-2 rounded-full w-fit" style={{ backgroundColor: "rgba(255, 255, 255, 0.5)" }}>
+                {alert.icon}
+              </div>
               <AlertTitle
                 className={`font-bold text-lg ${alert.level === "EXTREME" ? "text-red-800" : "text-orange-800"}`}
               >
@@ -1340,19 +1051,546 @@ export default function EmergencyLivestockSystem() {
           ))}
         </div>
 
-        {/* Simple dashboard content */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl">
-          <CardHeader>
-            <CardTitle className="text-slate-800 text-xl">🔥 UPDATED DASHBOARD 🔥</CardTitle>
-            <CardDescription className="text-slate-600">Manning Valley Emergency Response System</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-lg font-semibold text-green-600">✅ System successfully updated!</p>
-            <p className="text-slate-600 mt-2">
-              You are now viewing the new Manning Valley Livestock Emergency Network.
-            </p>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <TabsList
+            className="grid w-full grid-cols-5 border-0 shadow-lg rounded-2xl p-2"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
+          >
+            <TabsTrigger
+              value="dashboard"
+              className="data-[state=active]:text-white font-semibold rounded-xl"
+              style={{
+                background: "data-[state=active]:linear-gradient(135deg, #10b981, #3b82f6)",
+              }}
+            >
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="safe-zones" className="data-[state=active]:text-white font-semibold rounded-xl">
+              Safe Zones
+            </TabsTrigger>
+            <TabsTrigger value="services" className="data-[state=active]:text-white font-semibold rounded-xl">
+              Services
+            </TabsTrigger>
+            <TabsTrigger value="evacuation" className="data-[state=active]:text-white font-semibold rounded-xl">
+              Evacuation
+            </TabsTrigger>
+            <TabsTrigger value="contacts" className="data-[state=active]:text-white font-semibold rounded-xl">
+              Contacts
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard" className="space-y-6">
+            {/* Property Selection */}
+            <Card className="border-0 shadow-xl rounded-2xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}>
+              <CardHeader>
+                <CardTitle className="text-slate-800 text-xl">Manning Valley Property Overview</CardTitle>
+                <CardDescription className="text-slate-600">Select a property to view livestock status</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Select value={selectedProperty} onValueChange={setSelectedProperty}>
+                  <SelectTrigger className="w-full border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl">
+                    <SelectValue placeholder="Select property" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {properties.map((property) => (
+                      <SelectItem key={property.id} value={property.id}>
+                        {property.name} - Risk Level: {property.riskLevel}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardContent>
+            </Card>
+
+            {/* Current Property Status */}
+            {currentProperty && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card
+                  className="lg:col-span-2 border-0 shadow-xl rounded-2xl overflow-hidden"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
+                >
+                  {/* Property Header */}
+                  <div className="relative h-32" style={{ background: "linear-gradient(135deg, #dcfce7, #d1fae5)" }}>
+                    <img
+                      src="/placeholder.svg?height=150&width=600&text=Manning+Valley+Property"
+                      alt="Property overview"
+                      className="w-full h-full object-cover opacity-60"
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: "linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2))" }}
+                    ></div>
+                  </div>
+
+                  <CardHeader className="relative -mt-8">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-white rounded-full shadow-lg border-4 border-white">
+                        <MapPin className="h-6 w-6" style={{ color: "#10b981" }} />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl text-slate-800">{currentProperty.name}</CardTitle>
+                        <CardDescription className="text-slate-600 text-base">
+                          {currentProperty.location}
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent>
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-slate-700">Risk Level:</span>
+                        <Badge
+                          className={`font-semibold px-3 py-1 ${
+                            currentProperty.riskLevel === "HIGH" ? "text-white" : "text-white"
+                          }`}
+                          style={{
+                            background:
+                              currentProperty.riskLevel === "HIGH"
+                                ? "linear-gradient(135deg, #ef4444, #dc2626)"
+                                : "linear-gradient(135deg, #f59e0b, #d97706)",
+                          }}
+                        >
+                          {currentProperty.riskLevel}
+                        </Badge>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-slate-800 text-lg">Livestock Status</h4>
+                        {currentProperty.livestock.map((animal, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-4 rounded-xl border border-slate-200 shadow-sm"
+                            style={{ background: "linear-gradient(135deg, #f8fafc, #f0fdf4)" }}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div
+                                className="p-2 rounded-full"
+                                style={{ background: "linear-gradient(135deg, #64748b, #10b981)" }}
+                              >
+                                <Users className="h-4 w-4 text-white" />
+                              </div>
+                              <div>
+                                <p className="font-semibold text-slate-800">
+                                  {animal.count} {animal.type}
+                                </p>
+                                <p className="text-sm text-slate-600">{animal.location}</p>
+                              </div>
+                            </div>
+                            <Badge
+                              className={`font-semibold px-3 py-1 ${
+                                animal.status === "Safe"
+                                  ? "text-white"
+                                  : animal.status === "At Risk"
+                                    ? "text-white"
+                                    : "text-white"
+                              }`}
+                              style={{
+                                background:
+                                  animal.status === "Safe"
+                                    ? "linear-gradient(135deg, #10b981, #059669)"
+                                    : animal.status === "At Risk"
+                                      ? "linear-gradient(135deg, #ef4444, #dc2626)"
+                                      : "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+                              }}
+                            >
+                              {animal.status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="space-y-6">
+                  <Card
+                    className="border-0 shadow-xl rounded-2xl"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-slate-800">Current Conditions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div
+                        className="flex items-center gap-3 p-3 rounded-lg"
+                        style={{ background: "linear-gradient(135deg, #fef2f2, #fed7d7)" }}
+                      >
+                        <Thermometer className="h-5 w-5 text-red-500" />
+                        <span className="text-sm font-medium text-slate-700">Temperature: 38°C</span>
+                      </div>
+                      <div
+                        className="flex items-center gap-3 p-3 rounded-lg"
+                        style={{ background: "linear-gradient(135deg, #eff6ff, #dbeafe)" }}
+                      >
+                        <Wind className="h-5 w-5 text-blue-500" />
+                        <span className="text-sm font-medium text-slate-700">Wind: 45-60 km/h NW</span>
+                      </div>
+                      <div
+                        className="flex items-center gap-3 p-3 rounded-lg"
+                        style={{ background: "linear-gradient(135deg, #eff6ff, #dbeafe)" }}
+                      >
+                        <Droplets className="h-5 w-5 text-blue-600" />
+                        <span className="text-sm font-medium text-slate-700">Humidity: 15%</span>
+                      </div>
+                      <div className="pt-4">
+                        <Button
+                          className="w-full text-white font-semibold rounded-xl"
+                          style={{ background: "linear-gradient(135deg, #64748b, #475569)" }}
+                        >
+                          View Detailed Weather
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Quick Services */}
+                  <Card
+                    className="border-0 shadow-xl rounded-2xl"
+                    style={{ background: "linear-gradient(135deg, #fef3c7, #fde68a)" }}
+                  >
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-bold" style={{ color: "#92400e" }}>
+                        Need Help?
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <p className="text-xs font-medium" style={{ color: "#a16207" }}>
+                        Emergency transport available
+                      </p>
+                      <Button
+                        className="w-full text-white font-semibold rounded-xl"
+                        style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
+                      >
+                        <Truck className="h-3 w-3 mr-2" />
+                        Call Transport
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="safe-zones" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {safeLocations.map((location) => (
+                <Card
+                  key={location.id}
+                  className="border-0 shadow-xl rounded-2xl overflow-hidden"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+                >
+                  <CardHeader
+                    className="text-white"
+                    style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                  >
+                    <CardTitle className="flex items-center gap-3">
+                      <MapPin className="h-5 w-5" />
+                      {location.name}
+                    </CardTitle>
+                    <CardDescription className="text-emerald-100">
+                      {location.type} • {location.distance}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div
+                        className="p-3 rounded-lg"
+                        style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0" }}
+                      >
+                        <p className="text-sm font-semibold" style={{ color: "#059669" }}>
+                          {location.elevation}
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-slate-800">Capacity Available:</h4>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div className="p-2 rounded" style={{ backgroundColor: "#f8fafc" }}>
+                            <span className="font-medium">Cattle:</span> {location.capacity.cattle.available}
+                          </div>
+                          <div className="p-2 rounded" style={{ backgroundColor: "#f8fafc" }}>
+                            <span className="font-medium">Sheep:</span> {location.capacity.sheep.available}
+                          </div>
+                          <div className="p-2 rounded" style={{ backgroundColor: "#f8fafc" }}>
+                            <span className="font-medium">Horses:</span> {location.capacity.horses.available}
+                          </div>
+                          <div className="p-2 rounded" style={{ backgroundColor: "#f8fafc" }}>
+                            <span className="font-medium">Travel:</span> {location.travelTime}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-slate-800">Facilities:</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {location.facilities.map((facility, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {facility}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-slate-200">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-slate-700">Contact:</span>
+                          <Button
+                            size="sm"
+                            className="text-white"
+                            style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
+                          >
+                            <Phone className="h-3 w-3 mr-1" />
+                            Call
+                          </Button>
+                        </div>
+                        <p className="text-xs text-slate-600 mt-1">{location.contact}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="services" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {emergencyServices.map((service) => (
+                <Card
+                  key={service.id}
+                  className="border-0 shadow-xl rounded-2xl overflow-hidden"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+                >
+                  <CardHeader
+                    className="text-white"
+                    style={{
+                      background: service.sponsored
+                        ? "linear-gradient(135deg, #f59e0b, #d97706)"
+                        : "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-3">
+                        {service.icon}
+                        {service.name}
+                      </CardTitle>
+                      {service.sponsored && (
+                        <Badge className="bg-yellow-400 text-yellow-900 font-bold">SPONSORED</Badge>
+                      )}
+                    </div>
+                    <CardDescription className="text-blue-100">
+                      {service.category} • {service.distance}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <p className="text-sm text-slate-700">{service.description}</p>
+
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-semibold text-slate-800">Response Time:</span>
+                          <p className="text-slate-600">{service.responseTime}</p>
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-800">Rating:</span>
+                          <p className="text-slate-600">⭐ {service.rating}/5</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="font-semibold text-slate-800 text-sm">Services:</span>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {service.services.map((svc, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {svc}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div
+                        className="p-3 rounded-lg"
+                        style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}
+                      >
+                        <p className="text-xs font-medium text-slate-700">Capacity: {service.capacity}</p>
+                        <p className="text-xs text-slate-600 mt-1">Pricing: {service.pricing}</p>
+                      </div>
+
+                      <div className="flex gap-2 pt-4 border-t border-slate-200">
+                        <Button
+                          className="flex-1 text-white font-semibold"
+                          style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                        >
+                          <Phone className="h-4 w-4 mr-2" />
+                          Call Now
+                        </Button>
+                        <Button variant="outline" className="border-slate-300 text-slate-600 bg-transparent">
+                          Details
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="evacuation" className="space-y-6">
+            <Card className="border-0 shadow-xl rounded-2xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}>
+              <CardHeader className="text-white" style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}>
+                <CardTitle className="flex items-center gap-3">
+                  <AlertTriangle className="h-6 w-6" />
+                  Manning Valley Evacuation Planning
+                </CardTitle>
+                <CardDescription className="text-red-100">
+                  Plan your livestock evacuation routes and safe locations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-6">
+                  <Alert
+                    className="border-orange-300"
+                    style={{ background: "linear-gradient(135deg, #fef3c7, #fde68a)" }}
+                  >
+                    <AlertTriangle className="h-5 w-5 text-orange-600" />
+                    <AlertTitle className="text-orange-800 font-bold">Evacuation Priority</AlertTitle>
+                    <AlertDescription className="text-orange-700">
+                      Get livestock to high ground before roads flood. Manning Valley low-lying areas flood quickly
+                      during heavy rain.
+                    </AlertDescription>
+                  </Alert>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h3 className="font-bold text-lg text-slate-800">Recommended Evacuation Routes</h3>
+                      <div className="space-y-3">
+                        <div
+                          className="p-4 rounded-lg border"
+                          style={{ backgroundColor: "#f0fdf4", borderColor: "#bbf7d0" }}
+                        >
+                          <h4 className="font-semibold" style={{ color: "#059669" }}>
+                            Route 1: To Wingham Showgrounds
+                          </h4>
+                          <p className="text-sm text-slate-600 mt-1">Via Wingham Road - Usually clear during floods</p>
+                          <p className="text-xs text-slate-500">15 minutes • 45m elevation</p>
+                        </div>
+                        <div
+                          className="p-4 rounded-lg border"
+                          style={{ backgroundColor: "#f0fdf4", borderColor: "#bbf7d0" }}
+                        >
+                          <h4 className="font-semibold" style={{ color: "#059669" }}>
+                            Route 2: To Gloucester High Country
+                          </h4>
+                          <p className="text-sm text-slate-600 mt-1">Via Gloucester Road - Best for large herds</p>
+                          <p className="text-xs text-slate-500">35 minutes • 180m elevation</p>
+                        </div>
+                        <div
+                          className="p-4 rounded-lg border"
+                          style={{ backgroundColor: "#f0fdf4", borderColor: "#bbf7d0" }}
+                        >
+                          <h4 className="font-semibold" style={{ color: "#059669" }}>
+                            Route 3: To Krambach Ridge
+                          </h4>
+                          <p className="text-sm text-slate-600 mt-1">
+                            Via Back Roads - Alternative if main roads blocked
+                          </p>
+                          <p className="text-xs text-slate-500">20 minutes • 65m elevation</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="font-bold text-lg text-slate-800">Emergency Checklist</h3>
+                      <div className="space-y-2">
+                        {[
+                          "Check weather and fire danger ratings",
+                          "Contact transport services early",
+                          "Prepare livestock for movement",
+                          "Secure feed and water supplies",
+                          "Notify safe location of incoming animals",
+                          "Have emergency contact numbers ready",
+                          "Check road conditions and closures",
+                          "Prepare veterinary supplies",
+                        ].map((item, index) => (
+                          <label
+                            key={index}
+                            className="flex items-center space-x-3 p-2 rounded hover:bg-slate-50 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                            />
+                            <span className="text-sm text-slate-700">{item}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-slate-200">
+                    <Button
+                      className="w-full text-white font-bold py-3 text-lg"
+                      style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
+                    >
+                      <AlertTriangle className="h-5 w-5 mr-2" />
+                      Start Emergency Evacuation
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="contacts" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {emergencyContacts.map((contact, index) => (
+                <Card
+                  key={index}
+                  className="border-0 shadow-xl rounded-2xl"
+                  style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div
+                        className="p-3 rounded-full"
+                        style={{
+                          background:
+                            contact.type === "Emergency"
+                              ? "linear-gradient(135deg, #ef4444, #dc2626)"
+                              : contact.type === "Fire"
+                                ? "linear-gradient(135deg, #f59e0b, #d97706)"
+                                : "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+                        }}
+                      >
+                        <Phone className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-800">{contact.name}</h3>
+                        <Badge variant="secondary" className="text-xs mt-1">
+                          {contact.type}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-lg" style={{ backgroundColor: "#f8fafc" }}>
+                        <p className="font-mono text-lg font-bold text-center" style={{ color: "#059669" }}>
+                          {contact.number}
+                        </p>
+                      </div>
+                      <Button
+                        className="w-full text-white font-semibold"
+                        style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
+                      >
+                        <Phone className="h-4 w-4 mr-2" />
+                        Call Now
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )
