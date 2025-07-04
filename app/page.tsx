@@ -45,7 +45,6 @@ export default function ManningValleyRuralHub() {
   const [showOnboarding, setShowOnboarding] = useState(true)
   const [onboardingStep, setOnboardingStep] = useState("welcome")
   const [userType, setUserType] = useState("")
-  const [activeAlert, setActiveAlert] = useState("weather")
 
   // Form states
   const [propertyForm, setPropertyForm] = useState({
@@ -302,7 +301,7 @@ export default function ManningValleyRuralHub() {
               <CardHeader className="text-center pb-8 pt-8">
                 <div
                   className="mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-lg"
-                  style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
+                  style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
                   <Users className="h-10 w-10 text-white" />
                 </div>
@@ -310,7 +309,7 @@ export default function ManningValleyRuralHub() {
                   Manning Valley Rural Community Hub
                 </CardTitle>
                 <div className="flex items-center justify-center gap-2 mb-4">
-                  <Badge className="text-white font-bold px-4 py-2" style={{ backgroundColor: "#10b981" }}>
+                  <Badge className="text-white font-bold px-4 py-2" style={{ backgroundColor: "#7EC9BB" }}>
                     100% FREE TO JOIN
                   </Badge>
                   <Badge className="text-white font-bold px-4 py-2" style={{ backgroundColor: "#3b82f6" }}>
@@ -354,7 +353,7 @@ export default function ManningValleyRuralHub() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <Card
                     className="cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:scale-105 transform"
-                    style={{ backgroundColor: "#f0fdf4", borderColor: "#10b981" }}
+                    style={{ backgroundColor: "#f0fdf9", borderColor: "#7EC9BB" }}
                     onClick={() => {
                       setUserType("property")
                       setOnboardingStep("property-form")
@@ -363,7 +362,7 @@ export default function ManningValleyRuralHub() {
                     <CardContent className="p-8 text-center">
                       <div
                         className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-6 shadow-lg"
-                        style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                        style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                       >
                         <Home className="h-8 w-8 text-white" />
                       </div>
@@ -387,7 +386,7 @@ export default function ManningValleyRuralHub() {
                       </div>
                       <Button
                         className="w-full text-white font-semibold py-3 shadow-lg"
-                        style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                        style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                       >
                         Join Community
                         <ArrowRight className="h-4 w-4 ml-2" />
@@ -441,7 +440,7 @@ export default function ManningValleyRuralHub() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                   <div className="p-4 rounded-xl" style={{ backgroundColor: "rgba(255, 255, 255, 0.6)" }}>
-                    <div className="text-2xl font-bold" style={{ color: "#10b981" }}>
+                    <div className="text-2xl font-bold" style={{ color: "#7EC9BB" }}>
                       847
                     </div>
                     <div className="text-xs text-slate-600">Community Members</div>
@@ -487,7 +486,7 @@ export default function ManningValleyRuralHub() {
             <Card className="shadow-2xl border-0" style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
               <CardHeader
                 className="text-white rounded-t-lg"
-                style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
               >
                 <CardTitle className="flex items-center gap-3 text-2xl">
                   <div className="p-2 rounded-full" style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}>
@@ -510,7 +509,7 @@ export default function ManningValleyRuralHub() {
                       value={propertyForm.propertyName}
                       onChange={(e) => setPropertyForm({ ...propertyForm, propertyName: e.target.value })}
                       placeholder="e.g., Riverside Farm or Valley Rural Services"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
+                      className="border-slate-300 focus:border-[#7EC9BB] focus:ring-[#7EC9BB]"
                     />
                   </div>
                   <div className="space-y-3">
@@ -521,7 +520,7 @@ export default function ManningValleyRuralHub() {
                       value={propertyForm.businessType}
                       onValueChange={(value) => setPropertyForm({ ...propertyForm, businessType: value })}
                     >
-                      <SelectTrigger className="border-slate-300 focus:border-emerald-500">
+                      <SelectTrigger className="border-slate-300 focus:border-[#7EC9BB]">
                         <SelectValue placeholder="Select business type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -549,7 +548,7 @@ export default function ManningValleyRuralHub() {
                       value={propertyForm.ownerName}
                       onChange={(e) => setPropertyForm({ ...propertyForm, ownerName: e.target.value })}
                       placeholder="Your full name"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
+                      className="border-slate-300 focus:border-[#7EC9BB] focus:ring-[#7EC9BB]"
                     />
                   </div>
                   <div className="space-y-3">
@@ -561,7 +560,7 @@ export default function ManningValleyRuralHub() {
                       value={propertyForm.phone}
                       onChange={(e) => setPropertyForm({ ...propertyForm, phone: e.target.value })}
                       placeholder="0412 345 678"
-                      className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
+                      className="border-slate-300 focus:border-[#7EC9BB] focus:ring-[#7EC9BB]"
                     />
                   </div>
                 </div>
@@ -575,7 +574,7 @@ export default function ManningValleyRuralHub() {
                     value={propertyForm.address}
                     onChange={(e) => setPropertyForm({ ...propertyForm, address: e.target.value })}
                     placeholder="e.g., 123 Rural Road, Wingham NSW 2429"
-                    className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
+                    className="border-slate-300 focus:border-[#7EC9BB] focus:ring-[#7EC9BB]"
                   />
                 </div>
 
@@ -586,7 +585,7 @@ export default function ManningValleyRuralHub() {
                       size="sm"
                       variant="outline"
                       onClick={addLivestockRow}
-                      className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 bg-transparent"
+                      className="border-[#7EC9BB] text-[#7EC9BB] hover:bg-emerald-50 bg-transparent"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add Livestock
@@ -599,7 +598,7 @@ export default function ManningValleyRuralHub() {
                       style={{ background: "linear-gradient(135deg, #f8fafc, #f0fdf4)" }}
                     >
                       <Select value={animal.type} onValueChange={(value) => updateLivestockRow(index, "type", value)}>
-                        <SelectTrigger className="border-slate-300 focus:border-emerald-500">
+                        <SelectTrigger className="border-slate-300 focus:border-[#7EC9BB]">
                           <SelectValue placeholder="Animal type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -616,13 +615,13 @@ export default function ManningValleyRuralHub() {
                         placeholder="Number of animals"
                         value={animal.count}
                         onChange={(e) => updateLivestockRow(index, "count", e.target.value)}
-                        className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
+                        className="border-slate-300 focus:border-[#7EC9BB] focus:ring-[#7EC9BB]"
                       />
                       <Input
                         placeholder="Location (e.g., North Paddock)"
                         value={animal.location}
                         onChange={(e) => updateLivestockRow(index, "location", e.target.value)}
-                        className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500"
+                        className="border-slate-300 focus:border-[#7EC9BB] focus:ring-[#7EC9BB]"
                       />
                     </div>
                   ))}
@@ -640,7 +639,7 @@ export default function ManningValleyRuralHub() {
                   <Button
                     onClick={handlePropertySubmit}
                     className="flex-1 text-white font-semibold py-3 shadow-lg"
-                    style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                    style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                   >
                     Join Community
                     <CheckCircle className="h-4 w-4 ml-2" />
@@ -656,7 +655,7 @@ export default function ManningValleyRuralHub() {
               <CardHeader className="pb-8 pt-8">
                 <div
                   className="mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-lg animate-bounce"
-                  style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                  style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
                   <CheckCircle className="h-10 w-10 text-white" />
                 </div>
@@ -673,7 +672,7 @@ export default function ManningValleyRuralHub() {
                   onClick={completeOnboarding}
                   size="lg"
                   className="w-full text-white font-bold py-4 text-lg shadow-xl"
-                  style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
+                  style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
                   Explore Community Hub
                   <ArrowRight className="h-5 w-5 ml-2" />
@@ -710,13 +709,13 @@ export default function ManningValleyRuralHub() {
               <div className="flex items-center gap-6">
                 <div
                   className="p-4 rounded-2xl shadow-lg"
-                  style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                  style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
                   <Users className="h-10 w-10 text-white" />
                 </div>
 
                 <div>
-                  <h1 className="text-4xl font-bold" style={{ color: "#059669" }}>
+                  <h1 className="text-4xl font-bold" style={{ color: "#6BB3A6" }}>
                     Manning Valley Rural Community Hub
                   </h1>
                   <p className="text-slate-600 text-lg mt-1">
@@ -729,7 +728,7 @@ export default function ManningValleyRuralHub() {
                 <Button
                   variant="outline"
                   onClick={() => setShowOnboarding(true)}
-                  className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-semibold px-6"
+                  className="border-[#7EC9BB] text-[#7EC9BB] hover:bg-emerald-50 font-semibold px-6"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Join Community
@@ -810,7 +809,7 @@ export default function ManningValleyRuralHub() {
                   </CardTitle>
                   <Button
                     className="text-white font-semibold"
-                    style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
+                    style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     List Item
@@ -830,6 +829,7 @@ export default function ManningValleyRuralHub() {
                           src={item.image || "/placeholder.svg"}
                           alt={item.title}
                           className="w-full h-40 object-cover"
+                          crossOrigin="anonymous"
                         />
                         {item.featured && (
                           <Badge
@@ -852,7 +852,7 @@ export default function ManningValleyRuralHub() {
                             <p className="text-xs text-slate-600 mt-1">{item.description}</p>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-bold text-lg" style={{ color: "#10b981" }}>
+                            <span className="font-bold text-lg" style={{ color: "#7EC9BB" }}>
                               {item.price}
                             </span>
                             <Badge variant="secondary" className="text-xs">
@@ -873,7 +873,7 @@ export default function ManningValleyRuralHub() {
                             <Button
                               size="sm"
                               className="flex-1 text-white"
-                              style={{ background: "linear-gradient(135deg, #10b981, #3b82f6)" }}
+                              style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                             >
                               <Phone className="h-3 w-3 mr-1" />
                               Contact
@@ -914,7 +914,7 @@ export default function ManningValleyRuralHub() {
                       <div className="flex items-center gap-3">
                         <div
                           className="p-2 rounded-full"
-                          style={{ background: "linear-gradient(135deg, #64748b, #10b981)" }}
+                          style={{ background: "linear-gradient(135deg, #64748b, #7EC9BB)" }}
                         >
                           <Users className="h-4 w-4 text-white" />
                         </div>
@@ -1010,7 +1010,7 @@ export default function ManningValleyRuralHub() {
                       <div className="flex gap-2 pt-4 border-t border-slate-200">
                         <Button
                           className="flex-1 text-white font-semibold"
-                          style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                          style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                         >
                           <Phone className="h-4 w-4 mr-2" />
                           {service.contact}
@@ -1290,13 +1290,13 @@ export default function ManningValleyRuralHub() {
 
                   <Card
                     className="border-0 shadow-lg rounded-xl"
-                    style={{ background: "linear-gradient(135deg, #dcfce7, #bbf7d0)" }}
+                    style={{ background: "linear-gradient(135deg, #e6f7f5, #b3e5df)" }}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center gap-3 mb-4">
                         <div
                           className="p-2 rounded-full"
-                          style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                          style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                         >
                           <Users className="h-4 w-4 text-white" />
                         </div>
@@ -1311,7 +1311,7 @@ export default function ManningValleyRuralHub() {
                       <Button
                         size="sm"
                         className="w-full text-white"
-                        style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                        style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                       >
                         RSVP
                       </Button>
