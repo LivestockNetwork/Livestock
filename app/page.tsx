@@ -152,119 +152,119 @@ export default function RuralLivingAustralia() {
                 {/* Background */}
                 <rect width="1000" height="600" fill="#f8fafc" />
 
-                {/* Western Australia - Proper large western portion */}
+                {/* Western Australia - Proper distinctive shape */}
                 <path
-                  d="M50 150 C80 130 120 140 160 135 C200 140 240 155 280 175 C320 195 350 220 370 250 C375 290 370 330 365 370 C360 410 350 450 330 480 C300 500 260 510 220 505 C180 500 140 485 110 460 C80 430 60 390 55 350 C50 310 55 270 60 230 C65 190 55 170 50 150 Z"
+                  d="M50 200 C60 180 80 160 110 150 C140 145 170 150 200 155 C230 160 260 170 290 185 C320 200 340 220 350 245 C355 270 350 295 345 320 C340 345 335 370 330 395 C325 420 315 440 300 455 C280 470 255 475 230 470 C205 465 180 455 160 440 C140 425 125 405 115 380 C105 355 100 330 95 305 C90 280 85 255 80 230 C75 215 65 205 50 200 Z"
                   fill="#7EC9BB"
                   stroke="#6BB3A6"
                   strokeWidth="3"
                   className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
                   onClick={() => (window.location.href = "/states/wa")}
                 />
-                <text x="210" y="320" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
+                <text x="200" y="320" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
                   WA
                 </text>
-                <text x="210" y="340" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                <text x="200" y="340" textAnchor="middle" className="fill-white text-sm pointer-events-none">
                   1,200+ Members
                 </text>
 
-                {/* Northern Territory - Central top */}
+                {/* Northern Territory - Distinctive rectangular top */}
                 <path
-                  d="M370 150 C400 140 430 145 460 150 C490 155 510 170 520 190 C525 220 520 250 515 280 C510 310 505 340 500 370 C495 400 485 420 470 430 C450 435 430 430 410 425 C390 420 375 405 370 385 C375 355 380 325 385 295 C390 265 395 235 400 205 C405 175 385 160 370 150 Z"
+                  d="M350 180 L450 180 L450 350 L350 350 Z"
                   fill="#7EC9BB"
                   stroke="#6BB3A6"
                   strokeWidth="3"
                   className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
                   onClick={() => (window.location.href = "/states/nt")}
                 />
-                <text x="445" y="290" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
+                <text x="400" y="260" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
                   NT
                 </text>
-                <text x="445" y="310" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                <text x="400" y="280" textAnchor="middle" className="fill-white text-sm pointer-events-none">
                   400+ Members
                 </text>
 
-                {/* Queensland - Large northeastern area */}
+                {/* Queensland - Large northeastern distinctive shape */}
                 <path
-                  d="M520 120 C560 110 600 115 640 125 C680 135 720 150 750 170 C780 190 800 215 810 245 C815 275 810 305 805 335 C800 365 795 395 785 420 C770 440 750 450 730 445 C710 440 690 435 670 430 C650 425 630 420 610 415 C590 410 575 400 565 385 C560 365 565 345 570 325 C575 305 580 285 585 265 C590 245 595 225 600 205 C605 185 610 165 615 145 C620 125 530 115 520 120 Z"
+                  d="M450 120 C480 110 510 115 540 120 C570 125 600 135 630 150 C660 165 690 185 710 210 C730 235 740 265 735 295 C730 325 720 355 705 380 C690 405 670 425 645 435 C620 445 595 440 570 435 C545 430 520 420 500 405 C480 390 465 370 455 345 C450 320 450 295 455 270 C460 245 470 220 480 195 C490 170 500 145 510 125 C520 115 460 110 450 120 Z"
                   fill="#7EC9BB"
                   stroke="#6BB3A6"
                   strokeWidth="3"
                   className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
                   onClick={() => (window.location.href = "/states/qld")}
                 />
-                <text x="690" y="280" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
+                <text x="590" y="280" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
                   QLD
                 </text>
-                <text x="690" y="300" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                <text x="590" y="300" textAnchor="middle" className="fill-white text-sm pointer-events-none">
                   1,800+ Members
                 </text>
 
-                {/* South Australia - Central bottom */}
+                {/* South Australia - Central bottom with distinctive gulfs */}
                 <path
-                  d="M370 430 C410 425 450 430 490 435 C530 440 560 450 580 465 C590 485 585 505 575 520 C560 535 540 540 520 535 C500 530 480 525 460 520 C440 515 420 510 400 505 C380 500 365 490 360 475 C355 460 360 445 370 430 Z"
+                  d="M350 350 C380 345 410 350 440 355 C470 360 500 370 520 385 C530 400 525 415 515 425 C500 435 480 430 460 425 C440 420 420 415 400 410 C380 405 365 395 355 380 C350 365 350 355 350 350 Z"
                   fill="#7EC9BB"
                   stroke="#6BB3A6"
                   strokeWidth="3"
                   className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
                   onClick={() => (window.location.href = "/states/sa")}
                 />
-                <text x="470" y="485" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
+                <text x="435" y="390" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
                   SA
                 </text>
-                <text x="470" y="505" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                <text x="435" y="410" textAnchor="middle" className="fill-white text-sm pointer-events-none">
                   900+ Members
                 </text>
 
-                {/* New South Wales - Eastern coast, FEATURED */}
+                {/* New South Wales - Eastern coast with distinctive shape, FEATURED */}
                 <path
-                  d="M785 415 C820 410 855 415 880 430 C900 445 910 465 905 485 C900 505 890 520 875 530 C855 535 835 530 815 525 C795 520 780 510 770 495 C765 480 770 465 775 450 C780 435 785 425 785 415 Z"
+                  d="M645 435 C675 430 705 435 730 445 C755 455 775 470 785 490 C790 510 785 525 775 535 C760 545 740 540 720 535 C700 530 680 520 665 505 C655 490 650 470 650 450 C645 440 645 435 645 435 Z"
                   fill="#f59e0b"
                   stroke="#d97706"
                   strokeWidth="4"
                   className="hover:fill-[#d97706] transition-all duration-300 cursor-pointer animate-pulse"
                   onClick={() => (window.location.href = "/states/nsw")}
                 />
-                <text x="840" y="475" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
+                <text x="715" y="490" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
                   NSW
                 </text>
-                <text x="840" y="495" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                <text x="715" y="510" textAnchor="middle" className="fill-white text-sm pointer-events-none">
                   2,400+ Members ⭐
                 </text>
 
-                {/* Victoria - Southeast */}
+                {/* Victoria - Small southeastern triangle */}
                 <path
-                  d="M580 465 C620 460 660 465 700 470 C740 475 770 485 785 500 C790 515 785 525 775 530 C755 535 735 530 715 525 C695 520 675 515 655 510 C635 505 615 500 600 490 C585 480 575 470 580 465 Z"
+                  d="M520 425 C550 420 580 425 610 430 C640 435 665 445 675 460 C680 475 675 485 665 490 C645 495 625 490 605 485 C585 480 565 475 545 470 C525 465 515 455 515 440 C515 430 520 425 520 425 Z"
                   fill="#7EC9BB"
                   stroke="#6BB3A6"
                   strokeWidth="3"
                   className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
                   onClick={() => (window.location.href = "/states/vic")}
                 />
-                <text x="680" y="500" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
+                <text x="595" y="460" textAnchor="middle" className="fill-white font-bold text-xl pointer-events-none">
                   VIC
                 </text>
-                <text x="680" y="520" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                <text x="595" y="480" textAnchor="middle" className="fill-white text-sm pointer-events-none">
                   2,100+ Members
                 </text>
 
-                {/* Tasmania - Island below Victoria */}
+                {/* Tasmania - Distinctive triangular island */}
                 <path
-                  d="M720 550 C750 545 780 550 800 560 C805 570 800 580 790 585 C770 590 750 585 730 580 C715 575 710 565 715 555 C720 550 720 550 720 550 Z"
+                  d="M620 510 L650 505 L665 525 L635 530 Z"
                   fill="#7EC9BB"
                   stroke="#6BB3A6"
                   strokeWidth="3"
                   className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
                   onClick={() => (window.location.href = "/states/tas")}
                 />
-                <text x="760" y="570" textAnchor="middle" className="fill-white font-bold text-sm pointer-events-none">
+                <text x="642" y="520" textAnchor="middle" className="fill-white font-bold text-sm pointer-events-none">
                   TAS
                 </text>
-                <text x="760" y="585" textAnchor="middle" className="fill-white text-xs pointer-events-none">
+                <text x="642" y="535" textAnchor="middle" className="fill-white text-xs pointer-events-none">
                   600+ Members
                 </text>
 
-                {/* Legend - same as before */}
+                {/* Legend */}
                 <g transform="translate(50, 50)">
                   <rect
                     x="0"
@@ -302,7 +302,7 @@ export default function RuralLivingAustralia() {
                 </g>
 
                 {/* Featured Badge for NSW */}
-                <g transform="translate(785, 440)">
+                <g transform="translate(660, 455)">
                   <rect x="0" y="0" width="110" height="20" fill="#f59e0b" stroke="#d97706" strokeWidth="2" rx="10" />
                   <text x="55" y="14" textAnchor="middle" className="fill-white font-bold text-xs">
                     🌟 MOST ACTIVE
