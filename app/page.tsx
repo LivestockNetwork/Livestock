@@ -359,7 +359,7 @@ export default function EmergencyLivestockSystem() {
         cattle: "$2.50 per head per hour",
         sheep: "$1.00 per head per hour",
         horses: "$5.00 per head per hour",
-        minimumCharge: "$25.00"
+        minimumCharge: "$25.00",
       },
       operatingHours: "24/7",
       contact: "(02) 6642 1234",
@@ -367,7 +367,7 @@ export default function EmergencyLivestockSystem() {
       reviews: 89,
       amenities: ["Cafe", "Fuel Station", "Mechanic", "Accommodation"],
       emergencyOnly: false,
-      bookingRequired: false
+      bookingRequired: false,
     },
     {
       id: "tf-2",
@@ -387,7 +387,7 @@ export default function EmergencyLivestockSystem() {
         cattle: "$3.00 per head per hour",
         sheep: "$1.25 per head per hour",
         horses: "$6.00 per head per hour",
-        minimumCharge: "$40.00"
+        minimumCharge: "$40.00",
       },
       operatingHours: "5:00 AM - 10:00 PM",
       contact: "(02) 6789 5678",
@@ -395,8 +395,8 @@ export default function EmergencyLivestockSystem() {
       reviews: 156,
       amenities: ["Restaurant", "Accommodation", "Truck Wash", "Tire Service"],
       emergencyOnly: false,
-      bookingRequired: true
-    }
+      bookingRequired: true,
+    },
   ]
 
   if (showOnboarding) {
@@ -421,7 +421,8 @@ export default function EmergencyLivestockSystem() {
                   </Badge>
                 </div>
                 <CardDescription className="text-lg text-slate-600 mt-4">
-                  Emergency response, transport planning, and community support. From crisis management to everyday logistics - we've got your livestock covered.
+                  Emergency response, transport planning, and community support. From crisis management to everyday
+                  logistics - we've got your livestock covered.
                 </CardDescription>
                 <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-emerald-50 rounded-xl border border-blue-200">
                   <h4 className="font-semibold text-slate-800 mb-2">Why is this free?</h4>
@@ -1979,9 +1980,24 @@ export default function EmergencyLivestockSystem() {
                 <div className="space-y-3">
                   <Label className="text-slate-700 font-medium">Required Facilities</Label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {["Water Troughs", "Feed Available", "Loading Ramps", "Veterinary", "Shade/Shelter", "Truck Parking", "Weighbridge", "Wash Bays"].map((facility) => (
-                      <label key={facility} className="flex items-center space-x-2 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
-                        <input type="checkbox" className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+                    {[
+                      "Water Troughs",
+                      "Feed Available",
+                      "Loading Ramps",
+                      "Veterinary",
+                      "Shade/Shelter",
+                      "Truck Parking",
+                      "Weighbridge",
+                      "Wash Bays",
+                    ].map((facility) => (
+                      <label
+                        key={facility}
+                        className="flex items-center space-x-2 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                        />
                         <span className="text-xs font-medium text-slate-700">{facility}</span>
                       </label>
                     ))}
@@ -1995,108 +2011,125 @@ export default function EmergencyLivestockSystem() {
 
                 <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-slate-800">Available Transport Facilities</h3>
-        {transportFacilities.map((facility) => (
-          <Card key={facility.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between text-slate-800">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full">
-                    <Truck className="h-5 w-5 text-white" />
-                  </div>
-                  {facility.name}
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                    <span className="text-sm font-medium">{facility.rating}</span>
-                    <span className="text-xs text-slate-500">({facility.reviews})</span>
-                  </div>
-                </div>
-              </CardTitle>
-              <CardDescription className="text-slate-600">
-                {facility.type} - {facility.distance} away ({facility.travelTime})
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <p className="text-slate-700">
-                  <span className="font-medium">Location:</span> {facility.location}
-                </p>
-                <p className="text-slate-700">
-                  <span className="font-medium">Contact:</span> {facility.contact}
-                </p>
-                <p className="text-slate-700">
-                  <span className="font-medium">Operating Hours:</span> {facility.operatingHours}
-                </p>
-                <p className="text-slate-700">
-                  <span className="font-medium">Booking:</span> {facility.bookingRequired ? "Required" : "Walk-in Welcome"}
-                </p>
-              </div>
+                  {transportFacilities.map((facility) => (
+                    <Card
+                      key={facility.id}
+                      className="bg-white/80 backdrop-blur-sm border-0 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300"
+                    >
+                      <CardHeader>
+                        <CardTitle className="flex items-center justify-between text-slate-800">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-full">
+                              <Truck className="h-5 w-5 text-white" />
+                            </div>
+                            {facility.name}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1">
+                              <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                              <span className="text-sm font-medium">{facility.rating}</span>
+                              <span className="text-xs text-slate-500">({facility.reviews})</span>
+                            </div>
+                          </div>
+                        </CardTitle>
+                        <CardDescription className="text-slate-600">
+                          {facility.type} - {facility.distance} away ({facility.travelTime})
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                          <p className="text-slate-700">
+                            <span className="font-medium">Location:</span> {facility.location}
+                          </p>
+                          <p className="text-slate-700">
+                            <span className="font-medium">Contact:</span> {facility.contact}
+                          </p>
+                          <p className="text-slate-700">
+                            <span className="font-medium">Operating Hours:</span> {facility.operatingHours}
+                          </p>
+                          <p className="text-slate-700">
+                            <span className="font-medium">Booking:</span>{" "}
+                            {facility.bookingRequired ? "Required" : "Walk-in Welcome"}
+                          </p>
+                        </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-xl">
-                <div>
-                  <p className="font-semibold text-slate-800">Cattle Capacity:</p>
-                  <p className="text-sm text-slate-600">{facility.capacity.cattle.max} head max</p>
-                  <p className="text-xs text-emerald-600">{facility.pricing.cattle}</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-800">Sheep Capacity:</p>
-                  <p className="text-sm text-slate-600">{facility.capacity.sheep.max} head max</p>
-                  <p className="text-xs text-emerald-600">{facility.pricing.sheep}</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-800">Horse Capacity:</p>
-                  <p className="text-sm text-slate-600">{facility.capacity.horses.max} head max</p>
-                  <p className="text-xs text-emerald-600">{facility.pricing.horses}</p>
-                </div>
-              </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-xl">
+                          <div>
+                            <p className="font-semibold text-slate-800">Cattle Capacity:</p>
+                            <p className="text-sm text-slate-600">{facility.capacity.cattle.max} head max</p>
+                            <p className="text-xs text-emerald-600">{facility.pricing.cattle}</p>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-slate-800">Sheep Capacity:</p>
+                            <p className="text-sm text-slate-600">{facility.capacity.sheep.max} head max</p>
+                            <p className="text-xs text-emerald-600">{facility.pricing.sheep}</p>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-slate-800">Horse Capacity:</p>
+                            <p className="text-sm text-slate-600">{facility.capacity.horses.max} head max</p>
+                            <p className="text-xs text-emerald-600">{facility.pricing.horses}</p>
+                          </div>
+                        </div>
 
-              <div className="space-y-3">
-                <div>
-                  <p className="font-semibold text-slate-800 mb-2">Livestock Facilities:</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {facility.facilities.map((fac, index) => (
-                      <Badge key={index} className="bg-gradient-to-r from-emerald-500 to-green-500 text-white font-medium">
-                        {fac}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <p className="font-semibold text-slate-800 mb-2">Additional Amenities:</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {facility.amenities.map((amenity, index) => (
-                      <Badge key={index} className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium">
-                        {amenity}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                        <div className="space-y-3">
+                          <div>
+                            <p className="font-semibold text-slate-800 mb-2">Livestock Facilities:</p>
+                            <div className="flex gap-2 flex-wrap">
+                              {facility.facilities.map((fac, index) => (
+                                <Badge
+                                  key={index}
+                                  className="bg-gradient-to-r from-emerald-500 to-green-500 text-white font-medium"
+                                >
+                                  {fac}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
 
-              <div className="flex gap-3 pt-4 border-t border-slate-200">
-                <Button className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold rounded-xl">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Call Now
-                </Button>
-                {facility.bookingRequired && (
-                  <Button variant="outline" className="flex-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 rounded-xl bg-transparent">
-                    Book Stop
-                  </Button>
-                )}
-                <Button variant="outline" className="border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl bg-transparent">
-                  Add to Route
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </CardContent>
-  </TabsContent>
+                          <div>
+                            <p className="font-semibold text-slate-800 mb-2">Additional Amenities:</p>
+                            <div className="flex gap-2 flex-wrap">
+                              {facility.amenities.map((amenity, index) => (
+                                <Badge
+                                  key={index}
+                                  className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium"
+                                >
+                                  {amenity}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3 pt-4 border-t border-slate-200">
+                          <Button className="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold rounded-xl">
+                            <Phone className="h-4 w-4 mr-2" />
+                            Call Now
+                          </Button>
+                          {facility.bookingRequired && (
+                            <Button
+                              variant="outline"
+                              className="flex-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 rounded-xl bg-transparent"
+                            >
+                              Book Stop
+                            </Button>
+                          )}
+                          <Button
+                            variant="outline"
+                            className="border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl bg-transparent"
+                          >
+                            Add to Route
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
-  )\
+  )
 }
