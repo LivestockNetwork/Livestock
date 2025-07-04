@@ -3,7 +3,6 @@ import { MapPin, Users, Handshake, Shield, TrendingUp, Heart, ArrowRight, Star, 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
 
 export default function RuralLivingAustralia() {
   const states = [
@@ -221,63 +220,197 @@ export default function RuralLivingAustralia() {
         </div>
       </div>
 
-      {/* States Selection */}
+      {/* Interactive Australia Map */}
       <div className="max-w-7xl mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-slate-800 mb-4">Choose Your State</h2>
+          <h2 className="text-4xl font-bold text-slate-800 mb-4">Click Your State</h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Find your local rural community and start connecting with neighbors
+            Select your state on the map to find your local rural community
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {states.map((state, index) => (
-            <Card
-              key={index}
-              className="border-0 shadow-xl rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer group"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
-            >
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={state.image || "/placeholder.svg"}
-                  alt={`${state.name} landscape`}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        <div className="max-w-4xl mx-auto">
+          <Card
+            className="border-0 shadow-2xl rounded-3xl overflow-hidden p-8"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
+          >
+            <svg viewBox="0 0 1000 600" className="w-full h-auto cursor-pointer" style={{ maxHeight: "500px" }}>
+              {/* Background */}
+              <rect width="1000" height="600" fill="#f8fafc" />
+
+              {/* Western Australia */}
+              <path
+                d="M50 100 L350 100 L350 450 L50 450 Z"
+                fill="#7EC9BB"
+                stroke="#6BB3A6"
+                strokeWidth="3"
+                className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
+                onClick={() => (window.location.href = "/states/wa")}
+              />
+              <text x="200" y="275" textAnchor="middle" className="fill-white font-bold text-2xl pointer-events-none">
+                WA
+              </text>
+              <text x="200" y="300" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                1,200+ Members
+              </text>
+
+              {/* Northern Territory */}
+              <path
+                d="M350 100 L500 100 L500 350 L350 350 Z"
+                fill="#7EC9BB"
+                stroke="#6BB3A6"
+                strokeWidth="3"
+                className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
+                onClick={() => (window.location.href = "/states/nt")}
+              />
+              <text x="425" y="220" textAnchor="middle" className="fill-white font-bold text-2xl pointer-events-none">
+                NT
+              </text>
+              <text x="425" y="245" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                400+ Members
+              </text>
+
+              {/* South Australia */}
+              <path
+                d="M350 350 L550 350 L550 450 L350 450 Z"
+                fill="#7EC9BB"
+                stroke="#6BB3A6"
+                strokeWidth="3"
+                className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
+                onClick={() => (window.location.href = "/states/sa")}
+              />
+              <text x="450" y="395" textAnchor="middle" className="fill-white font-bold text-2xl pointer-events-none">
+                SA
+              </text>
+              <text x="450" y="420" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                900+ Members
+              </text>
+
+              {/* Queensland */}
+              <path
+                d="M500 100 L750 100 L750 350 L550 350 L500 200 Z"
+                fill="#7EC9BB"
+                stroke="#6BB3A6"
+                strokeWidth="3"
+                className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
+                onClick={() => (window.location.href = "/states/qld")}
+              />
+              <text x="625" y="220" textAnchor="middle" className="fill-white font-bold text-2xl pointer-events-none">
+                QLD
+              </text>
+              <text x="625" y="245" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                1,800+ Members
+              </text>
+
+              {/* New South Wales */}
+              <path
+                d="M550 350 L750 350 L750 450 L650 450 L550 400 Z"
+                fill="#f59e0b"
+                stroke="#d97706"
+                strokeWidth="3"
+                className="hover:fill-[#d97706] transition-all duration-300 cursor-pointer"
+                onClick={() => (window.location.href = "/states/nsw")}
+              />
+              <text x="650" y="395" textAnchor="middle" className="fill-white font-bold text-2xl pointer-events-none">
+                NSW
+              </text>
+              <text x="650" y="420" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                2,400+ Members
+              </text>
+
+              {/* Victoria */}
+              <path
+                d="M550 450 L700 450 L700 500 L550 500 Z"
+                fill="#7EC9BB"
+                stroke="#6BB3A6"
+                strokeWidth="3"
+                className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
+                onClick={() => (window.location.href = "/states/vic")}
+              />
+              <text x="625" y="470" textAnchor="middle" className="fill-white font-bold text-2xl pointer-events-none">
+                VIC
+              </text>
+              <text x="625" y="490" textAnchor="middle" className="fill-white text-sm pointer-events-none">
+                2,100+ Members
+              </text>
+
+              {/* Tasmania */}
+              <path
+                d="M600 520 L680 520 L680 570 L600 570 Z"
+                fill="#7EC9BB"
+                stroke="#6BB3A6"
+                strokeWidth="3"
+                className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
+                onClick={() => (window.location.href = "/states/tas")}
+              />
+              <text x="640" y="540" textAnchor="middle" className="fill-white font-bold text-lg pointer-events-none">
+                TAS
+              </text>
+              <text x="640" y="560" textAnchor="middle" className="fill-white text-xs pointer-events-none">
+                600+ Members
+              </text>
+
+              {/* Legend */}
+              <g transform="translate(800, 450)">
+                <rect
+                  x="0"
+                  y="0"
+                  width="180"
+                  height="120"
+                  fill="rgba(255,255,255,0.95)"
+                  stroke="#e2e8f0"
+                  strokeWidth="2"
+                  rx="10"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                <div className="absolute bottom-4 left-4">
-                  <Badge
-                    className="text-white font-bold"
-                    style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                  >
-                    {state.members} Members
-                  </Badge>
-                </div>
+                <text x="90" y="20" textAnchor="middle" className="fill-slate-800 font-bold text-sm">
+                  Click to Explore
+                </text>
+
+                <circle cx="20" cy="40" r="8" fill="#f59e0b" />
+                <text x="35" y="45" className="fill-slate-700 text-xs">
+                  Featured State
+                </text>
+
+                <circle cx="20" cy="65" r="8" fill="#7EC9BB" />
+                <text x="35" y="70" className="fill-slate-700 text-xs">
+                  Active Communities
+                </text>
+
+                <text x="90" y="95" textAnchor="middle" className="fill-slate-600 text-xs">
+                  8,100+ Rural Members
+                </text>
+                <text x="90" y="110" textAnchor="middle" className="fill-slate-600 text-xs">
+                  Across Australia
+                </text>
+              </g>
+            </svg>
+
+            <div className="mt-8 text-center">
+              <p className="text-slate-600 mb-4">
+                <strong>NSW highlighted</strong> - Our most active community with Manning Valley leading the way
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Badge
+                  className="text-white font-semibold"
+                  style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
+                >
+                  47 Active Regions
+                </Badge>
+                <Badge
+                  className="text-white font-semibold"
+                  style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
+                >
+                  1,200+ Listings
+                </Badge>
+                <Badge
+                  className="text-white font-semibold"
+                  style={{ background: "linear-gradient(135deg, #3b82f6, #1d4ed8)" }}
+                >
+                  24/7 Community
+                </Badge>
               </div>
-
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-slate-800">{state.name}</h3>
-                  <Badge variant="secondary" className="font-semibold">
-                    {state.regions} Regions
-                  </Badge>
-                </div>
-
-                <p className="text-slate-600 mb-4">
-                  <strong>Featured regions:</strong> {state.featured}
-                </p>
-
-                <Link href={`/states/${state.code.toLowerCase()}`}>
-                  <Button
-                    className="w-full text-white font-semibold rounded-xl"
-                    style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                  >
-                    Explore {state.code}
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
+            </div>
+          </Card>
         </div>
       </div>
 
