@@ -1211,6 +1211,10 @@ export default function EmergencyLivestockSystem() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
+        {/* Add a distinctive banner at the very top of the main dashboard to make the change obvious */}
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-2 text-center text-sm font-semibold">
+          🚨 UPDATED: Rural Emergency Response Network - Manning Valley Focus
+        </div>
         {/* Header */}
         <div className="relative overflow-hidden bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20">
           {/* Background Image */}
@@ -1234,6 +1238,7 @@ export default function EmergencyLivestockSystem() {
                   <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-700 to-green-800 bg-clip-text text-transparent">
                     Rural Emergency Response Network
                   </h1>
+                  <div className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">v2.1 - Updated</div>
                   <p className="text-slate-600 text-lg mt-1">Community-driven emergency response for rural Australia</p>
                 </div>
               </div>
