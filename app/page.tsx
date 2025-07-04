@@ -62,21 +62,6 @@ export default function ManningValleyRuralHub() {
     services: [],
   })
 
-  const properties = [
-    {
-      id: "wingham-station",
-      name: "Wingham Heights Station",
-      location: "Wingham, Manning Valley - Elevated 45m above sea level",
-      riskLevel: "LOW",
-      livestock: [
-        { type: "Cattle", count: 200, location: "Upper Paddocks", status: "Safe" },
-        { type: "Horses", count: 8, location: "Home Paddock", status: "Safe" },
-      ],
-      businessType: "Cattle Station",
-      services: ["Agistment", "Cattle Sales", "Hay Production"],
-    },
-  ]
-
   const marketplaceItems = [
     {
       id: 1,
@@ -84,7 +69,7 @@ export default function ManningValleyRuralHub() {
       price: "$45,000",
       location: "Wingham",
       seller: "John's Cattle Station",
-      image: "/images/angus-steers.png",
+      image: "/placeholder.svg?height=160&width=300&text=Angus+Steers",
       category: "Livestock",
       posted: "2 days ago",
       featured: true,
@@ -96,7 +81,7 @@ export default function ManningValleyRuralHub() {
       price: "$85,000",
       location: "Gloucester",
       seller: "Manning Valley Equipment",
-      image: "/images/john-deere-tractor.png",
+      image: "/placeholder.svg?height=160&width=300&text=John+Deere+Tractor",
       category: "Equipment",
       posted: "1 week ago",
       featured: false,
@@ -108,7 +93,7 @@ export default function ManningValleyRuralHub() {
       price: "$18/bale",
       location: "Krambach",
       seller: "Ridge Line Farm",
-      image: "/images/lucerne-hay-bales.png",
+      image: "/placeholder.svg?height=160&width=300&text=Lucerne+Hay+Bales",
       category: "Feed & Supplies",
       posted: "3 days ago",
       featured: true,
@@ -120,7 +105,7 @@ export default function ManningValleyRuralHub() {
       price: "$8,500",
       location: "Taree",
       seller: "Valley View Horses",
-      image: "/images/quarter-horse-mare.png",
+      image: "/placeholder.svg?height=160&width=300&text=Quarter+Horse+Mare",
       category: "Livestock",
       posted: "5 days ago",
       featured: false,
@@ -264,8 +249,6 @@ export default function ManningValleyRuralHub() {
     },
   }
 
-  const currentProperty = properties.find((p) => p.id === selectedProperty)
-
   const addLivestockRow = () => {
     setPropertyForm({
       ...propertyForm,
@@ -305,7 +288,7 @@ export default function ManningValleyRuralHub() {
                 >
                   <Users className="h-10 w-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl font-bold mb-4" style={{ color: "#059669" }}>
+                <CardTitle className="text-3xl font-bold mb-4" style={{ color: "#6BB3A6" }}>
                   Manning Valley Rural Community Hub
                 </CardTitle>
                 <div className="flex items-center justify-center gap-2 mb-4">
@@ -337,7 +320,7 @@ export default function ManningValleyRuralHub() {
               <CardContent className="space-y-8 pb-8">
                 <div className="relative rounded-2xl overflow-hidden shadow-xl">
                   <img
-                    src="/images/rural-community.png"
+                    src="/placeholder.svg?height=200&width=800&text=Manning+Valley+Rural+Community"
                     alt="Manning Valley rural community"
                     className="w-full h-48 object-cover"
                   />
@@ -366,14 +349,14 @@ export default function ManningValleyRuralHub() {
                       >
                         <Home className="h-8 w-8 text-white" />
                       </div>
-                      <h3 className="font-bold text-xl mb-3" style={{ color: "#059669" }}>
+                      <h3 className="font-bold text-xl mb-3" style={{ color: "#6BB3A6" }}>
                         Register My Property & Business
                       </h3>
                       <p className="text-sm mb-6" style={{ color: "#065f46" }}>
                         Join our community network. List your property, services, and connect with local farmers for
                         daily business and safety preparedness.
                       </p>
-                      <div className="space-y-3 text-xs mb-6" style={{ color: "#059669" }}>
+                      <div className="space-y-3 text-xs mb-6" style={{ color: "#6BB3A6" }}>
                         <p className="flex items-center justify-center gap-2">
                           <CheckCircle className="h-4 w-4" /> List livestock and services
                         </p>
@@ -659,7 +642,7 @@ export default function ManningValleyRuralHub() {
                 >
                   <CheckCircle className="h-10 w-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl font-bold" style={{ color: "#059669" }}>
+                <CardTitle className="text-3xl font-bold" style={{ color: "#6BB3A6" }}>
                   Welcome to Manning Valley Rural Community!
                 </CardTitle>
                 <CardDescription className="text-lg text-slate-600 mt-4">
@@ -698,7 +681,7 @@ export default function ManningValleyRuralHub() {
         >
           <div className="absolute inset-0 opacity-10">
             <img
-              src="/images/manning-valley-landscape.png"
+              src="/placeholder.svg?height=200&width=1200&text=Manning+Valley+Landscape"
               alt="Manning Valley landscape"
               className="w-full h-full object-cover"
             />
@@ -829,7 +812,6 @@ export default function ManningValleyRuralHub() {
                           src={item.image || "/placeholder.svg"}
                           alt={item.title}
                           className="w-full h-40 object-cover"
-                          crossOrigin="anonymous"
                         />
                         {item.featured && (
                           <Badge
