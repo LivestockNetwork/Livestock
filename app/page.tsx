@@ -69,7 +69,7 @@ export default function ManningValleyRuralHub() {
       price: "$45,000",
       location: "Wingham",
       seller: "John's Cattle Station",
-      image: "/placeholder.svg?height=160&width=300&text=Angus+Steers",
+      image: "https://images.unsplash.com/photo-1560114928-40f1f1eb26a0?w=300&h=160&fit=crop&auto=format",
       category: "Livestock",
       posted: "2 days ago",
       featured: true,
@@ -81,7 +81,7 @@ export default function ManningValleyRuralHub() {
       price: "$85,000",
       location: "Gloucester",
       seller: "Manning Valley Equipment",
-      image: "/placeholder.svg?height=160&width=300&text=John+Deere+Tractor",
+      image: "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=300&h=160&fit=crop&auto=format",
       category: "Equipment",
       posted: "1 week ago",
       featured: false,
@@ -93,7 +93,7 @@ export default function ManningValleyRuralHub() {
       price: "$18/bale",
       location: "Krambach",
       seller: "Ridge Line Farm",
-      image: "/placeholder.svg?height=160&width=300&text=Lucerne+Hay+Bales",
+      image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&h=160&fit=crop&auto=format",
       category: "Feed & Supplies",
       posted: "3 days ago",
       featured: true,
@@ -105,7 +105,7 @@ export default function ManningValleyRuralHub() {
       price: "$8,500",
       location: "Taree",
       seller: "Valley View Horses",
-      image: "/placeholder.svg?height=160&width=300&text=Quarter+Horse+Mare",
+      image: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=300&h=160&fit=crop&auto=format",
       category: "Livestock",
       posted: "5 days ago",
       featured: false,
@@ -320,7 +320,7 @@ export default function ManningValleyRuralHub() {
               <CardContent className="space-y-8 pb-8">
                 <div className="relative rounded-2xl overflow-hidden shadow-xl">
                   <img
-                    src="/placeholder.svg?height=200&width=800&text=Manning+Valley+Rural+Community"
+                    src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=200&fit=crop&auto=format"
                     alt="Manning Valley rural community"
                     className="w-full h-48 object-cover"
                   />
@@ -681,7 +681,7 @@ export default function ManningValleyRuralHub() {
         >
           <div className="absolute inset-0 opacity-10">
             <img
-              src="/placeholder.svg?height=200&width=1200&text=Manning+Valley+Landscape"
+              src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&h=200&fit=crop&auto=format"
               alt="Manning Valley landscape"
               className="w-full h-full object-cover"
             />
