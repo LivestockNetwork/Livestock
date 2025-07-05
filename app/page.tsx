@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Users, ArrowRight, Heart, Star, Flame, Droplets } from "lucide-react"
+import { Users, ArrowRight, Heart, Flame, Droplets } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -35,30 +35,6 @@ export default function RuralCommunityHub() {
       isBusinessPost: false,
     },
   ])
-
-  const testimonials = [
-    {
-      quote:
-        "During the floods, I found 3 locals with boats who could help evacuate my horses. Saved my animals' lives.",
-      author: "Sarah M.",
-      location: "Manning Valley, NSW",
-      situation: "Flood Emergency",
-    },
-    {
-      quote:
-        "Bushfire was coming fast. Through the hub I found someone with a truck 10 minutes away. Got my cattle out in time.",
-      author: "Tom R.",
-      location: "Hunter Valley, NSW",
-      situation: "Bushfire Emergency",
-    },
-    {
-      quote:
-        "My local community member broke his leg during calving season. The community rallied - 5 people helped with his cattle for 2 weeks.",
-      author: "Lisa K.",
-      location: "Riverina, NSW",
-      situation: "Community Support",
-    },
-  ]
 
   const handleVideoPost = (videoData: any) => {
     setVideoPosts([videoData, ...videoPosts])
@@ -208,49 +184,6 @@ export default function RuralCommunityHub() {
               Start Emergency Planning
             </Button>
           </div>
-        </div>
-      </div>
-
-      {/* Real Stories Section */}
-      <div className="max-w-7xl mx-auto px-4 py-12 sm:py-20">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4 sm:mb-6">Real Stories. Real Help.</h2>
-          <p className="text-lg sm:text-xl text-black max-w-3xl mx-auto px-4">
-            These rural families found the help they needed through their community connections.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card
-              key={index}
-              className="border-0 shadow-xl rounded-3xl"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-            >
-              <CardContent className="p-6 sm:p-8">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 sm:h-5 sm:w-5 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-
-                <blockquote className="text-black mb-4 sm:mb-6 italic text-base sm:text-lg leading-relaxed">
-                  "{testimonial.quote}"
-                </blockquote>
-
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full" style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}>
-                    <Users className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-black text-sm sm:text-base">{testimonial.author}</div>
-                    <div className="text-xs sm:text-sm text-black">{testimonial.location}</div>
-                    <Badge className="bg-green-100 text-green-700 text-xs mt-1">{testimonial.situation}</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </div>
 
