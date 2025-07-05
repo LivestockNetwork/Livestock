@@ -130,7 +130,7 @@ export default function OnboardingPage() {
               </div>
 
               <div>
-                <Label htmlFor="phone">Mobile Number *</Label>
+                <Label htmlFor="phone">Mobile Number (Optional)</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -532,8 +532,7 @@ export default function OnboardingPage() {
               onClick={nextStep}
               className="bg-teal-500 hover:bg-teal-600 flex items-center gap-2"
               disabled={
-                (currentStep === 1 &&
-                  (!formData.firstName || !formData.lastName || !formData.email || !formData.phone)) ||
+                (currentStep === 1 && (!formData.firstName || !formData.lastName || !formData.email)) ||
                 (currentStep === 2 && (!formData.postcode || !formData.suburb || !formData.state))
               }
             >
