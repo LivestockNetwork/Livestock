@@ -398,13 +398,24 @@ export default function ProfileSetup() {
                             const newTypes = profileData.livestock.types.includes(animal.id)
                               ? profileData.livestock.types.filter((t) => t !== animal.id)
                               : [...profileData.livestock.types, animal.id]
+
+                            const newDetails = { ...profileData.livestock.details }
+
+                            if (!profileData.livestock.types.includes(animal.id)) {
+                              // Adding new livestock type
+                              newDetails[animal.id] = { count: 0, description: "" }
+                            } else {
+                              // Removing livestock type
+                              delete newDetails[animal.id]
+                            }
+
                             setProfileData({
                               ...profileData,
-                              livestock: { ...profileData.livestock, types: newTypes },
+                              livestock: {
+                                types: newTypes,
+                                details: newDetails,
+                              },
                             })
-                            if (!profileData.livestock.types.includes(animal.id)) {
-                              addLivestockDetail(animal.id)
-                            }
                           }}
                           className={`p-3 h-auto text-center ${
                             profileData.livestock.types.includes(animal.id)
@@ -505,7 +516,10 @@ export default function ProfileSetup() {
                               : [...profileData.equipment.available, equipment.id]
                             setProfileData({
                               ...profileData,
-                              equipment: { ...profileData.equipment, available: newEquipment },
+                              equipment: {
+                                ...profileData.equipment,
+                                available: newEquipment,
+                              },
                             })
                           }}
                           className={`p-3 h-auto text-left ${
@@ -555,7 +569,10 @@ export default function ProfileSetup() {
                               : [...profileData.services.canOffer, service.id]
                             setProfileData({
                               ...profileData,
-                              services: { ...profileData.services, canOffer: newServices },
+                              services: {
+                                ...profileData.services,
+                                canOffer: newServices,
+                              },
                             })
                           }}
                           className={`p-3 h-auto text-left text-sm ${
@@ -588,7 +605,10 @@ export default function ProfileSetup() {
                               : [...profileData.services.needHelp, service.id]
                             setProfileData({
                               ...profileData,
-                              services: { ...profileData.services, needHelp: newServices },
+                              services: {
+                                ...profileData.services,
+                                needHelp: newServices,
+                              },
                             })
                           }}
                           className={`p-3 h-auto text-left text-sm ${
