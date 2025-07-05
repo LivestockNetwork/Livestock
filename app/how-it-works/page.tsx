@@ -168,8 +168,6 @@ export default function HowItWorksPage() {
           </h1>
 
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
-            When you need help, you need it fast. When you can help others, you want to know about it.
-            <br />
             <strong>Rural Community Hub connects you with locals who get it.</strong>
           </p>
 
