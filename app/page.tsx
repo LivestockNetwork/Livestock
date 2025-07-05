@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Users, ArrowRight, Heart, Flame, Droplets } from "lucide-react"
+import { Users, ArrowRight, Heart, Flame, Droplets, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -66,6 +66,11 @@ export default function RuralCommunityHub() {
               <Link href="/about">
                 <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
                   About
+                </Button>
+              </Link>
+              <Link href="/community">
+                <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
+                  Community
                 </Button>
               </Link>
               <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
@@ -152,6 +157,17 @@ export default function RuralCommunityHub() {
               Find My Rural Community
               <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 ml-2 sm:ml-3" />
             </Button>
+
+            <Link href="/community">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-teal-500 text-teal-600 hover:bg-teal-50 font-bold px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl rounded-2xl bg-white w-full sm:w-auto"
+              >
+                <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
+                Preview Community Feed
+              </Button>
+            </Link>
 
             <p className="text-black text-sm sm:text-base">
               <strong>8,630+ rural families</strong> already connected across Australia
@@ -283,6 +299,11 @@ export default function RuralCommunityHub() {
             <div>
               <h4 className="font-bold mb-3 sm:mb-4 text-sm sm:text-base">Quick Links</h4>
               <ul className="space-y-2 text-slate-300 text-sm sm:text-base">
+                <li>
+                  <Link href="/community" className="hover:text-white">
+                    Community Feed
+                  </Link>
+                </li>
                 <li>
                   <a href="/preparedness/bushfire" className="hover:text-white">
                     Bushfire Planning
