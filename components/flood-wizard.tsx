@@ -661,12 +661,12 @@ export default function FloodWizard() {
                   {
                     id: "major",
                     label: "Major flooding",
-                    description: "Property flooded, livestock/equipment affected",
+                    description: "Property flooded, livestock affected",
                   },
                   {
                     id: "multiple",
                     label: "Multiple major floods",
-                    description: "Experienced several significant flood events",
+                    description: "Experienced several flood events",
                   },
                 ].map((experience) => (
                   <Button
@@ -679,9 +679,9 @@ export default function FloodWizard() {
                         : "border-slate-300 text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    <div>
-                      <div className="font-semibold">{experience.label}</div>
-                      <div className="text-sm opacity-80">{experience.description}</div>
+                    <div className="space-y-1">
+                      <div className="font-semibold text-sm sm:text-base leading-tight">{experience.label}</div>
+                      <div className="text-xs sm:text-sm opacity-80 leading-tight">{experience.description}</div>
                     </div>
                   </Button>
                 ))}
