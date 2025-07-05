@@ -163,8 +163,8 @@ export default function HowItWorksPage() {
           </Badge>
 
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            3 Simple Steps to Connect
-            <span className="block mt-2">with Your Rural Locals</span>
+            3 Steps to Connect
+            <span className="block mt-2">with Your Local Community</span>
           </h1>
 
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
@@ -403,21 +403,12 @@ export default function HowItWorksPage() {
             Join 8,630+ rural families who are building stronger, more resilient communities together.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <div className="flex justify-center mb-8">
             <Link href="/onboarding">
               <Button size="lg" className="bg-teal-500 hover:bg-teal-600 font-bold px-8 py-4">
                 <Users className="h-5 w-5 mr-2" />
                 Join Your Community Now
                 <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </Link>
-            <Link href="/community">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/10 font-bold px-8 py-4 bg-transparent"
-              >
-                Preview Community Feed
               </Button>
             </Link>
           </div>
