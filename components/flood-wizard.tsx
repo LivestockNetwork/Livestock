@@ -568,7 +568,9 @@ export default function FloodWizard() {
                 size="lg"
                 className="text-white font-bold"
                 style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                onClick={() => (window.location.href = "/community")}
+                onClick={() => {
+                  window.location.href = "/onboarding"
+                }}
               >
                 Connect with Locals
               </Button>

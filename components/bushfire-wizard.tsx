@@ -53,6 +53,7 @@ export default function BushfireWizard() {
     { id: "hobby", label: "🐓 Hobby Farm", description: "Small acreage, lifestyle property" },
     { id: "horse", label: "🐴 Horse Property", description: "Agistment, breeding, riding" },
     { id: "rural-town", label: "🏘️ Rural Town", description: "In town but with animals/land" },
+    { id: "town-home", label: "🏠 Town Home", description: "Live in rural town, no livestock" },
   ]
 
   const livestockOptions = [
@@ -117,16 +118,25 @@ export default function BushfireWizard() {
   const getImmediateActions = () => {
     const actions = []
 
-    if (wizardData.livestock.includes("horses")) {
-      actions.push("🐴 Horses: Halter and lead ropes ready, know which horses load easily")
-    }
-    if (wizardData.livestock.includes("cattle")) {
-      actions.push("🐄 Cattle: Open gates to safe paddocks, have dogs ready for mustering")
-    }
-    if (wizardData.livestock.includes("chickens")) {
-      actions.push("🐓 Chickens: Portable cages ready, can catch quickly in emergency")
+    // Property type specific actions
+    if (wizardData.propertyType === "town-home") {
+      actions.push("🏠 Town Home: Clear gutters, trim trees near house, have evacuation bag ready")
+      actions.push("🚗 Vehicle: Keep car fueled and parked facing street for quick evacuation")
+      actions.push("📱 Stay connected: Monitor local emergency services and community groups")
+    } else {
+      // Existing livestock actions
+      if (wizardData.livestock.includes("horses")) {
+        actions.push("🐴 Horses: Halter and lead ropes ready, know which horses load easily")
+      }
+      if (wizardData.livestock.includes("cattle")) {
+        actions.push("🐄 Cattle: Open gates to safe paddocks, have dogs ready for mustering")
+      }
+      if (wizardData.livestock.includes("chickens")) {
+        actions.push("🐓 Chickens: Portable cages ready, can catch quickly in emergency")
+      }
     }
 
+    // General preparedness for all
     actions.push("📱 Charge all devices, have battery packs ready")
     actions.push("🚛 Fuel vehicles and equipment, check tire pressure")
     actions.push("💧 Fill water tanks, check pump operation")
@@ -188,15 +198,25 @@ export default function BushfireWizard() {
       routes: wizardData.evacuationRoutes || "Identify 2+ routes out of your area",
       meetingPoint: "Designate safe meeting point for family/workers",
       timeline:
-        wizardData.livestock.length > 0
-          ? "Start moving livestock when fire danger reaches SEVERE (not EXTREME - too late)"
-          : "Can evacuate quickly when authorities advise",
-      priorities: [
-        "1. Human safety first - never risk lives for animals",
-        "2. Most valuable/mobile animals first",
-        "3. Equipment that can help community",
-        "4. Important documents (insurance, animal records)",
-      ],
+        wizardData.propertyType === "town-home"
+          ? "Town residents: Can evacuate quickly when authorities advise - don't wait for EXTREME rating"
+          : wizardData.livestock.length > 0
+            ? "Start moving livestock when fire danger reaches SEVERE (not EXTREME - too late)"
+            : "Can evacuate quickly when authorities advise",
+      priorities:
+        wizardData.propertyType === "town-home"
+          ? [
+              "1. Human safety first - never delay evacuation",
+              "2. Important documents (insurance, ID, medications)",
+              "3. Emergency supplies and water",
+              "4. Help elderly neighbors who may need assistance",
+            ]
+          : [
+              "1. Human safety first - never risk lives for animals",
+              "2. Most valuable/mobile animals first",
+              "3. Equipment that can help community",
+              "4. Important documents (insurance, animal records)",
+            ],
     }
   }
 
@@ -413,7 +433,9 @@ export default function BushfireWizard() {
                 size="lg"
                 className="text-white font-bold"
                 style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                onClick={() => (window.location.href = "/community")}
+                onClick={() => {
+                  window.location.href = "/onboarding"
+                }}
               >
                 Connect with Locals
               </Button>
