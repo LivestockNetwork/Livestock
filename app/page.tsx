@@ -1,5 +1,5 @@
 "use client"
-import { Users, Handshake, Shield, TrendingUp, Heart, Star } from "lucide-react"
+import { Users, Handshake, Shield, TrendingUp, Heart, Star, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,48 +11,54 @@ export default function RuralLivingAustralia() {
       code: "NSW",
       regions: 12,
       members: "2,400+",
-      featured: "Manning Valley, Hunter Valley, Riverina",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=240&fit=crop&auto=format",
+      featured: true,
+      topRegions: "Manning Valley, Hunter Valley, Riverina",
+      description: "Australia's most active rural community",
     },
     {
       name: "Queensland",
       code: "QLD",
       regions: 8,
       members: "1,800+",
-      featured: "Darling Downs, Wide Bay, Central Queensland",
-      image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=240&fit=crop&auto=format",
+      featured: false,
+      topRegions: "Darling Downs, Wide Bay, Central Queensland",
+      description: "Diverse farming and cattle country",
     },
     {
       name: "Victoria",
       code: "VIC",
       regions: 10,
       members: "2,100+",
-      featured: "Goulburn Valley, Western District, Gippsland",
-      image: "https://images.unsplash.com/photo-1552832230-8b3c6dcb96c4?w=400&h=240&fit=crop&auto=format",
-    },
-    {
-      name: "South Australia",
-      code: "SA",
-      regions: 6,
-      members: "900+",
-      featured: "Barossa Valley, Adelaide Hills, Riverland",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=240&fit=crop&auto=format",
+      featured: false,
+      topRegions: "Goulburn Valley, Western District, Gippsland",
+      description: "Dairy and mixed farming heartland",
     },
     {
       name: "Western Australia",
       code: "WA",
       regions: 7,
       members: "1,200+",
-      featured: "Wheatbelt, Great Southern, Pilbara",
-      image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=240&fit=crop&auto=format",
+      featured: false,
+      topRegions: "Wheatbelt, Great Southern, Pilbara",
+      description: "Vast wheat and livestock regions",
+    },
+    {
+      name: "South Australia",
+      code: "SA",
+      regions: 6,
+      members: "900+",
+      featured: false,
+      topRegions: "Barossa Valley, Adelaide Hills, Riverland",
+      description: "Wine country meets grain farming",
     },
     {
       name: "Tasmania",
       code: "TAS",
       regions: 4,
       members: "600+",
-      featured: "North West, Central, East Coast",
-      image: "https://images.unsplash.com/photo-1552832230-8b3c6dcb96c4?w=400&h=240&fit=crop&auto=format",
+      featured: false,
+      topRegions: "North West, Central, East Coast",
+      description: "Island farming and forestry",
     },
   ]
 
@@ -142,219 +148,72 @@ export default function RuralLivingAustralia() {
             </p>
           </div>
 
-          {/* Interactive Australia Map */}
-          <div className="max-w-4xl mx-auto mb-12">
+          {/* Choose Your State Section */}
+          <div className="max-w-6xl mx-auto mb-12">
             <Card
               className="border-0 shadow-2xl rounded-3xl overflow-hidden p-8"
               style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
             >
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-slate-800 mb-2">Choose Your State</h3>
-                <p className="text-slate-600">Click on any state to explore rural communities</p>
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold text-slate-800 mb-4">Choose Your State</h3>
+                <p className="text-xl text-slate-600">Join your local rural community across Australia</p>
               </div>
 
-              <svg
-                viewBox="0 0 800 500"
-                className="w-full h-auto max-h-96 mx-auto border-2 border-slate-200 rounded-xl bg-blue-50"
-                style={{ minHeight: "300px" }}
-              >
-                {/* Ocean background */}
-                <rect width="800" height="500" fill="#e0f2fe" />
-
-                {/* Australia continent outline */}
-                <g transform="translate(50, 50)">
-                  {/* Western Australia - Large left portion */}
-                  <path
-                    d="M0 100 L200 80 L220 120 L240 160 L250 200 L240 240 L220 280 L200 320 L180 350 L140 360 L100 350 L60 330 L30 300 L10 260 L0 220 L5 180 L10 140 Z"
-                    fill="#7EC9BB"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
-                    onClick={() => (window.location.href = "/states/wa")}
-                  />
-                  <text
-                    x="120"
-                    y="220"
-                    textAnchor="middle"
-                    className="fill-white font-bold text-lg pointer-events-none"
+              {/* State Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {states.map((state, index) => (
+                  <Card
+                    key={index}
+                    className={`border-0 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer ${
+                      state.featured ? "ring-2 ring-amber-400" : ""
+                    }`}
+                    style={{
+                      backgroundColor: state.featured ? "rgba(245, 158, 11, 0.1)" : "rgba(255, 255, 255, 0.9)",
+                    }}
+                    onClick={() => (window.location.href = `/states/${state.code.toLowerCase()}`)}
                   >
-                    WA
-                  </text>
-                  <text x="120" y="240" textAnchor="middle" className="fill-white text-sm pointer-events-none">
-                    1,200+ Members
-                  </text>
+                    <CardContent className="p-6 text-center">
+                      {state.featured && (
+                        <Badge
+                          className="text-white font-bold mb-4"
+                          style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
+                        >
+                          🌟 Most Active
+                        </Badge>
+                      )}
 
-                  {/* Northern Territory - Top center */}
-                  <path
-                    d="M250 80 L350 80 L350 240 L250 240 Z"
-                    fill="#7EC9BB"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
-                    onClick={() => (window.location.href = "/states/nt")}
-                  />
-                  <text
-                    x="300"
-                    y="155"
-                    textAnchor="middle"
-                    className="fill-white font-bold text-lg pointer-events-none"
-                  >
-                    NT
-                  </text>
-                  <text x="300" y="175" textAnchor="middle" className="fill-white text-sm pointer-events-none">
-                    400+ Members
-                  </text>
+                      <div
+                        className="p-4 rounded-2xl mx-auto mb-4 w-fit hover:scale-110 transition-transform duration-300"
+                        style={{
+                          backgroundColor: state.featured ? "#f59e0b20" : "#7EC9BB20",
+                        }}
+                      >
+                        <MapPin className="h-8 w-8" style={{ color: state.featured ? "#f59e0b" : "#7EC9BB" }} />
+                      </div>
 
-                  {/* Queensland - Large northeast */}
-                  <path
-                    d="M350 60 L500 50 L520 80 L540 120 L550 160 L560 200 L550 240 L530 280 L500 300 L470 310 L440 300 L410 280 L380 250 L360 220 L350 180 Z"
-                    fill="#7EC9BB"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
-                    onClick={() => (window.location.href = "/states/qld")}
-                  />
-                  <text
-                    x="450"
-                    y="180"
-                    textAnchor="middle"
-                    className="fill-white font-bold text-lg pointer-events-none"
-                  >
-                    QLD
-                  </text>
-                  <text x="450" y="200" textAnchor="middle" className="fill-white text-sm pointer-events-none">
-                    1,800+ Members
-                  </text>
+                      <h3 className="text-xl font-bold text-slate-800 mb-2">{state.name}</h3>
+                      <div
+                        className="text-3xl font-bold mb-2"
+                        style={{ color: state.featured ? "#f59e0b" : "#7EC9BB" }}
+                      >
+                        {state.members}
+                      </div>
+                      <p className="text-sm text-slate-600 mb-3">{state.description}</p>
 
-                  {/* South Australia - Center bottom */}
-                  <path
-                    d="M250 240 L380 240 L400 260 L410 280 L400 300 L380 320 L350 330 L320 325 L290 320 L260 310 L240 290 L235 265 Z"
-                    fill="#7EC9BB"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
-                    onClick={() => (window.location.href = "/states/sa")}
-                  />
-                  <text
-                    x="325"
-                    y="285"
-                    textAnchor="middle"
-                    className="fill-white font-bold text-lg pointer-events-none"
-                  >
-                    SA
-                  </text>
-                  <text x="325" y="305" textAnchor="middle" className="fill-white text-sm pointer-events-none">
-                    900+ Members
-                  </text>
+                      <div className="text-xs text-slate-500 mb-4">
+                        <strong>Top Regions:</strong> {state.topRegions}
+                      </div>
 
-                  {/* New South Wales - East coast, FEATURED */}
-                  <path
-                    d="M500 300 L580 290 L600 310 L610 330 L605 350 L590 365 L570 370 L550 365 L530 355 L515 340 L505 325 Z"
-                    fill="#f59e0b"
-                    stroke="#ffffff"
-                    strokeWidth="3"
-                    className="hover:fill-[#d97706] transition-all duration-300 cursor-pointer animate-pulse"
-                    onClick={() => (window.location.href = "/states/nsw")}
-                  />
-                  <text
-                    x="555"
-                    y="335"
-                    textAnchor="middle"
-                    className="fill-white font-bold text-lg pointer-events-none"
-                  >
-                    NSW
-                  </text>
-                  <text x="555" y="355" textAnchor="middle" className="fill-white text-sm pointer-events-none">
-                    2,400+ Members ⭐
-                  </text>
+                      <div className="flex justify-between items-center text-xs text-slate-500">
+                        <span>{state.regions} Regions</span>
+                        <span>Active Community</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
 
-                  {/* Victoria - Southeast */}
-                  <path
-                    d="M410 320 L530 325 L550 340 L560 355 L550 365 L530 370 L510 365 L490 360 L470 350 L450 340 L430 330 L415 325 Z"
-                    fill="#7EC9BB"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
-                    onClick={() => (window.location.href = "/states/vic")}
-                  />
-                  <text
-                    x="485"
-                    y="345"
-                    textAnchor="middle"
-                    className="fill-white font-bold text-lg pointer-events-none"
-                  >
-                    VIC
-                  </text>
-                  <text x="485" y="365" textAnchor="middle" className="fill-white text-sm pointer-events-none">
-                    2,100+ Members
-                  </text>
-
-                  {/* Tasmania - Island */}
-                  <path
-                    d="M520 390 L560 385 L570 405 L555 415 L535 420 L520 410 Z"
-                    fill="#7EC9BB"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="hover:fill-[#6BB3A6] transition-all duration-300 cursor-pointer"
-                    onClick={() => (window.location.href = "/states/tas")}
-                  />
-                  <text
-                    x="545"
-                    y="405"
-                    textAnchor="middle"
-                    className="fill-white font-bold text-sm pointer-events-none"
-                  >
-                    TAS
-                  </text>
-                  <text x="545" y="420" textAnchor="middle" className="fill-white text-xs pointer-events-none">
-                    600+ Members
-                  </text>
-                </g>
-
-                {/* Legend */}
-                <g transform="translate(600, 50)">
-                  <rect
-                    x="0"
-                    y="0"
-                    width="150"
-                    height="120"
-                    fill="rgba(255,255,255,0.95)"
-                    stroke="#e2e8f0"
-                    strokeWidth="2"
-                    rx="8"
-                  />
-                  <text x="75" y="20" textAnchor="middle" className="fill-slate-800 font-bold text-sm">
-                    Australia
-                  </text>
-
-                  <circle cx="15" cy="40" r="6" fill="#f59e0b" />
-                  <text x="25" y="45" className="fill-slate-700 text-xs">
-                    Featured - NSW
-                  </text>
-
-                  <circle cx="15" cy="60" r="6" fill="#7EC9BB" />
-                  <text x="25" y="65" className="fill-slate-700 text-xs">
-                    Active States
-                  </text>
-
-                  <text x="75" y="85" textAnchor="middle" className="fill-slate-600 text-xs">
-                    8,100+ Members
-                  </text>
-                  <text x="75" y="100" textAnchor="middle" className="fill-slate-600 text-xs">
-                    47 Regions
-                  </text>
-                </g>
-
-                {/* Featured badge */}
-                <g transform="translate(520, 270)">
-                  <rect x="0" y="0" width="90" height="18" fill="#f59e0b" rx="9" />
-                  <text x="45" y="12" textAnchor="middle" className="fill-white font-bold text-xs">
-                    🌟 FEATURED
-                  </text>
-                </g>
-              </svg>
-
-              <div className="mt-6 text-center">
+              <div className="mt-8 text-center">
                 <p className="text-slate-600 mb-4">
                   <strong>NSW</strong> leads Australia with the most active rural community platform
                 </p>
