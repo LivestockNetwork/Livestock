@@ -72,10 +72,7 @@ export default function EmergencyTicker() {
             onMouseLeave={() => setIsPaused(false)}
           >
             <div
-              className={`whitespace-nowrap text-sm font-semibold py-2 ${isPaused ? "" : "animate-scroll"}`}
-              style={{
-                animation: isPaused ? "none" : "scroll 45s linear infinite",
-              }}
+              className={`whitespace-nowrap text-sm font-semibold py-2 ${isPaused ? "" : "animate-scroll-mobile md:animate-scroll-desktop"}`}
             >
               {tickerText} • {tickerText} • {tickerText}
             </div>
@@ -179,7 +176,7 @@ export default function EmergencyTicker() {
       )}
 
       <style jsx>{`
-        @keyframes scroll {
+        @keyframes scroll-mobile {
           0% {
             transform: translateX(100%);
           }
@@ -187,8 +184,24 @@ export default function EmergencyTicker() {
             transform: translateX(-100%);
           }
         }
-        .animate-scroll {
-          animation: scroll 45s linear infinite;
+        
+        @keyframes scroll-desktop {
+          0% {
+            transform: translateX(100%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+        
+        .animate-scroll-mobile {
+          animation: scroll-mobile 30s linear infinite;
+        }
+        
+        @media (min-width: 768px) {
+          .animate-scroll-desktop {
+            animation: scroll-desktop 45s linear infinite;
+          }
         }
       `}</style>
     </>
