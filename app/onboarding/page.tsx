@@ -412,7 +412,10 @@ export default function OnboardingPage() {
 
                     <Button
                       variant="outline"
-                      onClick={() => setOnboardingData({ ...onboardingData, livestock: [] })}
+                      onClick={() => {
+                        setOnboardingData({ ...onboardingData, livestock: [] })
+                        nextStep()
+                      }}
                       className="w-full mt-3 border-slate-300 text-slate-700"
                     >
                       No animals - just property
