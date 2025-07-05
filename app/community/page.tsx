@@ -182,7 +182,7 @@ export default function CommunityFeedPage() {
                 </Button>
               </Link>
 
-              <div className="flex items-center gap-3">
+              <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
                   <Users className="h-6 w-6 text-white" />
                 </div>
@@ -190,7 +190,7 @@ export default function CommunityFeedPage() {
                   <h1 className="text-xl font-bold text-slate-800">Manning Valley Community</h1>
                   <p className="text-sm text-slate-600">450+ local members</p>
                 </div>
-              </div>
+              </Link>
             </div>
 
             <Button
