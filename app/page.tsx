@@ -182,14 +182,14 @@ export default function RuralLivingAustralia() {
               🇦🇺 Proudly Australian • Built for Rural Communities
             </Badge>
 
-            <h1 className="text-5xl md:text-7xl font-bold text-slate-800 mb-6">
-              Rural Living
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              <span style={{ color: "#7EC9BB" }}>Rural Living</span>
               <span className="block" style={{ color: "#7EC9BB" }}>
                 Australia
               </span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto mb-16 leading-relaxed">
               <strong>Rural people don't wait for help, they ARE the help.</strong>
               <br />
               Connect with your community. Share resources. Build resilience together.
