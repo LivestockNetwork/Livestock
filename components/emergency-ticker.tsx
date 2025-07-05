@@ -74,7 +74,7 @@ export default function EmergencyTicker() {
             <div
               className={`whitespace-nowrap text-sm font-semibold py-2 ${isPaused ? "" : "animate-scroll"}`}
               style={{
-                animation: isPaused ? "none" : "scroll 60s linear infinite",
+                animation: isPaused ? "none" : "scroll 45s linear infinite",
               }}
             >
               {tickerText} • {tickerText} • {tickerText}
@@ -188,7 +188,7 @@ export default function EmergencyTicker() {
           }
         }
         .animate-scroll {
-          animation: scroll 60s linear infinite;
+          animation: scroll 45s linear infinite;
         }
       `}</style>
     </>
