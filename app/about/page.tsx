@@ -315,8 +315,8 @@ export default function AboutPage() {
                 <Link href="/onboarding" className="block text-slate-300 hover:text-white transition-colors">
                   Join Community
                 </Link>
-                <Link href="/preparedness/flood" className="block text-slate-300 hover:text-white transition-colors">
-                  Emergency Planning
+                <Link href="/community" className="block text-slate-300 hover:text-white transition-colors">
+                  Community Feed
                 </Link>
               </div>
             </div>
