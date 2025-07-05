@@ -188,8 +188,8 @@ export default function BushfireWizard() {
       missing: missing,
       recommendations:
         missing.length > 0
-          ? "Critical equipment missing - connect with neighbors who have these items"
-          : "Good equipment coverage - offer to help neighbors who need these items",
+          ? "Critical equipment missing - connect with locals who have these items"
+          : "Good equipment coverage - offer to help locals who need these items",
     }
   }
 
@@ -209,7 +209,7 @@ export default function BushfireWizard() {
               "1. Human safety first - never delay evacuation",
               "2. Important documents (insurance, ID, medications)",
               "3. Emergency supplies and water",
-              "4. Help elderly neighbors who may need assistance",
+              "4. Help elderly locals who may need assistance",
             ]
           : [
               "1. Human safety first - never risk lives for animals",
@@ -225,7 +225,7 @@ export default function BushfireWizard() {
       needed: wizardData.communityHelp,
       canOffer: wizardData.equipment.filter((eq) => equipmentOptions.find((opt) => opt.id === eq)?.critical),
       connections: [
-        "Connect with neighbors who have trucks/trailers",
+        "Connect with locals who have trucks/trailers",
         "Identify safe agistment properties",
         "Share contact details with local fire brigade",
         "Join local emergency WhatsApp/Facebook groups",
@@ -644,7 +644,7 @@ export default function BushfireWizard() {
                   },
                   { id: "dam-area", label: "💧 Near dam/water source", description: "Water access, often cleared" },
                   { id: "gravel-area", label: "🪨 Gravel/concrete area", description: "No fuel, hard surfaces" },
-                  { id: "neighbor-safe", label: "🏠 Neighbor's safe area", description: "Arranged safe zone nearby" },
+                  { id: "neighbor-safe", label: "🏠 Local's safe area", description: "Arranged safe zone nearby" },
                   { id: "public-area", label: "🏛️ Public safe area", description: "School, hall, sports ground" },
                 ].map((zone) => (
                   <Button

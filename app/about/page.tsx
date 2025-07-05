@@ -1,305 +1,349 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Users, Shield, MessageCircle, MapPin, Heart, Zap } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import {
+  Users,
+  Shield,
+  Heart,
+  MapPin,
+  MessageCircle,
+  AlertTriangle,
+  TrendingUp,
+  ArrowRight,
+  Mail,
+  Phone,
+  Facebook,
+  Twitter,
+  Instagram,
+} from "lucide-react"
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      {/* Header with clickable logo */}
-      <div className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 bg-teal-600 rounded-full flex items-center justify-center">
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
                 <Users className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">Rural Community Hub</span>
+              <span className="text-xl font-bold text-slate-800">Rural Community Hub</span>
             </Link>
-            <div className="flex items-center space-x-4">
-              <Link href="/login">
-                <Button variant="outline">Sign In</Button>
+
+            <nav className="hidden md:flex items-center gap-6">
+              <Link href="/" className="text-slate-600 hover:text-slate-800 transition-colors">
+                Home
               </Link>
-              <Link href="/onboarding">
-                <Button>Join Community</Button>
+              <Link href="/about" className="text-teal-600 font-semibold">
+                About
               </Link>
-            </div>
+              <Link href="/login" className="text-slate-600 hover:text-slate-800 transition-colors">
+                Login
+              </Link>
+              <Button asChild className="bg-teal-500 hover:bg-teal-600 text-white">
+                <Link href="/onboarding">Join Free</Link>
+              </Button>
+            </nav>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Hero Section */}
-      <div className="relative py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Connecting Rural
-              <span className="text-teal-600 block">Communities</span>
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="mb-8">
+            <Badge className="bg-teal-100 text-teal-700 px-4 py-2 text-sm font-medium mb-6">
+              Connecting Rural Communities
+            </Badge>
+            <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-6">
+              Stronger Together in
+              <span className="text-teal-600"> Rural Australia</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              We're building stronger, more resilient rural communities through connection, preparedness, and mutual
-              support. Because when we stand together, we thrive together.
+            <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Rural Community Hub connects farmers, graziers, and rural families across Australia. We believe that when
+              rural communities support each other, everyone thrives.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-teal-500 hover:bg-teal-600 text-white font-semibold">
               <Link href="/onboarding">
-                <Button size="lg" className="bg-teal-600 hover:bg-teal-700">
-                  Join Our Community
-                </Button>
+                Join Our Community
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <Link href="/community">
-                <Button size="lg" variant="outline">
-                  Explore Features
-                </Button>
-              </Link>
-            </div>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-slate-300 text-slate-700 bg-transparent">
+              <Link href="/preparedness/flood">Try Emergency Planner</Link>
+            </Button>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Mission Section */}
-      <div className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Mission</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Rural communities face unique challenges - from natural disasters to isolation. We're here to bridge those
-              gaps with technology that brings people together.
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Our Mission</h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Building resilient rural communities through connection, preparation, and mutual support
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="h-6 w-6 text-teal-600" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Shield className="h-8 w-8 text-blue-600" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Emergency Preparedness</h3>
-                <p className="text-gray-600">
-                  Custom emergency plans, real-time alerts, and community coordination to keep everyone safe when it
-                  matters most.
+                <h3 className="text-xl font-bold text-slate-800 mb-4">Emergency Preparedness</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Help rural families prepare for floods, bushfires, and other emergencies with personalized plans and
+                  community support networks.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="h-6 w-6 text-blue-600" />
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Users className="h-8 w-8 text-teal-600" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Community Connection</h3>
-                <p className="text-gray-600">
-                  Share knowledge, ask for help, celebrate successes, and build lasting relationships with your
-                  neighbors.
+                <h3 className="text-xl font-bold text-slate-800 mb-4">Community Connection</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Connect with locals in your area, share resources, and build the relationships that make rural
+                  communities strong.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Heart className="h-6 w-6 text-green-600" />
+            <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Heart className="h-8 w-8 text-amber-600" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Mutual Support</h3>
-                <p className="text-gray-600">
-                  From equipment sharing to skill exchange, we make it easy to help each other and strengthen community
-                  bonds.
+                <h3 className="text-xl font-bold text-slate-800 mb-4">Mutual Support</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Share equipment, offer help during tough times, and create a network of support that spans across
+                  rural Australia.
                 </p>
               </CardContent>
             </Card>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Features Section */}
-      <div className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What We Offer</h2>
-            <p className="text-lg text-gray-600">Everything you need to stay connected, prepared, and supported</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">What We Offer</h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Practical tools and connections designed specifically for rural Australian communities
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <MapPin className="h-8 w-8 text-teal-600 mb-3" />
-              <h3 className="font-semibold mb-2">Location-Based Communities</h3>
-              <p className="text-gray-600 text-sm">
-                Connect with neighbors in your specific area, from small towns to entire regions
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <AlertTriangle className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Emergency Planning</h3>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Personalized flood and bushfire preparedness plans for your property and livestock
+                </p>
+              </CardContent>
+            </Card>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <Zap className="h-8 w-8 text-yellow-600 mb-3" />
-              <h3 className="font-semibold mb-2">Emergency Alerts</h3>
-              <p className="text-gray-600 text-sm">
-                Real-time notifications for bushfires, floods, and other critical situations
-              </p>
-            </div>
+            <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                    <MapPin className="h-5 w-5 text-teal-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Local Networks</h3>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Connect with locals in your area, organized by postcode and region
+                </p>
+              </CardContent>
+            </Card>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <Users className="h-8 w-8 text-blue-600 mb-3" />
-              <h3 className="font-semibold mb-2">Community Feed</h3>
-              <p className="text-gray-600 text-sm">
-                Share updates, ask questions, and stay informed about local happenings
-              </p>
-            </div>
+            <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <MessageCircle className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Community Feed</h3>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Share updates, ask for help, and stay connected with your community
+                </p>
+              </CardContent>
+            </Card>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <Shield className="h-8 w-8 text-red-600 mb-3" />
-              <h3 className="font-semibold mb-2">Custom Emergency Plans</h3>
-              <p className="text-gray-600 text-sm">
-                Personalized preparedness plans based on your location and livestock
-              </p>
-            </div>
+            <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Users className="h-5 w-5 text-green-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Resource Sharing</h3>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Share equipment, offer agistment, and coordinate community resources
+                </p>
+              </CardContent>
+            </Card>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <MessageCircle className="h-8 w-8 text-green-600 mb-3" />
-              <h3 className="font-semibold mb-2">Direct Messaging</h3>
-              <p className="text-gray-600 text-sm">Private conversations with community members for sensitive topics</p>
-            </div>
+            <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Shield className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Emergency Alerts</h3>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Real-time emergency notifications and community coordination during crises
+                </p>
+              </CardContent>
+            </Card>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <Heart className="h-8 w-8 text-pink-600 mb-3" />
-              <h3 className="font-semibold mb-2">Resource Sharing</h3>
-              <p className="text-gray-600 text-sm">Coordinate equipment loans, skill sharing, and mutual aid</p>
-            </div>
+            <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-5 w-5 text-red-600" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Member Directory</h3>
+                </div>
+                <p className="text-sm text-slate-600">
+                  Find locals with specific skills, equipment, or services in your area
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Stats Section */}
-      <div className="py-16 bg-teal-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Growing Together</h2>
-            <p className="text-teal-100 text-lg">Join thousands of rural Australians building stronger communities</p>
-          </div>
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-12">Growing Community</h2>
 
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">2,500+</div>
-              <div className="text-teal-100">Active Members</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-teal-600 mb-2">2,400+</div>
+              <div className="text-slate-600 font-medium">Rural Families Connected</div>
             </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">150+</div>
-              <div className="text-teal-100">Communities</div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">850+</div>
+              <div className="text-slate-600 font-medium">Emergency Plans Created</div>
             </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">500+</div>
-              <div className="text-teal-100">Emergency Plans</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-white mb-2">24/7</div>
-              <div className="text-teal-100">Community Support</div>
+            <div className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-amber-600 mb-2">150+</div>
+              <div className="text-slate-600 font-medium">Communities Covered</div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* CTA Section */}
-      <div className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Join Your Community?</h2>
-          <p className="text-lg text-gray-600 mb-8">
-            It takes just a few minutes to get started. Connect with your neighbors, create your emergency plan, and
-            become part of something bigger.
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-teal-500 to-blue-600">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Connect?</h2>
+          <p className="text-xl text-teal-100 mb-8 max-w-2xl mx-auto">
+            Join thousands of rural families who are building stronger, more resilient communities together.
           </p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/onboarding">
-              <Button size="lg" className="bg-teal-600 hover:bg-teal-700">
-                Get Started Today
-              </Button>
-            </Link>
-            <Link href="/">
-              <Button size="lg" variant="outline">
-                Learn More
-              </Button>
-            </Link>
+            <Button asChild size="lg" className="bg-white text-teal-600 hover:bg-slate-50 font-semibold">
+              <Link href="/onboarding">
+                Join Free Today
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-teal-600 bg-transparent"
+            >
+              <Link href="/preparedness/flood">Try Emergency Planner</Link>
+            </Button>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center">
+      <footer className="bg-slate-800 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
                   <Users className="h-5 w-5 text-white" />
                 </div>
-                <span className="font-bold">Rural Community Hub</span>
+                <span className="text-lg font-bold">Rural Community Hub</span>
               </div>
-              <p className="text-gray-400 text-sm">
-                Connecting rural communities across Australia for safety, support, and growth.
+              <p className="text-slate-300 mb-4 max-w-md">
+                Connecting rural communities across Australia for emergency preparedness, resource sharing, and mutual
+                support.
               </p>
+              <div className="flex gap-4">
+                <Facebook className="h-5 w-5 text-slate-400 hover:text-white cursor-pointer" />
+                <Twitter className="h-5 w-5 text-slate-400 hover:text-white cursor-pointer" />
+                <Instagram className="h-5 w-5 text-slate-400 hover:text-white cursor-pointer" />
+              </div>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-3">Community</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="/community" className="hover:text-white">
-                    Community Feed
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/states/nsw" className="hover:text-white">
-                    Find Your Area
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/onboarding" className="hover:text-white">
-                    Join Now
-                  </Link>
-                </li>
-              </ul>
+              <h3 className="font-bold mb-4">Quick Links</h3>
+              <div className="space-y-2">
+                <Link href="/" className="block text-slate-300 hover:text-white transition-colors">
+                  Home
+                </Link>
+                <Link href="/about" className="block text-slate-300 hover:text-white transition-colors">
+                  About
+                </Link>
+                <Link href="/onboarding" className="block text-slate-300 hover:text-white transition-colors">
+                  Join Community
+                </Link>
+                <Link href="/preparedness/flood" className="block text-slate-300 hover:text-white transition-colors">
+                  Emergency Planning
+                </Link>
+              </div>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-3">Preparedness</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="/preparedness/bushfire" className="hover:text-white">
-                    Bushfire Plans
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/preparedness/flood" className="hover:text-white">
-                    Flood Plans
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/profile" className="hover:text-white">
-                    My Plans
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-3">Support</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="/about" className="hover:text-white">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/login" className="hover:text-white">
-                    Sign In
-                  </Link>
-                </li>
-                <li>
-                  <a href="mailto:help@ruralcommunityhub.com" className="hover:text-white">
-                    Contact
-                  </a>
-                </li>
-              </ul>
+              <h3 className="font-bold mb-4">Contact</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-slate-300">
+                  <Mail className="h-4 w-4" />
+                  <span className="text-sm">hello@ruralcommunityhub.com.au</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-300">
+                  <Phone className="h-4 w-4" />
+                  <span className="text-sm">1800 RURAL HUB</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-300">
+                  <MapPin className="h-4 w-4" />
+                  <span className="text-sm">Serving Rural Australia</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 Rural Community Hub. Built for rural Australia with ❤️</p>
+          <div className="border-t border-slate-700 mt-8 pt-8 text-center">
+            <p className="text-slate-400 text-sm">
+              © 2024 Rural Community Hub. Built for rural Australia, by rural Australia.
+            </p>
           </div>
         </div>
       </footer>

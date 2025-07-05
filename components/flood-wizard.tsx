@@ -277,7 +277,7 @@ export default function FloodWizard() {
       recommendations:
         missing.length > 0
           ? `Missing ${missing.length} critical supplies - prioritize getting these`
-          : "Good supply coverage - consider helping neighbors who need supplies",
+          : "Good supply coverage - consider helping locals who need supplies",
       animalSpecific: [
         "🐄 Cattle: 3+ days hay/feed in waterproof storage",
         "🐴 Horses: Halters, lead ropes, first aid kit",
@@ -292,10 +292,10 @@ export default function FloodWizard() {
       needed: wizardData.communityHelp,
       canOffer: wizardData.equipment.filter((eq) => equipmentOptions.find((opt) => opt.id === eq)?.critical),
       connections: [
-        "Connect with neighbors on higher ground for emergency agistment",
+        "Connect with locals on higher ground for emergency agistment",
         "Share contact details with local SES/emergency services",
         "Join local flood warning WhatsApp/Facebook groups",
-        "Identify neighbors with boats for emergency rescue",
+        "Identify locals with boats for emergency rescue",
         "Coordinate with local evacuation centers",
       ],
     }
