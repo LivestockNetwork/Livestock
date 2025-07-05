@@ -73,9 +73,11 @@ export default function RuralCommunityHub() {
                   Community
                 </Button>
               </Link>
-              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
-                How It Works
-              </Button>
+              <Link href="/how-it-works">
+                <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
+                  How It Works
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="sm"
