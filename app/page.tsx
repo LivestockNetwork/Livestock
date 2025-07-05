@@ -12,8 +12,7 @@ export default function RuralLivingAustralia() {
       regions: 12,
       members: "2,400+",
       featured: true,
-      topRegions: "Manning Valley, Hunter Valley, Riverina",
-      description: "Australia's most active rural community",
+      description: "Most active community",
     },
     {
       name: "Queensland",
@@ -21,8 +20,7 @@ export default function RuralLivingAustralia() {
       regions: 8,
       members: "1,800+",
       featured: false,
-      topRegions: "Darling Downs, Wide Bay, Central Queensland",
-      description: "Diverse farming and cattle country",
+      description: "Cattle & farming country",
     },
     {
       name: "Victoria",
@@ -30,8 +28,7 @@ export default function RuralLivingAustralia() {
       regions: 10,
       members: "2,100+",
       featured: false,
-      topRegions: "Goulburn Valley, Western District, Gippsland",
-      description: "Dairy and mixed farming heartland",
+      description: "Dairy & mixed farming",
     },
     {
       name: "Western Australia",
@@ -39,8 +36,7 @@ export default function RuralLivingAustralia() {
       regions: 7,
       members: "1,200+",
       featured: false,
-      topRegions: "Wheatbelt, Great Southern, Pilbara",
-      description: "Vast wheat and livestock regions",
+      description: "Wheat & livestock",
     },
     {
       name: "South Australia",
@@ -48,8 +44,7 @@ export default function RuralLivingAustralia() {
       regions: 6,
       members: "900+",
       featured: false,
-      topRegions: "Barossa Valley, Adelaide Hills, Riverland",
-      description: "Wine country meets grain farming",
+      description: "Wine & grain farming",
     },
     {
       name: "Tasmania",
@@ -57,8 +52,23 @@ export default function RuralLivingAustralia() {
       regions: 4,
       members: "600+",
       featured: false,
-      topRegions: "North West, Central, East Coast",
-      description: "Island farming and forestry",
+      description: "Island farming",
+    },
+    {
+      name: "Northern Territory",
+      code: "NT",
+      regions: 3,
+      members: "350+",
+      featured: false,
+      description: "Cattle stations",
+    },
+    {
+      name: "Australian Capital Territory",
+      code: "ACT",
+      regions: 2,
+      members: "180+",
+      featured: false,
+      description: "Rural communities",
     },
   ]
 
@@ -151,20 +161,20 @@ export default function RuralLivingAustralia() {
           {/* Choose Your State Section */}
           <div className="max-w-6xl mx-auto mb-12">
             <Card
-              className="border-0 shadow-2xl rounded-3xl overflow-hidden p-8"
+              className="border-0 shadow-2xl rounded-3xl overflow-hidden p-6"
               style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
             >
-              <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold text-slate-800 mb-4">Choose Your State</h3>
-                <p className="text-xl text-slate-600">Join your local rural community across Australia</p>
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">Choose Your State</h3>
+                <p className="text-lg text-slate-600">Join your local rural community</p>
               </div>
 
-              {/* State Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Compact State Cards Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {states.map((state, index) => (
                   <Card
                     key={index}
-                    className={`border-0 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer ${
+                    className={`border-0 shadow-lg rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-105 transform cursor-pointer ${
                       state.featured ? "ring-2 ring-amber-400" : ""
                     }`}
                     style={{
@@ -172,69 +182,62 @@ export default function RuralLivingAustralia() {
                     }}
                     onClick={() => (window.location.href = `/states/${state.code.toLowerCase()}`)}
                   >
-                    <CardContent className="p-6 text-center">
+                    <CardContent className="p-4 text-center">
                       {state.featured && (
                         <Badge
-                          className="text-white font-bold mb-4"
+                          className="text-white font-bold text-xs mb-2"
                           style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
                         >
-                          🌟 Most Active
+                          🌟 Featured
                         </Badge>
                       )}
 
                       <div
-                        className="p-4 rounded-2xl mx-auto mb-4 w-fit hover:scale-110 transition-transform duration-300"
+                        className="p-2 rounded-xl mx-auto mb-3 w-fit hover:scale-110 transition-transform duration-300"
                         style={{
                           backgroundColor: state.featured ? "#f59e0b20" : "#7EC9BB20",
                         }}
                       >
-                        <MapPin className="h-8 w-8" style={{ color: state.featured ? "#f59e0b" : "#7EC9BB" }} />
+                        <MapPin className="h-6 w-6" style={{ color: state.featured ? "#f59e0b" : "#7EC9BB" }} />
                       </div>
 
-                      <h3 className="text-xl font-bold text-slate-800 mb-2">{state.name}</h3>
+                      <h3 className="text-lg font-bold text-slate-800 mb-1">{state.name}</h3>
                       <div
-                        className="text-3xl font-bold mb-2"
+                        className="text-2xl font-bold mb-2"
                         style={{ color: state.featured ? "#f59e0b" : "#7EC9BB" }}
                       >
                         {state.members}
                       </div>
-                      <p className="text-sm text-slate-600 mb-3">{state.description}</p>
+                      <p className="text-xs text-slate-600 mb-2">{state.description}</p>
 
-                      <div className="text-xs text-slate-500 mb-4">
-                        <strong>Top Regions:</strong> {state.topRegions}
-                      </div>
-
-                      <div className="flex justify-between items-center text-xs text-slate-500">
-                        <span>{state.regions} Regions</span>
-                        <span>Active Community</span>
-                      </div>
+                      <div className="text-xs text-slate-500">{state.regions} Regions</div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
-              <div className="mt-8 text-center">
-                <p className="text-slate-600 mb-4">
-                  <strong>NSW</strong> leads Australia with the most active rural community platform
+              <div className="mt-6 text-center">
+                <p className="text-slate-600 mb-3">
+                  <strong>NSW</strong> leads with the most active rural community
                 </p>
-                <div className="flex flex-wrap justify-center gap-3">
+                <div className="flex flex-wrap justify-center gap-2">
                   <Badge
-                    className="text-white font-semibold"
+                    className="text-white font-semibold text-xs"
                     style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                   >
-                    47 Active Regions
+                    52 Regions
                   </Badge>
                   <Badge
-                    className="text-white font-semibold"
+                    className="text-white font-semibold text-xs"
                     style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
                   >
                     1,200+ Listings
                   </Badge>
                   <Badge
-                    className="text-white font-semibold"
+                    className="text-white font-semibold text-xs"
                     style={{ background: "linear-gradient(135deg, #3b82f6, #1d4ed8)" }}
                   >
-                    24/7 Community
+                    24/7 Support
                   </Badge>
                 </div>
               </div>
@@ -245,13 +248,13 @@ export default function RuralLivingAustralia() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="text-3xl font-bold" style={{ color: "#7EC9BB" }}>
-                8,100+
+                8,630+
               </div>
               <div className="text-slate-600 font-medium">Rural Members</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold" style={{ color: "#7EC9BB" }}>
-                47
+                52
               </div>
               <div className="text-slate-600 font-medium">Regions</div>
             </div>
