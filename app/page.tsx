@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Users, Handshake, Shield, TrendingUp, Heart, Star, MapPin } from "lucide-react"
+import { Users, Handshake, Shield, TrendingUp, Heart, Star, MapPin, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -340,6 +340,85 @@ export default function RuralLivingAustralia() {
               </CardContent>
             </Card>
           ))}
+        </div>
+      </div>
+
+      {/* Community Preparedness Section */}
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-slate-800 mb-4">Community Preparedness</h2>
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            Get personalized emergency plans for your property, livestock, and family
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Card
+            className="border-0 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+            onClick={() => (window.location.href = "/preparedness/bushfire")}
+          >
+            <CardContent className="p-8 text-center">
+              <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#ef444420" }}>
+                <Flame className="h-8 w-8 text-red-500" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-4">🔥 Bushfire Preparedness</h3>
+              <p className="text-slate-600 mb-6">
+                Get a personalized bushfire plan for your property, livestock, and equipment. Know exactly what to do
+                when fire danger rises.
+              </p>
+              <Badge className="bg-red-100 text-red-700 font-semibold">Most Popular</Badge>
+            </CardContent>
+          </Card>
+
+          <Card
+            className="border-0 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+            onClick={() => (window.location.href = "/preparedness/flood")}
+          >
+            <CardContent className="p-8 text-center">
+              <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#3b82f620" }}>
+                <Shield className="h-8 w-8 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-4">🌊 Flood Preparedness</h3>
+              <p className="text-slate-600 mb-6">
+                Protect your livestock and property from flooding. Evacuation routes, safe zones, and community
+                coordination.
+              </p>
+              <Badge className="bg-blue-100 text-blue-700 font-semibold">Available Now</Badge>
+            </CardContent>
+          </Card>
+
+          <Card
+            className="border-0 shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform opacity-60"
+            style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+          >
+            <CardContent className="p-8 text-center">
+              <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#10b98120" }}>
+                <Users className="h-8 w-8 text-green-500" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-4">🤝 Community Network</h3>
+              <p className="text-slate-600 mb-6">
+                Build your local emergency network. Know who can help and who needs help in your rural community.
+              </p>
+              <Badge className="bg-slate-100 text-slate-500 font-semibold">Coming Soon</Badge>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-center mt-12">
+          <p className="text-slate-600 mb-6">
+            <strong>Don't wait for disaster.</strong> Rural communities that prepare together, survive together.
+          </p>
+          <Button
+            size="lg"
+            className="text-white font-bold px-8 py-4 text-lg rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all"
+            style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
+            onClick={() => (window.location.href = "/preparedness/bushfire")}
+          >
+            <Flame className="h-5 w-5 mr-2" />
+            Start Bushfire Wizard
+          </Button>
         </div>
       </div>
 
