@@ -237,7 +237,7 @@ export default function OnboardingPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Truck className="h-5 w-5 text-green-600" />
-                Tell Us About Your Operation
+                Tell Us About Your Place
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -496,10 +496,6 @@ export default function OnboardingPage() {
         {currentStep === 1 && (
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-slate-800 mb-4">Welcome to Your Rural Community! 🚜</h1>
-            <p className="text-lg text-slate-600 max-w-xl mx-auto">
-              Let's get you connected with locals who understand rural life. This takes just 3 minutes and helps us find
-              your perfect community match.
-            </p>
           </div>
         )}
 
