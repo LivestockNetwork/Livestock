@@ -70,6 +70,7 @@ export default function OnboardingPage() {
     { id: "hobby-farm", label: "🐓 Hobby Farm", description: "Lifestyle property with animals" },
     { id: "cropping", label: "🌾 Cropping", description: "Grain, hay, or other crops" },
     { id: "rural-residential", label: "🏡 Rural Residential", description: "Rural living, small acreage" },
+    { id: "town-resident", label: "🏘️ Town Resident", description: "Live in rural town, support rural community" },
   ]
 
   const livestockOptions = [
