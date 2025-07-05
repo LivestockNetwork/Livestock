@@ -40,7 +40,7 @@ export default function RuralCommunityHub() {
     {
       icon: <AlertTriangle className="h-8 w-8" />,
       problem: "When bushfire threatens, you don't know who has trucks to help evacuate livestock",
-      solution: "Connect with neighbors who have transport before you need it",
+      solution: "Connect with locals who have transport before you need it",
     },
     {
       icon: <Users className="h-8 w-8" />,
@@ -57,7 +57,7 @@ export default function RuralCommunityHub() {
   const testimonials = [
     {
       quote:
-        "During the floods, I found 3 neighbors with boats who could help evacuate my horses. Saved my animals' lives.",
+        "During the floods, I found 3 locals with boats who could help evacuate my horses. Saved my animals' lives.",
       author: "Sarah M.",
       location: "Manning Valley, NSW",
       situation: "Flood Emergency",
@@ -71,7 +71,7 @@ export default function RuralCommunityHub() {
     },
     {
       quote:
-        "My neighbor broke his leg during calving season. The community rallied - 5 people helped with his cattle for 2 weeks.",
+        "My local community member broke his leg during calving season. The community rallied - 5 people helped with his cattle for 2 weeks.",
       author: "Lisa K.",
       location: "Riverina, NSW",
       situation: "Community Support",
@@ -110,32 +110,28 @@ export default function RuralCommunityHub() {
           </Badge>
 
           {/* Clear Problem Statement */}
-          <h1 className="text-4xl md:text-6xl font-bold mb-8 text-slate-800 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold mb-8 text-black leading-tight">
             When disaster strikes our home,
-            <span className="block mt-2" style={{ color: "#ef4444" }}>
-              who do we call?
-            </span>
+            <span className="block mt-2 text-black">who do we call?</span>
           </h1>
 
           {/* Clear Solution */}
           <div className="max-w-4xl mx-auto mb-12">
-            <p className="text-xl md:text-2xl text-slate-700 mb-4 leading-relaxed">
+            <p className="text-xl md:text-2xl text-black mb-4 leading-relaxed">
               <strong>Rural people don't wait for help - they ARE the help.</strong>
             </p>
 
-            <p className="text-2xl md:text-3xl font-bold text-slate-800 mb-6" style={{ color: "#ef4444" }}>
-              But first, we need to find each other.
-            </p>
+            <p className="text-2xl md:text-3xl font-bold text-black mb-6">But first, we need to find each other.</p>
 
             <div className="p-6 bg-white/90 rounded-2xl shadow-xl border-l-4 border-amber-400 mb-8">
-              <p className="text-lg text-slate-800 font-semibold">
-                💔 "We had no way to know who needed help or who could help during the floods."
+              <p className="text-lg text-black font-semibold">
+                💔 "We had no way of knowing who needed help or who could have helped us during the floods."
               </p>
-              <p className="text-slate-600 mt-2">- NSW farmer, January 2025</p>
+              <p className="text-black mt-2">- NSW farmer, January 2025</p>
             </div>
 
-            <p className="text-xl text-slate-600 mb-8">
-              Connect with rural neighbors <strong>before</strong> you need them.
+            <p className="text-xl text-black mb-8">
+              Connect with members of your local community <strong>before</strong> you need them.
               <br />
               Share transport, find agistment, coordinate emergency help.
             </p>
@@ -154,7 +150,7 @@ export default function RuralCommunityHub() {
               <ArrowRight className="h-6 w-6 ml-3" />
             </Button>
 
-            <p className="text-slate-600">
+            <p className="text-black">
               <strong>8,630+ rural families</strong> already connected across Australia
             </p>
           </div>
@@ -164,8 +160,8 @@ export default function RuralCommunityHub() {
       {/* Problem/Solution Section */}
       <div className="max-w-7xl mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-slate-800 mb-6">These Problems Sound Familiar?</h2>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-black mb-6">These Problems Sound Familiar?</h2>
+          <p className="text-xl text-black max-w-3xl mx-auto">
             Whether you live on a 1000-acre station or in town with your pet horses, dogs, and cats -
             <strong>every animal owner needs a plan and community support.</strong>
             You're not alone, but you might be isolated when disaster strikes.
@@ -186,12 +182,12 @@ export default function RuralCommunityHub() {
 
                 <div className="mb-6">
                   <h3 className="text-lg font-bold text-red-700 mb-4">The Problem:</h3>
-                  <p className="text-slate-700 leading-relaxed">{item.problem}</p>
+                  <p className="text-black leading-relaxed">{item.problem}</p>
                 </div>
 
                 <div className="pt-4 border-t border-slate-200">
                   <h4 className="text-lg font-bold text-green-700 mb-3">The Solution:</h4>
-                  <p className="text-slate-700 leading-relaxed">{item.solution}</p>
+                  <p className="text-black leading-relaxed">{item.solution}</p>
                 </div>
               </CardContent>
             </Card>
@@ -199,7 +195,7 @@ export default function RuralCommunityHub() {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-xl text-slate-700 mb-6">
+          <p className="text-xl text-black mb-6">
             <strong>Don't wait for the next emergency.</strong> Build your rural network today.
           </p>
           <Button
@@ -217,8 +213,8 @@ export default function RuralCommunityHub() {
       <div className="bg-slate-50 py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-800 mb-6">Get Prepared. Get Connected.</h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold text-black mb-6">Get Prepared. Get Connected.</h2>
+            <p className="text-xl text-black max-w-3xl mx-auto">
               Free emergency planning tools designed specifically for rural properties with livestock.
             </p>
           </div>
@@ -233,8 +229,8 @@ export default function RuralCommunityHub() {
                 <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#ef444420" }}>
                   <Flame className="h-10 w-10 text-red-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">🔥 Bushfire Plan</h3>
-                <p className="text-slate-600 mb-6 leading-relaxed">
+                <h3 className="text-2xl font-bold text-black mb-4">🔥 Bushfire Plan</h3>
+                <p className="text-black mb-6 leading-relaxed">
                   Get a personalized bushfire evacuation plan for your livestock and property. Know exactly what to do
                   when fire danger rises.
                 </p>
@@ -251,8 +247,8 @@ export default function RuralCommunityHub() {
                 <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#3b82f620" }}>
                   <Droplets className="h-10 w-10 text-blue-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">🌊 Flood Plan</h3>
-                <p className="text-slate-600 mb-6 leading-relaxed">
+                <h3 className="text-2xl font-bold text-black mb-4">🌊 Flood Plan</h3>
+                <p className="text-black mb-6 leading-relaxed">
                   Protect your livestock from flooding. Evacuation routes, safe zones, and community coordination when
                   water rises.
                 </p>
@@ -262,7 +258,7 @@ export default function RuralCommunityHub() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-slate-600 mb-6">
+            <p className="text-black mb-6">
               <strong>Free tools used by 8,630+ rural families</strong> across Australia
             </p>
             <Button
@@ -281,8 +277,8 @@ export default function RuralCommunityHub() {
       {/* Real Stories Section */}
       <div className="max-w-7xl mx-auto px-4 py-20">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-slate-800 mb-6">Real Stories. Real Help.</h2>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-black mb-6">Real Stories. Real Help.</h2>
+          <p className="text-xl text-black max-w-3xl mx-auto">
             These rural families found the help they needed through their community connections.
           </p>
         </div>
@@ -301,20 +297,17 @@ export default function RuralCommunityHub() {
                   ))}
                 </div>
 
-                <div className="p-6 bg-white/90 rounded-2xl shadow-xl border-l-4 border-amber-400 mb-8">
-                  <p className="text-lg text-slate-800 font-semibold">
-                    💔 "We had no way of knowing who needed help or who could have helped us during the floods."
-                  </p>
-                  <p className="text-slate-600 mt-2">- NSW farmer, January 2025</p>
-                </div>
+                <blockquote className="text-black mb-6 italic text-lg leading-relaxed">
+                  "{testimonial.quote}"
+                </blockquote>
 
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-full" style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}>
                     <Users className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <div className="font-bold text-slate-800">{testimonial.author}</div>
-                    <div className="text-sm text-slate-600">{testimonial.location}</div>
+                    <div className="font-bold text-black">{testimonial.author}</div>
+                    <div className="text-sm text-black">{testimonial.location}</div>
                     <Badge className="bg-green-100 text-green-700 text-xs mt-1">{testimonial.situation}</Badge>
                   </div>
                 </div>
@@ -335,7 +328,7 @@ export default function RuralCommunityHub() {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 py-20 text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Connect with Your Rural Neighbors?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Connect with Your Local Rural Community?</h2>
           <p className="text-xl mb-8 opacity-90">
             Join 8,630+ rural families building stronger, more resilient communities across Australia.
           </p>
