@@ -250,13 +250,23 @@ export default function RuralLivingAustralia() {
                       connected or cut off?
                     </p>
 
-                    <Button
-                      size="lg"
-                      className="bg-white text-red-600 hover:bg-gray-100 font-bold px-8 py-4 text-lg rounded-xl shadow-xl"
-                    >
-                      <Shield className="h-5 w-5 mr-2" />
-                      Don't Wait - Connect Now
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <Button
+                        size="lg"
+                        className="bg-white text-red-600 hover:bg-gray-100 font-bold px-6 py-4 text-base rounded-xl shadow-xl"
+                        onClick={() => (window.location.href = "/onboarding")}
+                      >
+                        <Shield className="h-5 w-5 mr-2" />
+                        Join Your Community Now
+                      </Button>
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="border-2 border-white text-white hover:bg-white/10 font-bold px-6 py-4 text-base rounded-xl bg-transparent"
+                      >
+                        Learn More About Safety
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="relative">
@@ -305,9 +315,9 @@ export default function RuralLivingAustralia() {
 
                   <div className="text-center mt-8">
                     <p className="text-lg font-semibold" style={{ color: "#fbbf24" }}>
-                      🚀 "Thunderbirds Are Go!" - But for Rural Communities
+                      🚀 Build Your Network Today. Be Ready for Tomorrow.
                     </p>
-                    <p className="text-sm opacity-80 mt-2">Build your network today. Be ready for tomorrow.</p>
+                    <p className="text-sm opacity-80 mt-2">Every connected community is a safer community.</p>
                   </div>
                 </div>
               </CardContent>
