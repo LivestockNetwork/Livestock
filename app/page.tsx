@@ -45,6 +45,44 @@ export default function RuralCommunityHub() {
       className="min-h-screen"
       style={{ background: "linear-gradient(135deg, #f8fafc 0%, #e8f5e8 50%, #f0f8ff 100%)" }}
     >
+      {/* Header Navigation */}
+      <div className="bg-white shadow-sm border-b relative z-40">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
+                <Users className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-slate-800">Rural Community Hub</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
+                About
+              </Button>
+              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
+                How It Works
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
+              >
+                Login
+              </Button>
+              <Button
+                size="sm"
+                className="text-white font-semibold"
+                style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
+                onClick={() => (window.location.href = "/onboarding")}
+              >
+                Join Free
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Emergency Ticker */}
       <EmergencyTicker />
 
