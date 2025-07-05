@@ -59,10 +59,12 @@ export default function LoginPage() {
             className="p-6 text-white text-center"
             style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
           >
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="h-8 w-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold mb-2">Welcome Back!</h2>
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
+                <Users className="h-5 w-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-slate-800">Rural Community Hub</span>
+            </Link>
             <p className="opacity-90">Sign in to your rural community</p>
           </div>
 

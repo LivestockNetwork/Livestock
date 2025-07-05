@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ArrowRight, ArrowLeft, Users, Heart, CheckCircle, Phone, Mail } from "lucide-react"
+import Link from "next/link"
 
 interface ProfileData {
   propertyDetails: {
@@ -265,6 +266,15 @@ export default function ProfileSetup() {
       className="min-h-screen py-8"
       style={{ background: "linear-gradient(135deg, #f8fafc 0%, #e8f5e8 50%, #f0f8ff 100%)" }}
     >
+      {/* Header with clickable logo */}
+      <div className="absolute top-4 left-4 z-10">
+        <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors">
+          <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center">
+            <Users className="h-4 w-4 text-white" />
+          </div>
+          <span className="font-bold">Rural Community Hub</span>
+        </Link>
+      </div>
       <div className="max-w-3xl mx-auto p-6">
         <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
           <div className="p-6 text-white" style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}>

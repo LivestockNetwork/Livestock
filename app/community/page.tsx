@@ -22,6 +22,7 @@ import {
   Settings,
 } from "lucide-react"
 import EmergencyTicker from "@/components/emergency-ticker"
+import Link from "next/link"
 
 interface CommunityPost {
   id: string
@@ -263,6 +264,15 @@ export default function CommunityFeed() {
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors mr-4"
+              >
+                <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center">
+                  <Users className="h-4 w-4 text-white" />
+                </div>
+                <span className="font-bold text-sm">Rural Community Hub</span>
+              </Link>
               <div>
                 <h1 className="text-2xl font-bold text-slate-800">Manning Valley Community</h1>
                 <p className="text-slate-600">450+ active members • 23 online now</p>

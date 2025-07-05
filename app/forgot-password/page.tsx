@@ -49,6 +49,15 @@ export default function ForgotPasswordPage() {
         className="min-h-screen flex items-center justify-center"
         style={{ background: "linear-gradient(135deg, #f8fafc 0%, #e8f5e8 50%, #f0f8ff 100%)" }}
       >
+        {/* Header with clickable logo */}
+        <div className="absolute top-4 left-4 z-10">
+          <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors">
+            <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center">
+              <Users className="h-4 w-4 text-white" />
+            </div>
+            <span className="font-bold">Rural Community Hub</span>
+          </Link>
+        </div>
         <div className="w-full max-w-md p-6">
           <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
             <div
@@ -105,6 +114,15 @@ export default function ForgotPasswordPage() {
       className="min-h-screen flex items-center justify-center"
       style={{ background: "linear-gradient(135deg, #f8fafc 0%, #e8f5e8 50%, #f0f8ff 100%)" }}
     >
+      {/* Header with clickable logo */}
+      <div className="absolute top-4 left-4 z-10">
+        <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors">
+          <div className="w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center">
+            <Users className="h-4 w-4 text-white" />
+          </div>
+          <span className="font-bold">Rural Community Hub</span>
+        </Link>
+      </div>
       <div className="w-full max-w-md p-6">
         <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
           <div

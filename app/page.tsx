@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import VideoUploadModal from "@/components/video-upload-modal"
 import EmergencyTicker from "@/components/emergency-ticker"
+import Link from "next/link"
 
 export default function RuralCommunityHub() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
@@ -53,10 +54,12 @@ export default function RuralCommunityHub() {
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
-                <Users className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-slate-800">Rural Community Hub</span>
+              <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
+                  <Users className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-xl font-bold text-slate-800">Rural Community Hub</span>
+              </Link>
             </div>
 
             <div className="flex items-center gap-3">
