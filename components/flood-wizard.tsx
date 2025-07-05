@@ -570,7 +570,7 @@ export default function FloodWizard() {
                 style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 onClick={() => (window.location.href = "/community")}
               >
-                Connect with Neighbors
+                Connect with Locals
               </Button>
             </div>
           </CardContent>
@@ -639,7 +639,7 @@ export default function FloodWizard() {
                               : "bg-green-100 text-green-700"
                         }`}
                       >
-                        {location.risk} risk
+                        {location.risk}
                       </Badge>
                     </div>
                   </Button>

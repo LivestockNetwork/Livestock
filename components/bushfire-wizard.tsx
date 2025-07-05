@@ -415,7 +415,7 @@ export default function BushfireWizard() {
                 style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 onClick={() => (window.location.href = "/community")}
               >
-                Connect with Neighbors
+                Connect with Locals
               </Button>
             </div>
           </CardContent>
