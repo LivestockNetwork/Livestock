@@ -111,18 +111,20 @@ export default function RuralCommunityHub() {
 
           {/* Clear Problem Statement */}
           <h1 className="text-4xl md:text-6xl font-bold mb-8 text-slate-800 leading-tight">
-            When disaster strikes your home,
+            When disaster strikes our home,
             <span className="block mt-2" style={{ color: "#ef4444" }}>
-              who do you call?
+              who do we call?
             </span>
           </h1>
 
           {/* Clear Solution */}
           <div className="max-w-4xl mx-auto mb-12">
-            <p className="text-xl md:text-2xl text-slate-700 mb-6 leading-relaxed">
+            <p className="text-xl md:text-2xl text-slate-700 mb-4 leading-relaxed">
               <strong>Rural people don't wait for help - they ARE the help.</strong>
-              <br />
-              But first, you need to find each other.
+            </p>
+
+            <p className="text-2xl md:text-3xl font-bold text-slate-800 mb-6" style={{ color: "#ef4444" }}>
+              But first, we need to find each other.
             </p>
 
             <div className="p-6 bg-white/90 rounded-2xl shadow-xl border-l-4 border-amber-400 mb-8">
@@ -299,9 +301,12 @@ export default function RuralCommunityHub() {
                   ))}
                 </div>
 
-                <blockquote className="text-slate-700 mb-6 italic text-lg leading-relaxed">
-                  "{testimonial.quote}"
-                </blockquote>
+                <div className="p-6 bg-white/90 rounded-2xl shadow-xl border-l-4 border-amber-400 mb-8">
+                  <p className="text-lg text-slate-800 font-semibold">
+                    💔 "We had no way of knowing who needed help or who could have helped us during the floods."
+                  </p>
+                  <p className="text-slate-600 mt-2">- NSW farmer, January 2025</p>
+                </div>
 
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-full" style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}>
