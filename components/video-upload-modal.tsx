@@ -21,6 +21,8 @@ export default function VideoUploadModal({ isOpen, onClose, onVideoPost }: Video
   const [uploadedVideo, setUploadedVideo] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [location, setLocation] = useState("Manning Valley, NSW")
+  const [showLocationPicker, setShowLocationPicker] = useState(false)
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -33,6 +35,21 @@ export default function VideoUploadModal({ isOpen, onClose, onVideoPost }: Video
     { id: "equipment", label: "🚜 Equipment Demo", color: "blue" },
     { id: "farm-update", label: "🌾 Farm Update", color: "yellow" },
     { id: "need-help", label: "🚨 Need Help", color: "red" },
+  ]
+
+  const locations = [
+    "Manning Valley, NSW",
+    "Hunter Valley, NSW",
+    "Riverina, NSW",
+    "Central West, NSW",
+    "New England, NSW",
+    "South Coast, NSW",
+    "Darling Downs, QLD",
+    "Wide Bay, QLD",
+    "Goulburn Valley, VIC",
+    "Western District, VIC",
+    "Wheatbelt, WA",
+    "Great Southern, WA",
   ]
 
   const startRecording = async () => {
@@ -123,7 +140,7 @@ export default function VideoUploadModal({ isOpen, onClose, onVideoPost }: Video
       caption: caption.trim(),
       privacy,
       author: "You",
-      location: "Manning Valley, NSW",
+      location: location,
       timestamp: new Date(),
       likes: 0,
       comments: 0,
@@ -144,6 +161,7 @@ export default function VideoUploadModal({ isOpen, onClose, onVideoPost }: Video
     setIsRecording(false)
     setIsUploading(false)
     setUploadProgress(0)
+    setShowLocationPicker(false)
     onClose()
   }
 
@@ -327,13 +345,43 @@ export default function VideoUploadModal({ isOpen, onClose, onVideoPost }: Video
           {/* Location */}
           <div className="mb-6">
             <label className="block text-sm font-bold text-slate-700 mb-2">Location</label>
-            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl">
-              <MapPin className="h-4 w-4 text-slate-500" />
-              <span className="text-slate-600">Manning Valley, NSW</span>
-              <Button variant="ghost" size="sm" className="text-amber-600 hover:text-amber-700 ml-auto">
-                Change
-              </Button>
-            </div>
+            {!showLocationPicker ? (
+              <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl">
+                <MapPin className="h-4 w-4 text-slate-500" />
+                <span className="text-slate-600">{location}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-amber-600 hover:text-amber-700 ml-auto"
+                  onClick={() => setShowLocationPicker(true)}
+                >
+                  Change
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {locations.map((loc) => (
+                  <button
+                    key={loc}
+                    onClick={() => {
+                      setLocation(loc)
+                      setShowLocationPicker(false)
+                    }}
+                    className="w-full text-left p-2 hover:bg-slate-100 rounded-lg text-slate-700"
+                  >
+                    {loc}
+                  </button>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowLocationPicker(false)}
+                  className="w-full mt-2"
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Privacy Settings */}
