@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, ArrowLeft, MapPin, Users, Heart, CheckCircle, Flame, Droplets } from "lucide-react"
+import { ArrowRight, ArrowLeft, MapPin, Users, Heart, CheckCircle } from "lucide-react"
 
 interface OnboardingData {
   location: {
@@ -14,12 +14,6 @@ interface OnboardingData {
     region: string
   }
   propertyType: string
-  propertySize: string
-  livestock: string[]
-  equipment: string[]
-  canOffer: string[]
-  needHelp: string[]
-  emergencyInterest: string[]
   personalInfo: {
     firstName: string
     lastName: string
@@ -33,18 +27,12 @@ export default function OnboardingPage() {
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     location: { postcode: "", town: "", state: "", region: "" },
     propertyType: "",
-    propertySize: "",
-    livestock: [],
-    equipment: [],
-    canOffer: [],
-    needHelp: [],
-    emergencyInterest: [],
     personalInfo: { firstName: "", lastName: "", email: "", phone: "" },
   })
   const [showWelcome, setShowWelcome] = useState(false)
   const [detectedLocation, setDetectedLocation] = useState<any>(null)
 
-  const totalSteps = 6
+  const totalSteps = 3
 
   // Mock location detection based on postcode
   const detectLocation = (postcode: string) => {
@@ -71,37 +59,6 @@ export default function OnboardingPage() {
     { id: "cropping", label: "🌾 Cropping", description: "Grain, hay, or other crops" },
     { id: "rural-residential", label: "🏡 Rural Residential", description: "Rural living, small acreage" },
     { id: "town-resident", label: "🏘️ Town Resident", description: "Live in rural town, support rural community" },
-  ]
-
-  const livestockOptions = [
-    { id: "cattle", label: "🐄 Cattle" },
-    { id: "horses", label: "🐴 Horses" },
-    { id: "sheep", label: "🐑 Sheep" },
-    { id: "goats", label: "🐐 Goats" },
-    { id: "pigs", label: "🐷 Pigs" },
-    { id: "chickens", label: "🐓 Chickens" },
-    { id: "alpacas", label: "🦙 Alpacas" },
-    { id: "other", label: "🦆 Other" },
-  ]
-
-  const equipmentOptions = [
-    { id: "truck", label: "🚛 Truck/Ute" },
-    { id: "tractor", label: "🚜 Tractor" },
-    { id: "trailer", label: "🚚 Livestock Trailer" },
-    { id: "generator", label: "⚡ Generator" },
-    { id: "pump", label: "💧 Water Pump" },
-    { id: "chainsaw", label: "🪚 Chainsaw" },
-    { id: "welder", label: "🔧 Welder" },
-    { id: "excavator", label: "🏗️ Excavator/Bobcat" },
-  ]
-
-  const helpOptions = [
-    { id: "transport", label: "🚛 Transport & Trucks", description: "Moving livestock, equipment, supplies" },
-    { id: "agistment", label: "🌾 Agistment & Paddocks", description: "Emergency grazing, spelling paddocks" },
-    { id: "equipment", label: "⚡ Equipment Sharing", description: "Generators, pumps, tools, machinery" },
-    { id: "labor", label: "👥 Extra Hands", description: "Help with mustering, fencing, harvest" },
-    { id: "emergency", label: "🚨 Emergency Support", description: "Disaster response, evacuation help" },
-    { id: "knowledge", label: "🧠 Local Knowledge", description: "Weather, markets, best practices" },
   ]
 
   const nextStep = () => {
@@ -137,12 +94,40 @@ export default function OnboardingPage() {
         })
       } else {
         setDetectedLocation(null)
+        // Still allow progression for unknown postcodes
+        setOnboardingData({
+          ...onboardingData,
+          location: {
+            postcode,
+            town: "Your Area",
+            state: "Australia",
+            region: "Rural Community",
+          },
+        })
       }
     }
   }
 
   const completeOnboarding = () => {
     setShowWelcome(true)
+  }
+
+  // Validation functions
+  const isStep1Valid = () => {
+    return onboardingData.location.postcode.length === 4
+  }
+
+  const isStep2Valid = () => {
+    return onboardingData.propertyType !== ""
+  }
+
+  const isStep3Valid = () => {
+    return (
+      onboardingData.personalInfo.firstName.trim() !== "" &&
+      onboardingData.personalInfo.lastName.trim() !== "" &&
+      onboardingData.personalInfo.email.trim() !== "" &&
+      onboardingData.personalInfo.phone.trim() !== ""
+    )
   }
 
   if (showWelcome) {
@@ -201,8 +186,10 @@ export default function OnboardingPage() {
                     3
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-slate-800">Introduce yourself</div>
-                    <div className="text-sm text-slate-600">Share what you can offer and what help you might need</div>
+                    <div className="font-semibold text-slate-800">Complete your profile</div>
+                    <div className="text-sm text-slate-600">
+                      Add more details about what you can offer and need help with
+                    </div>
                   </div>
                 </div>
               </div>
@@ -253,7 +240,7 @@ export default function OnboardingPage() {
               <Users className="h-8 w-8" />
               <div>
                 <h2 className="text-2xl font-bold">Join Your Rural Community</h2>
-                <p className="opacity-90">Connect with your local rural community</p>
+                <p className="opacity-90">Quick 3-step signup - takes less than 2 minutes</p>
               </div>
             </div>
 
@@ -353,217 +340,10 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Step 3: Property Size & Livestock */}
+            {/* Step 3: Personal Information */}
             {currentStep === 3 && (
               <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">Tell us about your setup</h3>
-                <p className="text-slate-600 mb-6">Property size and animals help match you with relevant locals</p>
-
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-3">Property Size</label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {[
-                        { id: "small", label: "Under 5 acres" },
-                        { id: "medium", label: "5-50 acres" },
-                        { id: "large", label: "50+ acres" },
-                      ].map((size) => (
-                        <Button
-                          key={size.id}
-                          variant={onboardingData.propertySize === size.id ? "default" : "outline"}
-                          onClick={() => setOnboardingData({ ...onboardingData, propertySize: size.id })}
-                          className={`p-3 text-sm ${
-                            onboardingData.propertySize === size.id
-                              ? "bg-teal-500 text-white border-teal-500"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                        >
-                          {size.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-3">
-                      What animals do you have? (Select all that apply)
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {livestockOptions.map((animal) => (
-                        <Button
-                          key={animal.id}
-                          variant={onboardingData.livestock.includes(animal.id) ? "default" : "outline"}
-                          onClick={() => {
-                            const newLivestock = onboardingData.livestock.includes(animal.id)
-                              ? onboardingData.livestock.filter((l) => l !== animal.id)
-                              : [...onboardingData.livestock, animal.id]
-                            setOnboardingData({ ...onboardingData, livestock: newLivestock })
-                          }}
-                          className={`p-3 text-sm ${
-                            onboardingData.livestock.includes(animal.id)
-                              ? "bg-teal-500 text-white border-teal-500"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                        >
-                          {animal.label}
-                        </Button>
-                      ))}
-                    </div>
-
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setOnboardingData({ ...onboardingData, livestock: [] })
-                        nextStep()
-                      }}
-                      className="w-full mt-3 border-slate-300 text-slate-700"
-                    >
-                      No animals - just property
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Equipment & What You Can Offer */}
-            {currentStep === 4 && (
-              <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">What can you offer the community?</h3>
-                <p className="text-slate-600 mb-6">
-                  Rural communities work by sharing resources and helping each other
-                </p>
-
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-3">
-                      Equipment & Machinery You Have
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {equipmentOptions.map((equipment) => (
-                        <Button
-                          key={equipment.id}
-                          variant={onboardingData.equipment.includes(equipment.id) ? "default" : "outline"}
-                          onClick={() => {
-                            const newEquipment = onboardingData.equipment.includes(equipment.id)
-                              ? onboardingData.equipment.filter((e) => e !== equipment.id)
-                              : [...onboardingData.equipment, equipment.id]
-                            setOnboardingData({ ...onboardingData, equipment: newEquipment })
-                          }}
-                          className={`p-3 text-sm ${
-                            onboardingData.equipment.includes(equipment.id)
-                              ? "bg-teal-500 text-white border-teal-500"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                        >
-                          {equipment.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-3">
-                      Other Ways You Can Help (Select all that apply)
-                    </label>
-                    <div className="space-y-2">
-                      {[
-                        { id: "agistment", label: "🌾 Emergency agistment/spelling paddocks" },
-                        { id: "transport", label: "🚛 Help with transport/moving livestock" },
-                        { id: "labor", label: "👥 Extra hands for mustering, fencing, etc." },
-                        { id: "knowledge", label: "🧠 Local knowledge & experience" },
-                        { id: "emergency", label: "🚨 Emergency response & coordination" },
-                      ].map((help) => (
-                        <Button
-                          key={help.id}
-                          variant={onboardingData.canOffer.includes(help.id) ? "default" : "outline"}
-                          onClick={() => {
-                            const newOffer = onboardingData.canOffer.includes(help.id)
-                              ? onboardingData.canOffer.filter((o) => o !== help.id)
-                              : [...onboardingData.canOffer, help.id]
-                            setOnboardingData({ ...onboardingData, canOffer: newOffer })
-                          }}
-                          className={`w-full p-3 text-left text-sm ${
-                            onboardingData.canOffer.includes(help.id)
-                              ? "bg-teal-500 text-white border-teal-500"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                        >
-                          {help.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 5: What Help Do You Need */}
-            {currentStep === 5 && (
-              <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">What help might you need?</h3>
-                <p className="text-slate-600 mb-6">We'll connect you with locals who can help with these things</p>
-
-                <div className="space-y-3">
-                  {helpOptions.map((help) => (
-                    <Button
-                      key={help.id}
-                      variant={onboardingData.needHelp.includes(help.id) ? "default" : "outline"}
-                      onClick={() => {
-                        const newNeed = onboardingData.needHelp.includes(help.id)
-                          ? onboardingData.needHelp.filter((n) => n !== help.id)
-                          : [...onboardingData.needHelp, help.id]
-                        setOnboardingData({ ...onboardingData, needHelp: newNeed })
-                      }}
-                      className={`w-full p-4 h-auto text-left ${
-                        onboardingData.needHelp.includes(help.id)
-                          ? "bg-teal-500 text-white border-teal-500"
-                          : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                      }`}
-                    >
-                      <div>
-                        <div className="font-semibold">{help.label}</div>
-                        <div className="text-sm opacity-80">{help.description}</div>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
-
-                <div className="mt-6 p-4 bg-blue-50 rounded-xl">
-                  <h4 className="font-semibold text-blue-800 mb-2">Emergency Planning Interest</h4>
-                  <p className="text-sm text-blue-700 mb-3">Are you interested in our free emergency planning tools?</p>
-                  <div className="flex gap-3">
-                    {[
-                      { id: "bushfire", label: "🔥 Bushfire Planning", icon: Flame },
-                      { id: "flood", label: "🌊 Flood Planning", icon: Droplets },
-                    ].map((emergency) => (
-                      <Button
-                        key={emergency.id}
-                        variant={onboardingData.emergencyInterest.includes(emergency.id) ? "default" : "outline"}
-                        onClick={() => {
-                          const newInterest = onboardingData.emergencyInterest.includes(emergency.id)
-                            ? onboardingData.emergencyInterest.filter((e) => e !== emergency.id)
-                            : [...onboardingData.emergencyInterest, emergency.id]
-                          setOnboardingData({ ...onboardingData, emergencyInterest: newInterest })
-                        }}
-                        className={`flex-1 p-3 text-sm ${
-                          onboardingData.emergencyInterest.includes(emergency.id)
-                            ? "bg-blue-500 text-white border-blue-500"
-                            : "border-blue-300 text-blue-700 hover:bg-blue-50"
-                        }`}
-                      >
-                        <emergency.icon className="h-4 w-4 mr-2" />
-                        {emergency.label}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 6: Personal Information */}
-            {currentStep === 6 && (
-              <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">Almost done! Your contact details</h3>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">Your contact details</h3>
                 <p className="text-slate-600 mb-6">So your local rural community can connect with you</p>
 
                 <div className="space-y-4">
@@ -638,6 +418,10 @@ export default function OnboardingPage() {
                     <strong>Privacy:</strong> Your details are only shared with verified rural community members in your
                     local area. We never sell your information.
                   </p>
+                  <p className="mt-2">
+                    <strong>Next:</strong> After joining, you can add details about livestock, equipment, and what help
+                    you need.
+                  </p>
                 </div>
               </div>
             )}
@@ -657,11 +441,7 @@ export default function OnboardingPage() {
               {currentStep < totalSteps ? (
                 <Button
                   onClick={nextStep}
-                  disabled={
-                    (currentStep === 1 && !onboardingData.location.postcode) ||
-                    (currentStep === 2 && !onboardingData.propertyType) ||
-                    (currentStep === 3 && !onboardingData.propertySize)
-                  }
+                  disabled={(currentStep === 1 && !isStep1Valid()) || (currentStep === 2 && !isStep2Valid())}
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
@@ -671,12 +451,7 @@ export default function OnboardingPage() {
               ) : (
                 <Button
                   onClick={completeOnboarding}
-                  disabled={
-                    !onboardingData.personalInfo.firstName.trim() ||
-                    !onboardingData.personalInfo.lastName.trim() ||
-                    !onboardingData.personalInfo.email.trim() ||
-                    !onboardingData.personalInfo.phone.trim()
-                  }
+                  disabled={!isStep3Valid()}
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
