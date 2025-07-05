@@ -26,7 +26,6 @@ interface OnboardingData {
     email: string
     phone: string
   }
-  communicationPrefs: string[]
 }
 
 export default function OnboardingPage() {
@@ -41,7 +40,6 @@ export default function OnboardingPage() {
     needHelp: [],
     emergencyInterest: [],
     personalInfo: { firstName: "", lastName: "", email: "", phone: "" },
-    communicationPrefs: [],
   })
   const [showWelcome, setShowWelcome] = useState(false)
   const [detectedLocation, setDetectedLocation] = useState<any>(null)
@@ -190,9 +188,9 @@ export default function OnboardingPage() {
                     2
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold text-slate-800">Join your local WhatsApp group</div>
+                    <div className="font-semibold text-slate-800">Access your community platform</div>
                     <div className="text-sm text-slate-600">
-                      Connect instantly with {onboardingData.location.region} rural families
+                      Connect instantly with {onboardingData.location.region} rural community
                     </div>
                   </div>
                 </div>
@@ -254,7 +252,7 @@ export default function OnboardingPage() {
               <Users className="h-8 w-8" />
               <div>
                 <h2 className="text-2xl font-bold">Join Your Rural Community</h2>
-                <p className="opacity-90">Connect with your local rural neighbors</p>
+                <p className="opacity-90">Connect with your local rural community</p>
               </div>
             </div>
 
@@ -358,7 +356,7 @@ export default function OnboardingPage() {
             {currentStep === 3 && (
               <div>
                 <h3 className="text-2xl font-bold text-slate-800 mb-4">Tell us about your setup</h3>
-                <p className="text-slate-600 mb-6">Property size and animals help match you with relevant neighbors</p>
+                <p className="text-slate-600 mb-6">Property size and animals help match you with relevant locals</p>
 
                 <div className="space-y-6">
                   <div>
@@ -499,7 +497,7 @@ export default function OnboardingPage() {
             {currentStep === 5 && (
               <div>
                 <h3 className="text-2xl font-bold text-slate-800 mb-4">What help might you need?</h3>
-                <p className="text-slate-600 mb-6">We'll connect you with neighbors who can help with these things</p>
+                <p className="text-slate-600 mb-6">We'll connect you with locals who can help with these things</p>
 
                 <div className="space-y-3">
                   {helpOptions.map((help) => (
@@ -562,7 +560,7 @@ export default function OnboardingPage() {
             {currentStep === 6 && (
               <div>
                 <h3 className="text-2xl font-bold text-slate-800 mb-4">Almost done! Your contact details</h3>
-                <p className="text-slate-600 mb-6">So your rural neighbors can connect with you</p>
+                <p className="text-slate-600 mb-6">So your local rural community can connect with you</p>
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
@@ -615,7 +613,7 @@ export default function OnboardingPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Phone (Optional)</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Phone</label>
                     <Input
                       type="tel"
                       placeholder="0412 345 678"
@@ -628,38 +626,6 @@ export default function OnboardingPage() {
                       }
                       className="p-3 border-2 border-slate-300 rounded-xl focus:border-teal-400"
                     />
-                  </div>
-
-                  <div className="mt-6">
-                    <label className="block text-sm font-semibold text-slate-700 mb-3">
-                      How would you like to stay connected?
-                    </label>
-                    <div className="space-y-2">
-                      {[
-                        { id: "whatsapp", label: "📱 WhatsApp group (most popular)" },
-                        { id: "email", label: "📧 Email updates" },
-                        { id: "sms", label: "📲 SMS for emergencies only" },
-                        { id: "facebook", label: "📘 Facebook group" },
-                      ].map((pref) => (
-                        <Button
-                          key={pref.id}
-                          variant={onboardingData.communicationPrefs.includes(pref.id) ? "default" : "outline"}
-                          onClick={() => {
-                            const newPrefs = onboardingData.communicationPrefs.includes(pref.id)
-                              ? onboardingData.communicationPrefs.filter((p) => p !== pref.id)
-                              : [...onboardingData.communicationPrefs, pref.id]
-                            setOnboardingData({ ...onboardingData, communicationPrefs: newPrefs })
-                          }}
-                          className={`w-full p-3 text-left text-sm ${
-                            onboardingData.communicationPrefs.includes(pref.id)
-                              ? "bg-teal-500 text-white border-teal-500"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                        >
-                          {pref.label}
-                        </Button>
-                      ))}
-                    </div>
                   </div>
                 </div>
 
@@ -694,7 +660,8 @@ export default function OnboardingPage() {
                     (currentStep === 6 &&
                       (!onboardingData.personalInfo.firstName ||
                         !onboardingData.personalInfo.lastName ||
-                        !onboardingData.personalInfo.email))
+                        !onboardingData.personalInfo.email ||
+                        !onboardingData.personalInfo.phone))
                   }
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
@@ -708,7 +675,8 @@ export default function OnboardingPage() {
                   disabled={
                     !onboardingData.personalInfo.firstName ||
                     !onboardingData.personalInfo.lastName ||
-                    !onboardingData.personalInfo.email
+                    !onboardingData.personalInfo.email ||
+                    !onboardingData.personalInfo.phone
                   }
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
