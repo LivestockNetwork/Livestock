@@ -660,12 +660,7 @@ export default function OnboardingPage() {
                   disabled={
                     (currentStep === 1 && !onboardingData.location.postcode) ||
                     (currentStep === 2 && !onboardingData.propertyType) ||
-                    (currentStep === 3 && !onboardingData.propertySize) ||
-                    (currentStep === 6 &&
-                      (!onboardingData.personalInfo.firstName ||
-                        !onboardingData.personalInfo.lastName ||
-                        !onboardingData.personalInfo.email ||
-                        !onboardingData.personalInfo.phone))
+                    (currentStep === 3 && !onboardingData.propertySize)
                   }
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
@@ -677,10 +672,10 @@ export default function OnboardingPage() {
                 <Button
                   onClick={completeOnboarding}
                   disabled={
-                    !onboardingData.personalInfo.firstName ||
-                    !onboardingData.personalInfo.lastName ||
-                    !onboardingData.personalInfo.email ||
-                    !onboardingData.personalInfo.phone
+                    !onboardingData.personalInfo.firstName.trim() ||
+                    !onboardingData.personalInfo.lastName.trim() ||
+                    !onboardingData.personalInfo.email.trim() ||
+                    !onboardingData.personalInfo.phone.trim()
                   }
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}

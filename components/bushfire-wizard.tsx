@@ -433,9 +433,7 @@ export default function BushfireWizard() {
                 size="lg"
                 className="text-white font-bold"
                 style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                onClick={() => {
-                  window.location.href = "/onboarding"
-                }}
+                onClick={() => (window.location.href = "/community")}
               >
                 Connect with Locals
               </Button>
