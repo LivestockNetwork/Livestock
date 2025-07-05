@@ -164,8 +164,9 @@ export default function RuralCommunityHub() {
           <h2 className="text-4xl font-bold text-black mb-6">These Problems Sound Familiar?</h2>
           <p className="text-xl text-black max-w-3xl mx-auto">
             Whether you live on a 1000-acre station or in town with your pet horses, dogs, and cats -
-            <strong>every animal owner needs a plan and community support.</strong>
-            You're not alone, but you might be isolated when disaster strikes.
+            <strong> every animal owner needs a plan and community support.</strong>
+            You're not alone, and when you have a place like this to get help, you'll never have to face floods,
+            bushfires and other events alone.
           </p>
         </div>
 
