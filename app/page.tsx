@@ -169,21 +169,6 @@ export default function RuralCommunityHub() {
               </CardContent>
             </Card>
           </div>
-
-          <div className="text-center mt-8 sm:mt-12 px-4">
-            <p className="text-black mb-4 sm:mb-6 text-sm sm:text-base">
-              <strong>Free tools used by 8,630+ rural families</strong> across Australia
-            </p>
-            <Button
-              size="lg"
-              className="text-white font-bold px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl shadow-xl w-full sm:w-auto"
-              style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
-              onClick={() => (window.location.href = "/preparedness/bushfire")}
-            >
-              <Flame className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-              Start Emergency Planning
-            </Button>
-          </div>
         </div>
       </div>
 
