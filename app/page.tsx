@@ -63,9 +63,11 @@ export default function RuralCommunityHub() {
             </div>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
-                About
-              </Button>
+              <Link href="/about">
+                <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
+                  About
+                </Button>
+              </Link>
               <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800">
                 How It Works
               </Button>
