@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import VideoUploadModal from "@/components/video-upload-modal"
 import VideoPost from "@/components/video-post"
+import EmergencyTicker from "@/components/emergency-ticker"
 
 export default function RuralLivingAustralia() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
@@ -197,132 +198,8 @@ export default function RuralLivingAustralia() {
 
           {/* Choose Your State Section */}
           {/* Emergency Awareness Section */}
-          <div className="max-w-7xl mx-auto px-4 py-16">
-            <Card
-              className="border-0 shadow-2xl rounded-3xl overflow-hidden"
-              style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
-            >
-              <CardContent className="p-8 md:p-12 text-white">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                  <div>
-                    <Badge className="bg-white/20 text-white font-bold mb-4 px-4 py-2">🚨 HAPPENING NOW</Badge>
-
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">Texas Floods - January 2025</h2>
-
-                    <p className="text-xl mb-6 opacity-90">
-                      Right now, rural communities in Texas are cut off by flooding. Livestock stranded. Roads
-                      impassable. No way to call for help.
-                      <strong> Neighbors can't find neighbors.</strong>
-                    </p>
-
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">72 hrs</div>
-                        <div className="text-sm opacity-80">Communities isolated</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">1000+</div>
-                        <div className="text-sm opacity-80">Livestock at risk</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">Zero</div>
-                        <div className="text-sm opacity-80">Community connection</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold">?</div>
-                        <div className="text-sm opacity-80">Lives lost</div>
-                      </div>
-                    </div>
-
-                    <div className="bg-white/10 rounded-xl p-4 mb-6">
-                      <p className="text-lg font-semibold mb-2">
-                        💔 "We had no way to know who needed help or who could help."
-                      </p>
-                      <p className="text-sm opacity-80">- Texas rancher, January 2025</p>
-                    </div>
-
-                    <h3 className="text-2xl font-bold mb-4" style={{ color: "#fbbf24" }}>
-                      This Could Be YOU
-                    </h3>
-
-                    <p className="text-lg mb-6">
-                      Your farm. Your livestock. Your family. When disaster strikes YOUR community, will you be
-                      connected or cut off?
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <Button
-                        size="lg"
-                        className="bg-white text-red-600 hover:bg-gray-100 font-bold px-6 py-4 text-base rounded-xl shadow-xl"
-                        onClick={() => (window.location.href = "/onboarding")}
-                      >
-                        <Shield className="h-5 w-5 mr-2" />
-                        Join Your Community Now
-                      </Button>
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="border-2 border-white text-white hover:bg-white/10 font-bold px-6 py-4 text-base rounded-xl bg-transparent"
-                      >
-                        Learn More About Safety
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="relative">
-                    <img
-                      src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&h=400&fit=crop&auto=format"
-                      alt="Flood emergency in rural area"
-                      className="w-full h-80 object-cover rounded-2xl shadow-xl"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl" />
-                    <div className="absolute bottom-6 left-6 text-white">
-                      <p className="font-bold text-lg">Rural Texas - January 2025</p>
-                      <p className="text-sm opacity-90">Communities cut off by flooding</p>
-                    </div>
-
-                    {/* Live indicator */}
-                    <div className="absolute top-4 right-4 flex items-center gap-2 bg-red-500 px-3 py-1 rounded-full">
-                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                      <span className="text-white text-xs font-bold">LIVE EMERGENCY</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Recent Disasters Timeline */}
-                <div className="mt-12 pt-8 border-t border-white/20">
-                  <h3 className="text-2xl font-bold mb-6 text-center">
-                    Rural Disasters Don't Wait - Neither Should You
-                  </h3>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="text-center">
-                      <div className="text-lg font-bold mb-2">January 2025</div>
-                      <div className="text-sm opacity-80">Texas Floods</div>
-                      <div className="text-xs opacity-60 mt-1">Communities isolated 72+ hours</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-bold mb-2">December 2024</div>
-                      <div className="text-sm opacity-80">Australian Bushfires</div>
-                      <div className="text-xs opacity-60 mt-1">Rural families evacuated</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-bold mb-2">Next Time?</div>
-                      <div className="text-sm opacity-80">YOUR Community</div>
-                      <div className="text-xs opacity-60 mt-1">Will you be ready?</div>
-                    </div>
-                  </div>
-
-                  <div className="text-center mt-8">
-                    <p className="text-lg font-semibold" style={{ color: "#fbbf24" }}>
-                      🚀 Build Your Network Today. Be Ready for Tomorrow.
-                    </p>
-                    <p className="text-sm opacity-80 mt-2">Every connected community is a safer community.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Emergency Ticker - Always Visible */}
+          <EmergencyTicker />
           <div className="max-w-6xl mx-auto mb-12">
             <Card
               className="border-0 shadow-2xl rounded-3xl overflow-hidden p-6"
