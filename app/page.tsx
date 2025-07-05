@@ -45,8 +45,11 @@ export default function RuralCommunityHub() {
       className="min-h-screen"
       style={{ background: "linear-gradient(135deg, #f8fafc 0%, #e8f5e8 50%, #f0f8ff 100%)" }}
     >
+      {/* Emergency Ticker */}
+      <EmergencyTicker />
+
       {/* Header Navigation */}
-      <div className="bg-white shadow-sm border-b relative z-40">
+      <div className="bg-white shadow-sm border-b relative z-30">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -82,9 +85,6 @@ export default function RuralCommunityHub() {
           </div>
         </div>
       </div>
-
-      {/* Emergency Ticker */}
-      <EmergencyTicker />
 
       {/* Hero Section */}
       <div className="relative overflow-hidden">
