@@ -70,6 +70,7 @@ export default function RuralCommunityHub() {
                 variant="outline"
                 size="sm"
                 className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
+                onClick={() => (window.location.href = "/login")}
               >
                 Login
               </Button>
