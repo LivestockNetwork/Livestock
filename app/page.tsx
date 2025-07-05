@@ -110,24 +110,25 @@ export default function RuralCommunityHub() {
           </Badge>
 
           {/* Clear Problem Statement */}
-          <h1 className="text-4xl md:text-6xl font-bold mb-8 text-black leading-tight">
+          <h1 className="text-4xl font-bold mb-8 text-black leading-tight">
             When disaster strikes our home,
             <span className="block mt-2 text-black">who do we call?</span>
           </h1>
 
           {/* Clear Solution */}
           <div className="max-w-4xl mx-auto mb-12">
-            <p className="text-xl md:text-2xl text-black mb-4 leading-relaxed">
+            <p className="text-xl text-black mb-4 leading-relaxed">
               <strong>Rural people don't wait for help - they ARE the help.</strong>
             </p>
 
-            <p className="text-2xl md:text-3xl font-bold text-black mb-6">But first, we need to find each other.</p>
+            <p className="text-xl font-bold text-black mb-6">But first, we need to find each other.</p>
 
             <div className="p-6 bg-white/90 rounded-2xl shadow-xl border-l-4 border-amber-400 mb-8">
               <p className="text-lg text-black font-semibold">
-                💔 "We had no way of knowing who needed help or who could have helped us during the floods."
+                💔 "We had no way of knowing who needed help or who could have helped us during the floods.{" "}
+                <strong>But this app will make such a difference.</strong>"
               </p>
-              <p className="text-black mt-2">- NSW farmer, January 2025</p>
+              <p className="text-lg text-black mt-2">- NSW farmer, January 2025</p>
             </div>
 
             <p className="text-xl text-black mb-8">
@@ -328,7 +329,7 @@ export default function RuralCommunityHub() {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 py-20 text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Connect with Your Local Rural Community?</h2>
+          <h2 className="text-4xl font-bold mb-6">Ready to Connect with Your Local Rural Community?</h2>
           <p className="text-xl mb-8 opacity-90">
             Join 8,630+ rural families building stronger, more resilient communities across Australia.
           </p>
