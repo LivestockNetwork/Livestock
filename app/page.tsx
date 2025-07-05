@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Users, Shield, ArrowRight, Heart, Star, AlertTriangle, Flame, Droplets } from "lucide-react"
+import { Users, ArrowRight, Heart, Star, Flame, Droplets } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -35,24 +35,6 @@ export default function RuralCommunityHub() {
       isBusinessPost: false,
     },
   ])
-
-  const problems = [
-    {
-      icon: <AlertTriangle className="h-8 w-8" />,
-      problem: "When bushfire threatens, you don't know who has trucks to help evacuate livestock",
-      solution: "Connect with locals who have transport before you need it",
-    },
-    {
-      icon: <Users className="h-8 w-8" />,
-      problem: "You need emergency agistment but don't know who has spare paddocks",
-      solution: "Find safe paddocks and build relationships with nearby farmers",
-    },
-    {
-      icon: <Shield className="h-8 w-8" />,
-      problem: "Floods cut you off and you have no way to coordinate help",
-      solution: "Join your local rural emergency network before disaster strikes",
-    },
-  ]
 
   const testimonials = [
     {
@@ -90,7 +72,7 @@ export default function RuralCommunityHub() {
       {/* Emergency Ticker */}
       <EmergencyTicker />
 
-      {/* Hero Section - Completely Redesigned */}
+      {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img
@@ -100,143 +82,93 @@ export default function RuralCommunityHub() {
           />
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 py-20 text-center">
-          {/* New Clear Brand Name */}
+        <div className="relative max-w-6xl mx-auto px-4 py-12 sm:py-20 text-center">
+          {/* Brand Badge */}
           <Badge
-            className="text-white font-semibold px-6 py-3 text-base mb-8"
+            className="text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base mb-6 sm:mb-8"
             style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
           >
             🇦🇺 Rural Community Hub • Connecting Rural Australia
           </Badge>
 
-          {/* Clear Problem Statement */}
-          <h1 className="text-4xl font-bold mb-8 text-black leading-tight">
+          {/* Main Heading */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 text-black leading-tight px-2">
             When disaster strikes our home,
             <span className="block mt-2 text-black">who do we call?</span>
           </h1>
 
-          {/* Clear Solution */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <p className="text-xl text-black mb-4 leading-relaxed">
+          {/* Content */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12 px-4">
+            <p className="text-lg sm:text-xl text-black mb-4 leading-relaxed">
               <strong>Rural people don't wait for help - they ARE the help.</strong>
             </p>
 
-            <p className="text-xl font-bold text-black mb-6">But first, we need to find each other.</p>
+            <p className="text-lg sm:text-xl font-bold text-black mb-6">But first, we need to find each other.</p>
 
-            <div className="p-6 bg-white/90 rounded-2xl shadow-xl border-l-4 border-amber-400 mb-8">
-              <p className="text-lg text-black font-semibold">
+            <div className="p-4 sm:p-6 bg-white/90 rounded-2xl shadow-xl border-l-4 border-amber-400 mb-6 sm:mb-8 text-left">
+              <p className="text-base sm:text-lg text-black font-semibold">
                 💔 "We had no way of knowing who needed help or who could have helped us during the floods.{" "}
                 <strong>But this app will make such a difference.</strong>"
               </p>
-              <p className="text-lg text-black mt-2">- NSW farmer, January 2025</p>
+              <p className="text-base sm:text-lg text-black mt-2">- NSW farmer, January 2025</p>
             </div>
 
-            <p className="text-xl text-black mb-8">
+            <p className="text-lg sm:text-xl text-black mb-6 sm:mb-8 leading-relaxed">
               Connect with members of your local community <strong>before</strong> you need them.
-              <br />
+              <br className="hidden sm:block" />
               Share transport, find agistment, coordinate emergency help.
             </p>
           </div>
 
-          {/* Single Clear Call to Action */}
-          <div className="space-y-4">
+          {/* Call to Action */}
+          <div className="space-y-4 px-4">
             <Button
               size="lg"
-              className="text-white font-bold px-12 py-6 text-xl rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all"
+              className="text-white font-bold px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all w-full sm:w-auto"
               style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
               onClick={() => (window.location.href = "/onboarding")}
             >
-              <Users className="h-6 w-6 mr-3" />
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
               Find My Rural Community
-              <ArrowRight className="h-6 w-6 ml-3" />
+              <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 ml-2 sm:ml-3" />
             </Button>
 
-            <p className="text-black">
+            <p className="text-black text-sm sm:text-base">
               <strong>8,630+ rural families</strong> already connected across Australia
             </p>
           </div>
         </div>
       </div>
 
-      {/* Problem/Solution Section */}
-      <div className="max-w-7xl mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-black mb-6">These Problems Sound Familiar?</h2>
-          <p className="text-xl text-black max-w-3xl mx-auto">
-            Whether you live on a 1000-acre station or in town with your pet horses, dogs, and cats -
-            <strong> every animal owner needs a plan and community support.</strong>
-            You're not alone, and when you have a place like this to get help, you'll never have to face floods,
-            bushfires and other events alone.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {problems.map((item, index) => (
-            <Card
-              key={index}
-              className="border-0 shadow-xl rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-300"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-            >
-              <CardContent className="p-8 text-center">
-                <div className="p-4 rounded-2xl mx-auto mb-6 w-fit bg-red-50">
-                  <div className="text-red-500">{item.icon}</div>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold text-red-700 mb-4">The Problem:</h3>
-                  <p className="text-black leading-relaxed">{item.problem}</p>
-                </div>
-
-                <div className="pt-4 border-t border-slate-200">
-                  <h4 className="text-lg font-bold text-green-700 mb-3">The Solution:</h4>
-                  <p className="text-black leading-relaxed">{item.solution}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <p className="text-xl text-black mb-6">
-            <strong>Don't wait for the next emergency.</strong> Build your rural network today.
-          </p>
-          <Button
-            size="lg"
-            className="text-white font-bold px-8 py-4 text-lg rounded-xl shadow-xl"
-            style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-            onClick={() => (window.location.href = "/onboarding")}
-          >
-            Start Connecting Now
-          </Button>
-        </div>
-      </div>
-
       {/* Emergency Preparedness Section */}
-      <div className="bg-slate-50 py-20">
+      <div className="bg-slate-50 py-12 sm:py-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-black mb-6">Get Prepared. Get Connected.</h2>
-            <p className="text-xl text-black max-w-3xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4 sm:mb-6">Get Prepared. Get Connected.</h2>
+            <p className="text-lg sm:text-xl text-black max-w-3xl mx-auto px-4">
               Free emergency planning tools designed specifically for rural properties with livestock.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
             <Card
               className="border-0 shadow-xl rounded-3xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer"
               style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
               onClick={() => (window.location.href = "/preparedness/bushfire")}
             >
-              <CardContent className="p-8 text-center">
-                <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#ef444420" }}>
-                  <Flame className="h-10 w-10 text-red-500" />
+              <CardContent className="p-6 sm:p-8 text-center">
+                <div
+                  className="p-3 sm:p-4 rounded-2xl mx-auto mb-4 sm:mb-6 w-fit"
+                  style={{ backgroundColor: "#ef444420" }}
+                >
+                  <Flame className="h-8 w-8 sm:h-10 sm:w-10 text-red-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-black mb-4">🔥 Bushfire Plan</h3>
-                <p className="text-black mb-6 leading-relaxed">
+                <h3 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">🔥 Bushfire Plan</h3>
+                <p className="text-black mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                   Get a personalized bushfire evacuation plan for your livestock and property. Know exactly what to do
                   when fire danger rises.
                 </p>
-                <Badge className="bg-red-100 text-red-700 font-semibold">Most Popular</Badge>
+                <Badge className="bg-red-100 text-red-700 font-semibold text-xs sm:text-sm">Most Popular</Badge>
               </CardContent>
             </Card>
 
@@ -245,31 +177,34 @@ export default function RuralCommunityHub() {
               style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
               onClick={() => (window.location.href = "/preparedness/flood")}
             >
-              <CardContent className="p-8 text-center">
-                <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#3b82f620" }}>
-                  <Droplets className="h-10 w-10 text-blue-500" />
+              <CardContent className="p-6 sm:p-8 text-center">
+                <div
+                  className="p-3 sm:p-4 rounded-2xl mx-auto mb-4 sm:mb-6 w-fit"
+                  style={{ backgroundColor: "#3b82f620" }}
+                >
+                  <Droplets className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-black mb-4">🌊 Flood Plan</h3>
-                <p className="text-black mb-6 leading-relaxed">
+                <h3 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">🌊 Flood Plan</h3>
+                <p className="text-black mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                   Protect your livestock from flooding. Evacuation routes, safe zones, and community coordination when
                   water rises.
                 </p>
-                <Badge className="bg-blue-100 text-blue-700 font-semibold">Available Now</Badge>
+                <Badge className="bg-blue-100 text-blue-700 font-semibold text-xs sm:text-sm">Available Now</Badge>
               </CardContent>
             </Card>
           </div>
 
-          <div className="text-center mt-12">
-            <p className="text-black mb-6">
+          <div className="text-center mt-8 sm:mt-12 px-4">
+            <p className="text-black mb-4 sm:mb-6 text-sm sm:text-base">
               <strong>Free tools used by 8,630+ rural families</strong> across Australia
             </p>
             <Button
               size="lg"
-              className="text-white font-bold px-8 py-4 text-lg rounded-xl shadow-xl"
+              className="text-white font-bold px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-xl shadow-xl w-full sm:w-auto"
               style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
               onClick={() => (window.location.href = "/preparedness/bushfire")}
             >
-              <Flame className="h-5 w-5 mr-2" />
+              <Flame className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               Start Emergency Planning
             </Button>
           </div>
@@ -277,39 +212,39 @@ export default function RuralCommunityHub() {
       </div>
 
       {/* Real Stories Section */}
-      <div className="max-w-7xl mx-auto px-4 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-black mb-6">Real Stories. Real Help.</h2>
-          <p className="text-xl text-black max-w-3xl mx-auto">
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:py-20">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-black mb-4 sm:mb-6">Real Stories. Real Help.</h2>
+          <p className="text-lg sm:text-xl text-black max-w-3xl mx-auto px-4">
             These rural families found the help they needed through their community connections.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {testimonials.map((testimonial, index) => (
             <Card
               key={index}
               className="border-0 shadow-xl rounded-3xl"
               style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
             >
-              <CardContent className="p-8">
+              <CardContent className="p-6 sm:p-8">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="h-4 w-4 sm:h-5 sm:w-5 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
 
-                <blockquote className="text-black mb-6 italic text-lg leading-relaxed">
+                <blockquote className="text-black mb-4 sm:mb-6 italic text-base sm:text-lg leading-relaxed">
                   "{testimonial.quote}"
                 </blockquote>
 
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-full" style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}>
-                    <Users className="h-4 w-4 text-white" />
+                    <Users className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                   </div>
                   <div>
-                    <div className="font-bold text-black">{testimonial.author}</div>
-                    <div className="text-sm text-black">{testimonial.location}</div>
+                    <div className="font-bold text-black text-sm sm:text-base">{testimonial.author}</div>
+                    <div className="text-xs sm:text-sm text-black">{testimonial.location}</div>
                     <Badge className="bg-green-100 text-green-700 text-xs mt-1">{testimonial.situation}</Badge>
                   </div>
                 </div>
@@ -329,55 +264,63 @@ export default function RuralCommunityHub() {
           />
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 py-20 text-center text-white">
-          <h2 className="text-4xl font-bold mb-6">Ready to Connect with Your Local Rural Community?</h2>
-          <p className="text-xl mb-8 opacity-90">
+        <div className="relative max-w-4xl mx-auto px-4 py-12 sm:py-20 text-center text-white">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6">
+            Ready to Connect with Your Local Rural Community?
+          </h2>
+          <p className="text-lg sm:text-xl mb-6 sm:mb-8 opacity-90">
             Join 8,630+ rural families building stronger, more resilient communities across Australia.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
             <Button
               size="lg"
-              className="bg-white text-slate-800 hover:bg-slate-100 font-bold px-10 py-5 text-xl rounded-2xl shadow-2xl"
+              className="bg-white text-slate-800 hover:bg-slate-100 font-bold px-8 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl rounded-2xl shadow-2xl"
               onClick={() => (window.location.href = "/onboarding")}
             >
-              <Users className="h-6 w-6 mr-3" />
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
               Find My Community
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white/10 font-bold px-10 py-5 text-xl rounded-2xl bg-transparent"
+              className="border-2 border-white text-white hover:bg-white/10 font-bold px-8 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl rounded-2xl bg-transparent"
             >
-              <Heart className="h-6 w-6 mr-3" />
+              <Heart className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
               Learn More
             </Button>
           </div>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Badge className="bg-white/20 text-white font-semibold px-4 py-2">✅ Free to Join</Badge>
-            <Badge className="bg-white/20 text-white font-semibold px-4 py-2">🇦🇺 Australian Made</Badge>
-            <Badge className="bg-white/20 text-white font-semibold px-4 py-2">🚜 Built by Rural Folk</Badge>
+          <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-2 sm:gap-4">
+            <Badge className="bg-white/20 text-white font-semibold px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+              ✅ Free to Join
+            </Badge>
+            <Badge className="bg-white/20 text-white font-semibold px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+              🇦🇺 Australian Made
+            </Badge>
+            <Badge className="bg-white/20 text-white font-semibold px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+              🚜 Built by Rural Folk
+            </Badge>
           </div>
         </div>
       </div>
 
-      {/* Simple Footer */}
-      <footer className="bg-slate-800 text-white py-12">
+      {/* Footer */}
+      <footer className="bg-slate-800 text-white py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4" style={{ color: "#7EC9BB" }}>
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4" style={{ color: "#7EC9BB" }}>
                 Rural Community Hub
               </h3>
-              <p className="text-slate-300">
+              <p className="text-slate-300 text-sm sm:text-base">
                 Connecting rural communities across Australia. Built by rural folk, for rural communities.
               </p>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-slate-300">
+              <h4 className="font-bold mb-3 sm:mb-4 text-sm sm:text-base">Quick Links</h4>
+              <ul className="space-y-2 text-slate-300 text-sm sm:text-base">
                 <li>
                   <a href="/preparedness/bushfire" className="hover:text-white">
                     Bushfire Planning
@@ -402,8 +345,8 @@ export default function RuralCommunityHub() {
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Support</h4>
-              <ul className="space-y-2 text-slate-300">
+              <h4 className="font-bold mb-3 sm:mb-4 text-sm sm:text-base">Support</h4>
+              <ul className="space-y-2 text-slate-300 text-sm sm:text-base">
                 <li>
                   <a href="#" className="hover:text-white">
                     Help Center
@@ -428,7 +371,7 @@ export default function RuralCommunityHub() {
             </div>
           </div>
 
-          <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
+          <div className="border-t border-slate-700 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-slate-400 text-sm sm:text-base">
             <p>&copy; 2024 Rural Community Hub. Built with ❤️ for rural communities across Australia.</p>
           </div>
         </div>
