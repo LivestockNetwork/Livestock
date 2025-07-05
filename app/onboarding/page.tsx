@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { ArrowRight, ArrowLeft, MapPin, Users, Heart, CheckCircle } from "lucide-react"
+import { ArrowRight, Users, Heart, CheckCircle, MapPin, ArrowLeft } from "lucide-react"
 
 interface OnboardingData {
   location: {
@@ -13,12 +13,10 @@ interface OnboardingData {
     state: string
     region: string
   }
-  propertyType: string
   personalInfo: {
     firstName: string
     lastName: string
     email: string
-    phone: string
   }
 }
 
@@ -26,13 +24,12 @@ export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     location: { postcode: "", town: "", state: "", region: "" },
-    propertyType: "",
-    personalInfo: { firstName: "", lastName: "", email: "", phone: "" },
+    personalInfo: { firstName: "", lastName: "", email: "" },
   })
   const [showWelcome, setShowWelcome] = useState(false)
   const [detectedLocation, setDetectedLocation] = useState<any>(null)
 
-  const totalSteps = 3
+  const totalSteps = 2
 
   // Mock location detection based on postcode
   const detectLocation = (postcode: string) => {
@@ -50,16 +47,6 @@ export default function OnboardingPage() {
 
     return locationMap[postcode] || null
   }
-
-  const propertyTypes = [
-    { id: "cattle-farm", label: "🐄 Cattle Farm", description: "Beef or dairy operation" },
-    { id: "horse-property", label: "🐴 Horse Property", description: "Agistment, breeding, riding" },
-    { id: "mixed-farm", label: "🚜 Mixed Farm", description: "Crops and livestock" },
-    { id: "hobby-farm", label: "🐓 Hobby Farm", description: "Lifestyle property with animals" },
-    { id: "cropping", label: "🌾 Cropping", description: "Grain, hay, or other crops" },
-    { id: "rural-residential", label: "🏡 Rural Residential", description: "Rural living, small acreage" },
-    { id: "town-resident", label: "🏘️ Town Resident", description: "Live in rural town, support rural community" },
-  ]
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
@@ -118,15 +105,10 @@ export default function OnboardingPage() {
   }
 
   const isStep2Valid = () => {
-    return onboardingData.propertyType !== ""
-  }
-
-  const isStep3Valid = () => {
     return (
       onboardingData.personalInfo.firstName.trim() !== "" &&
       onboardingData.personalInfo.lastName.trim() !== "" &&
-      onboardingData.personalInfo.email.trim() !== "" &&
-      onboardingData.personalInfo.phone.trim() !== ""
+      onboardingData.personalInfo.email.trim() !== ""
     )
   }
 
@@ -155,72 +137,79 @@ export default function OnboardingPage() {
 
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-slate-800 mb-4">What happens next?</h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-4 p-4 bg-green-50 rounded-xl">
-                  <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                    1
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-slate-800">Check your email</div>
-                    <div className="text-sm text-slate-600">
-                      We've sent you a welcome email with your community access details
-                    </div>
-                  </div>
-                </div>
+              <h3 className="text-2xl font-bold text-slate-800 mb-6">What would you like to do next?</h3>
 
-                <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-xl">
-                  <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                    2
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-slate-800">Access your community platform</div>
-                    <div className="text-sm text-slate-600">
-                      Connect instantly with {onboardingData.location.region} rural community
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Quick Entry Option */}
+                <Card
+                  className="border-2 border-green-200 hover:border-green-400 transition-all cursor-pointer"
+                  onClick={() => (window.location.href = "/community")}
+                >
+                  <CardContent className="p-6 text-center">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Users className="h-8 w-8 text-green-600" />
                     </div>
-                  </div>
-                </div>
+                    <h4 className="text-xl font-bold text-slate-800 mb-2">Jump Right In</h4>
+                    <p className="text-slate-600 mb-4">
+                      Start connecting with your local rural community right away. You can complete your profile
+                      anytime.
+                    </p>
+                    <Button
+                      size="lg"
+                      className="text-white font-bold w-full"
+                      style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
+                    >
+                      <Users className="h-5 w-5 mr-2" />
+                      Enter Community
+                    </Button>
+                  </CardContent>
+                </Card>
 
-                <div className="flex items-start gap-4 p-4 bg-amber-50 rounded-xl">
-                  <div className="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
-                    3
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-slate-800">Complete your profile</div>
-                    <div className="text-sm text-slate-600">
-                      Add more details about what you can offer and need help with
+                {/* Complete Profile Option */}
+                <Card
+                  className="border-2 border-blue-200 hover:border-blue-400 transition-all cursor-pointer"
+                  onClick={() => (window.location.href = "/profile-setup")}
+                >
+                  <CardContent className="p-6 text-center">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Heart className="h-8 w-8 text-blue-600" />
                     </div>
-                  </div>
-                </div>
+                    <h4 className="text-xl font-bold text-slate-800 mb-2">Complete Your Profile</h4>
+                    <p className="text-slate-600 mb-4">
+                      Add details about your property, livestock, and what help you can offer or need.
+                    </p>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="border-blue-300 text-blue-700 hover:bg-blue-50 w-full font-bold bg-transparent"
+                    >
+                      <Heart className="h-5 w-5 mr-2" />
+                      Set Up Profile
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="text-white font-bold flex-1"
-                style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                onClick={() => (window.location.href = "/community")}
-              >
-                <Users className="h-5 w-5 mr-2" />
-                Enter Community
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-slate-300 text-slate-700 bg-transparent"
-                onClick={() => (window.location.href = "/")}
-              >
-                Back to Home
-              </Button>
+            <div className="mt-8 p-6 bg-slate-50 rounded-xl text-center">
+              <h4 className="font-bold text-slate-800 mb-2">✅ You're all set!</h4>
+              <p className="text-sm text-slate-600 mb-3">
+                We've sent a welcome email to <strong>{onboardingData.personalInfo.email}</strong>
+              </p>
+              <p className="text-xs text-slate-500">
+                You can always complete your profile later from your account settings.
+              </p>
             </div>
 
-            <div className="mt-6 p-4 bg-slate-50 rounded-xl text-center">
-              <p className="text-sm text-slate-600">
-                <strong>Need help getting started?</strong>
-                <br />
-                Call our rural community coordinator: <strong>(02) 1234 5678</strong>
-              </p>
+            <div className="mt-6 text-center">
+              <Button
+                variant="ghost"
+                className="text-slate-500 hover:text-slate-700"
+                onClick={() => (window.location.href = "/")}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -240,7 +229,7 @@ export default function OnboardingPage() {
               <Users className="h-8 w-8" />
               <div>
                 <h2 className="text-2xl font-bold">Join Your Rural Community</h2>
-                <p className="opacity-90">Quick 3-step signup - takes less than 2 minutes</p>
+                <p className="opacity-90">Quick 2-step signup - takes less than 1 minute</p>
               </div>
             </div>
 
@@ -312,39 +301,11 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Step 2: Property Type */}
+            {/* Step 2: Basic Contact Info */}
             {currentStep === 2 && (
               <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">What type of property do you have?</h3>
-                <p className="text-slate-600 mb-6">This helps us connect you with similar rural families</p>
-
-                <div className="space-y-3">
-                  {propertyTypes.map((type) => (
-                    <Button
-                      key={type.id}
-                      variant={onboardingData.propertyType === type.id ? "default" : "outline"}
-                      onClick={() => setOnboardingData({ ...onboardingData, propertyType: type.id })}
-                      className={`w-full p-4 h-auto text-left ${
-                        onboardingData.propertyType === type.id
-                          ? "bg-teal-500 text-white border-teal-500"
-                          : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                      }`}
-                    >
-                      <div>
-                        <div className="font-semibold text-lg">{type.label}</div>
-                        <div className="text-sm opacity-80">{type.description}</div>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Personal Information */}
-            {currentStep === 3 && (
-              <div>
-                <h3 className="text-2xl font-bold text-slate-800 mb-4">Your contact details</h3>
-                <p className="text-slate-600 mb-6">So your local rural community can connect with you</p>
+                <h3 className="text-2xl font-bold text-slate-800 mb-4">Your basic details</h3>
+                <p className="text-slate-600 mb-6">Just the essentials to get you connected</p>
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
@@ -395,32 +356,21 @@ export default function OnboardingPage() {
                       className="p-3 border-2 border-slate-300 rounded-xl focus:border-teal-400"
                     />
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Phone</label>
-                    <Input
-                      type="tel"
-                      placeholder="0412 345 678"
-                      value={onboardingData.personalInfo.phone}
-                      onChange={(e) =>
-                        setOnboardingData({
-                          ...onboardingData,
-                          personalInfo: { ...onboardingData.personalInfo, phone: e.target.value },
-                        })
-                      }
-                      className="p-3 border-2 border-slate-300 rounded-xl focus:border-teal-400"
-                    />
-                  </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-slate-50 rounded-xl text-sm text-slate-600">
+                <div className="mt-6 p-4 bg-green-50 rounded-xl text-sm text-slate-700">
+                  <p className="font-semibold text-green-800 mb-2">✅ That's it! You're almost in.</p>
+                  <p>
+                    After joining, you can optionally add details about your property, livestock, and what help you
+                    need.
+                    <strong> But you can start connecting right away!</strong>
+                  </p>
+                </div>
+
+                <div className="mt-4 p-4 bg-slate-50 rounded-xl text-sm text-slate-600">
                   <p>
                     <strong>Privacy:</strong> Your details are only shared with verified rural community members in your
                     local area. We never sell your information.
-                  </p>
-                  <p className="mt-2">
-                    <strong>Next:</strong> After joining, you can add details about livestock, equipment, and what help
-                    you need.
                   </p>
                 </div>
               </div>
@@ -441,7 +391,7 @@ export default function OnboardingPage() {
               {currentStep < totalSteps ? (
                 <Button
                   onClick={nextStep}
-                  disabled={(currentStep === 1 && !isStep1Valid()) || (currentStep === 2 && !isStep2Valid())}
+                  disabled={!isStep1Valid()}
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
@@ -451,7 +401,7 @@ export default function OnboardingPage() {
               ) : (
                 <Button
                   onClick={completeOnboarding}
-                  disabled={!isStep3Valid()}
+                  disabled={!isStep2Valid()}
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
