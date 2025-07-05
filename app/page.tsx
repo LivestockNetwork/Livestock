@@ -111,7 +111,7 @@ export default function RuralCommunityHub() {
 
           {/* Clear Problem Statement */}
           <h1 className="text-4xl md:text-6xl font-bold mb-8 text-slate-800 leading-tight">
-            When disaster strikes your rural property,
+            When disaster strikes your home,
             <span className="block mt-2" style={{ color: "#ef4444" }}>
               who do you call?
             </span>
@@ -164,7 +164,9 @@ export default function RuralCommunityHub() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-slate-800 mb-6">These Problems Sound Familiar?</h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Every rural property faces the same challenges. You're not alone - but you might be isolated.
+            Whether you live on a 1000-acre station or in town with your pet horses, dogs, and cats -
+            <strong>every animal owner needs a plan and community support.</strong>
+            You're not alone, but you might be isolated when disaster strikes.
           </p>
         </div>
 
