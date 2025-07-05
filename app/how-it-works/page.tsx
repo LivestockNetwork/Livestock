@@ -28,7 +28,7 @@ export default function HowItWorksPage() {
     {
       number: 1,
       title: "Find Your Local Community",
-      description: "Enter your postcode and connect with rural neighbors in your area",
+      description: "Enter your postcode and connect with rural locals in your area",
       details: "We'll show you locals within 50km who share your challenges and can lend a hand when needed.",
       icon: MapPin,
       color: "blue",
@@ -83,7 +83,7 @@ export default function HowItWorksPage() {
 
   const testimonials = [
     {
-      quote: "During the floods, I had no idea who could help. This app changes everything - now I know my neighbors.",
+      quote: "During the floods, I had no idea who could help. This app changes everything - now I know my locals.",
       author: "Jenny K.",
       location: "Gloucester, NSW",
       situation: "Cattle farmer, 500 head",
@@ -164,7 +164,7 @@ export default function HowItWorksPage() {
 
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             3 Simple Steps to Connect
-            <span className="block mt-2">with Your Rural Neighbors</span>
+            <span className="block mt-2">with Your Rural Locals</span>
           </h1>
 
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
@@ -381,7 +381,7 @@ export default function HowItWorksPage() {
               { icon: MessageCircle, title: "Community Feed", desc: "Share updates, ask for help" },
               { icon: Shield, title: "Emergency Plans", desc: "Bushfire & flood preparedness" },
               { icon: Users, title: "Member Directory", desc: "Find locals with skills/equipment" },
-              { icon: Phone, title: "Direct Messaging", desc: "Connect privately with neighbors" },
+              { icon: Phone, title: "Direct Messaging", desc: "Connect privately with locals" },
             ].map((feature, index) => (
               <Card key={index} className="bg-white/10 border-white/20 text-white">
                 <CardContent className="p-6 text-center">
@@ -407,7 +407,7 @@ export default function HowItWorksPage() {
             <Link href="/onboarding">
               <Button size="lg" className="bg-teal-500 hover:bg-teal-600 font-bold px-8 py-4">
                 <Users className="h-5 w-5 mr-2" />
-                Join Your Community Free
+                Join Your Community Now
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </Link>

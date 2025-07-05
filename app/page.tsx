@@ -78,22 +78,24 @@ export default function RuralCommunityHub() {
                   How It Works
                 </Button>
               </Link>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
-                onClick={() => (window.location.href = "/login")}
-              >
-                Login
-              </Button>
-              <Button
-                size="sm"
-                className="text-white font-semibold"
-                style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                onClick={() => (window.location.href = "/onboarding")}
-              >
-                Join Free
-              </Button>
+              <Link href="/login">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href="/onboarding">
+                <Button
+                  size="sm"
+                  className="text-white font-semibold"
+                  style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
+                >
+                  Join Now
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -149,16 +151,17 @@ export default function RuralCommunityHub() {
 
           {/* Call to Action */}
           <div className="space-y-4 px-4">
-            <Button
-              size="lg"
-              className="text-white font-bold px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all w-full sm:w-auto"
-              style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-              onClick={() => (window.location.href = "/onboarding")}
-            >
-              <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
-              Find My Rural Community
-              <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 ml-2 sm:ml-3" />
-            </Button>
+            <Link href="/onboarding">
+              <Button
+                size="lg"
+                className="text-white font-bold px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all w-full sm:w-auto"
+                style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
+              >
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
+                Find My Rural Community
+                <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 ml-2 sm:ml-3" />
+              </Button>
+            </Link>
 
             <Link href="/community">
               <Button
@@ -189,47 +192,49 @@ export default function RuralCommunityHub() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
-            <Card
-              className="border-0 shadow-xl rounded-3xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-              onClick={() => (window.location.href = "/preparedness/bushfire")}
-            >
-              <CardContent className="p-6 sm:p-8 text-center">
-                <div
-                  className="p-3 sm:p-4 rounded-2xl mx-auto mb-4 sm:mb-6 w-fit"
-                  style={{ backgroundColor: "#ef444420" }}
-                >
-                  <Flame className="h-8 w-8 sm:h-10 sm:w-10 text-red-500" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">🔥 Bushfire Plan</h3>
-                <p className="text-black mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
-                  Get a personalized bushfire evacuation plan for your livestock and property. Know exactly what to do
-                  when fire danger rises.
-                </p>
-                <Badge className="bg-red-100 text-red-700 font-semibold text-xs sm:text-sm">Most Popular</Badge>
-              </CardContent>
-            </Card>
+            <Link href="/preparedness/bushfire">
+              <Card
+                className="border-0 shadow-xl rounded-3xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
+              >
+                <CardContent className="p-6 sm:p-8 text-center">
+                  <div
+                    className="p-3 sm:p-4 rounded-2xl mx-auto mb-4 sm:mb-6 w-fit"
+                    style={{ backgroundColor: "#ef444420" }}
+                  >
+                    <Flame className="h-8 w-8 sm:h-10 sm:w-10 text-red-500" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">🔥 Bushfire Plan</h3>
+                  <p className="text-black mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
+                    Get a personalized bushfire evacuation plan for your livestock and property. Know exactly what to do
+                    when fire danger rises.
+                  </p>
+                  <Badge className="bg-red-100 text-red-700 font-semibold text-xs sm:text-sm">Most Popular</Badge>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card
-              className="border-0 shadow-xl rounded-3xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer"
-              style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
-              onClick={() => (window.location.href = "/preparedness/flood")}
-            >
-              <CardContent className="p-6 sm:p-8 text-center">
-                <div
-                  className="p-3 sm:p-4 rounded-2xl mx-auto mb-4 sm:mb-6 w-fit"
-                  style={{ backgroundColor: "#3b82f620" }}
-                >
-                  <Droplets className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">🌊 Flood Plan</h3>
-                <p className="text-black mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
-                  Protect your livestock from flooding. Evacuation routes, safe zones, and community coordination when
-                  water rises.
-                </p>
-                <Badge className="bg-blue-100 text-blue-700 font-semibold text-xs sm:text-sm">Available Now</Badge>
-              </CardContent>
-            </Card>
+            <Link href="/preparedness/flood">
+              <Card
+                className="border-0 shadow-xl rounded-3xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.95)" }}
+              >
+                <CardContent className="p-6 sm:p-8 text-center">
+                  <div
+                    className="p-3 sm:p-4 rounded-2xl mx-auto mb-4 sm:mb-6 w-fit"
+                    style={{ backgroundColor: "#3b82f620" }}
+                  >
+                    <Droplets className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">🌊 Flood Plan</h3>
+                  <p className="text-black mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
+                    Protect your livestock from flooding. Evacuation routes, safe zones, and community coordination when
+                    water rises.
+                  </p>
+                  <Badge className="bg-blue-100 text-blue-700 font-semibold text-xs sm:text-sm">Available Now</Badge>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </div>
@@ -253,22 +258,25 @@ export default function RuralCommunityHub() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
-            <Button
-              size="lg"
-              className="bg-white text-slate-800 hover:bg-slate-100 font-bold px-8 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl rounded-2xl shadow-2xl"
-              onClick={() => (window.location.href = "/onboarding")}
-            >
-              <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
-              Find My Community
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-2 border-white text-white hover:bg-white/10 font-bold px-8 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl rounded-2xl bg-transparent"
-            >
-              <Heart className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
-              Learn More
-            </Button>
+            <Link href="/onboarding">
+              <Button
+                size="lg"
+                className="bg-white text-slate-800 hover:bg-slate-100 font-bold px-8 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl rounded-2xl shadow-2xl"
+              >
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
+                Join Your Community Now
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white/10 font-bold px-8 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl rounded-2xl bg-transparent"
+              >
+                <Heart className="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" />
+                Learn More
+              </Button>
+            </Link>
           </div>
 
           <div className="mt-6 sm:mt-8 flex flex-wrap justify-center gap-2 sm:gap-4">
@@ -307,24 +315,24 @@ export default function RuralCommunityHub() {
                   </Link>
                 </li>
                 <li>
-                  <a href="/preparedness/bushfire" className="hover:text-white">
+                  <Link href="/preparedness/bushfire" className="hover:text-white">
                     Bushfire Planning
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/preparedness/flood" className="hover:text-white">
+                  <Link href="/preparedness/flood" className="hover:text-white">
                     Flood Planning
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/onboarding" className="hover:text-white">
+                  <Link href="/onboarding" className="hover:text-white">
                     Join Community
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white">
+                  <Link href="/how-it-works" className="hover:text-white">
                     How It Works
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

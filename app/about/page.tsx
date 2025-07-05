@@ -43,7 +43,7 @@ export default function AboutPage() {
                 Login
               </Link>
               <Button asChild className="bg-teal-500 hover:bg-teal-600 text-white">
-                <Link href="/onboarding">Join Free</Link>
+                <Link href="/onboarding">Join Now</Link>
               </Button>
             </nav>
           </div>
@@ -70,7 +70,7 @@ export default function AboutPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-teal-500 hover:bg-teal-600 text-white font-semibold">
               <Link href="/onboarding">
-                Join Our Community
+                Join Your Community Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -265,7 +265,7 @@ export default function AboutPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-white text-teal-600 hover:bg-slate-50 font-semibold">
               <Link href="/onboarding">
-                Join Free Today
+                Join Your Community Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>

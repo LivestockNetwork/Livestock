@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
                   className="text-white font-semibold"
                   style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
                 >
-                  Join Free
+                  Join Now
                 </Button>
               </Link>
             </div>

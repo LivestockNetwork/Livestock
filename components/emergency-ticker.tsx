@@ -3,6 +3,7 @@ import { useState } from "react"
 import { X, ExternalLink } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function EmergencyTicker() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -149,17 +150,16 @@ export default function EmergencyTicker() {
                 <p className="text-slate-700 mb-4">- Texas rancher, January 2025. Don't let this be your story.</p>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button
-                    size="lg"
-                    className="text-white font-bold"
-                    style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
-                    onClick={() => {
-                      setIsExpanded(false)
-                      window.location.href = "/onboarding"
-                    }}
-                  >
-                    Join Your Community Now
-                  </Button>
+                  <Link href="/onboarding">
+                    <Button
+                      size="lg"
+                      className="text-white font-bold"
+                      style={{ background: "linear-gradient(135deg, #7EC9BB, #6BB3A6)" }}
+                      onClick={() => setIsExpanded(false)}
+                    >
+                      Join Your Community Now
+                    </Button>
+                  </Link>
                   <Button
                     variant="outline"
                     size="lg"
