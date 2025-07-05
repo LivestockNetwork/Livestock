@@ -68,7 +68,7 @@ export default function CommunityFeed() {
       title: "Quality Angus steers for sale",
       content:
         "We have 15 quality Angus steers ready for sale. 18-20 months old, grass fed, excellent condition. $1,800 each or $25,000 for the lot. Can deliver within 50km. Serious buyers only.",
-      images: ["/placeholder.svg?height=300&width=400&text=Angus+Steers"],
+      images: ["/images/angus-steers-sale.png"],
       price: "$1,800 each",
       likes: 15,
       comments: 6,
@@ -127,7 +127,7 @@ export default function CommunityFeed() {
       title: "Beautiful quarter horse mare - reluctant sale",
       content:
         "Selling our beloved 8yo quarter horse mare due to downsizing. She's gentle, great with kids, and perfect for trail riding. Up to date with all vaccinations. $4,500 to good home only. Must see her go to someone who will love her.",
-      images: ["/placeholder.svg?height=300&width=400&text=Quarter+Horse+Mare"],
+      images: ["/images/quarter-horse-mare.png"],
       price: "$4,500",
       likes: 42,
       comments: 18,
