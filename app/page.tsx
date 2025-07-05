@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Users, Handshake, Shield, TrendingUp, Heart, Star, MapPin, Flame } from "lucide-react"
+import { Users, Handshake, Shield, TrendingUp, Heart, Star, MapPin, Flame, Droplets } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -378,7 +378,7 @@ export default function RuralLivingAustralia() {
           >
             <CardContent className="p-8 text-center">
               <div className="p-4 rounded-2xl mx-auto mb-6 w-fit" style={{ backgroundColor: "#3b82f620" }}>
-                <Shield className="h-8 w-8 text-blue-500" />
+                <Droplets className="h-8 w-8 text-blue-500" />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-4">🌊 Flood Preparedness</h3>
               <p className="text-slate-600 mb-6">

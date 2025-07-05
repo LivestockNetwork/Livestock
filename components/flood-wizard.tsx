@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import {
   ArrowRight,
   ArrowLeft,
-  Waves,
+  Droplets,
   MapPin,
   Users,
   Shield,
@@ -320,7 +320,7 @@ export default function FloodWizard() {
             }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <Waves className="h-8 w-8" />
+              <Droplets className="h-8 w-8" />
               <div>
                 <h2 className="text-2xl font-bold">Your Flood Preparedness Plan</h2>
                 <p className="opacity-90">Personalized for your property and livestock</p>
@@ -584,7 +584,7 @@ export default function FloodWizard() {
       <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
         <div className="p-6 text-white" style={{ background: "linear-gradient(135deg, #3b82f6, #1d4ed8)" }}>
           <div className="flex items-center gap-3 mb-4">
-            <Waves className="h-8 w-8" />
+            <Droplets className="h-8 w-8" />
             <div>
               <h2 className="text-2xl font-bold">Flood Preparedness Wizard</h2>
               <p className="opacity-90">Get your personalized flood emergency plan</p>
@@ -985,7 +985,7 @@ export default function FloodWizard() {
                 className="text-white font-semibold"
                 style={{ background: "linear-gradient(135deg, #3b82f6, #1d4ed8)" }}
               >
-                <Waves className="h-4 w-4 mr-2" />
+                <Droplets className="h-4 w-4 mr-2" />
                 Generate My Plan
               </Button>
             )}
