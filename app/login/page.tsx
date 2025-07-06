@@ -2,13 +2,15 @@
 
 import { useState } from "react"
 import { useFormState } from "react-dom"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Shield, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react"
+import { Shield, Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from "lucide-react"
 import { loginUser } from "@/app/actions/user-login"
 
 const initialState = {
@@ -21,6 +23,14 @@ export default function LoginPage() {
   const [state, formAction] = useFormState(loginUser, initialState)
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  // Redirect to dashboard on successful login
+  useEffect(() => {
+    if (state.success && state.user) {
+      router.push("/dashboard")
+    }
+  }, [state.success, state.user, router])
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true)
@@ -81,10 +91,19 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {state?.message && (
+              {state?.message && !state.success && (
                 <Alert className="border-red-200 bg-red-50">
                   <AlertCircle className="h-4 w-4 text-red-600" />
                   <AlertDescription className="text-red-800">{state.message}</AlertDescription>
+                </Alert>
+              )}
+
+              {state?.success && (
+                <Alert className="border-green-200 bg-green-50">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-800">
+                    Login successful! Redirecting to dashboard...
+                  </AlertDescription>
                 </Alert>
               )}
 

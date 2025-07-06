@@ -1,5 +1,8 @@
 "use server"
 
+import { redirect } from "next/navigation"
+import { userStorage } from "@/lib/user-storage"
+
 interface LoginResult {
   success: boolean
   message: string
@@ -7,12 +10,15 @@ interface LoginResult {
     id: string
     email: string
     name: string
+    state?: string
   }
 }
 
 export async function loginUser(prevState: any, formData: FormData): Promise<LoginResult> {
   const email = formData.get("email") as string
   const password = formData.get("password") as string
+
+  console.log("Login attempt for:", email)
 
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -24,27 +30,17 @@ export async function loginUser(prevState: any, formData: FormData): Promise<Log
     }
   }
 
-  // Demo accounts for testing
-  const demoAccounts = [
-    { email: "demo@rural.com", password: "demo123", name: "Demo User" },
-    { email: "farmer@example.com", password: "farm123", name: "John Farmer" },
-    { email: "sarah@station.com", password: "sarah123", name: "Sarah Station" },
-  ]
-
-  const user = demoAccounts.find((account) => account.email === email && account.password === password)
+  // Try to validate user credentials
+  const user = userStorage.validateUserCredentials(email, password)
 
   if (user) {
-    return {
-      success: true,
-      message: `Welcome back, ${user.name}!`,
-      user: {
-        id: `user_${Date.now()}`,
-        email: user.email,
-        name: user.name,
-      },
-    }
+    console.log("Login successful for:", email)
+
+    // Redirect to dashboard on successful login
+    redirect("/dashboard")
   }
 
+  console.log("Login failed for:", email)
   return {
     success: false,
     message: "Invalid email or password. Try demo@rural.com / demo123",

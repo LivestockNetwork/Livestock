@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useFormState } from "react-dom"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -29,65 +31,24 @@ const australianStates = [
   { value: "NT", label: "Northern Territory" },
 ]
 
-const propertyTypes = [
-  "Cattle Station",
-  "Sheep Farm",
-  "Mixed Farming",
-  "Dairy Farm",
-  "Crop Farm",
-  "Horse Stud",
-  "Poultry Farm",
-  "Rural Residential",
-  "Other",
-]
-
 export default function RegisterPage() {
   const [state, formAction] = useFormState(registerUser, initialState)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  // Redirect to dashboard on successful registration
+  useEffect(() => {
+    if (state.success && state.user) {
+      router.push("/dashboard")
+    }
+  }, [state.success, state.user, router])
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true)
     await formAction(formData)
     setIsLoading(false)
-  }
-
-  if (state.success) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center py-12 px-4">
-        <Card className="w-full max-w-md border-green-200 bg-green-50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-800">
-              <CheckCircle className="h-5 w-5" />
-              Registration Successful!
-            </CardTitle>
-            <CardDescription className="text-green-700">
-              Welcome to Rural Community Hub, {state.user?.name}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Alert className="border-green-300 bg-green-100">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">{state.message}</AlertDescription>
-            </Alert>
-
-            <div className="flex gap-4">
-              <Button asChild className="flex-1 bg-green-600 hover:bg-green-700">
-                <Link href="/login">Sign In Now</Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="flex-1 border-green-300 text-green-700 hover:bg-green-100 bg-transparent"
-              >
-                <Link href="/dashboard">Go to Dashboard</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
   }
 
   return (
@@ -106,19 +67,13 @@ export default function RegisterPage() {
         <Card>
           <CardHeader>
             <CardTitle>Create Account</CardTitle>
-            <CardDescription>Fill in your details to get started</CardDescription>
+            <CardDescription>Just name, email, state and password to get started</CardDescription>
           </CardHeader>
           <CardContent>
             <form action={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" name="firstName" placeholder="John" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" name="lastName" placeholder="Smith" required />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" name="name" placeholder="John Smith" required />
               </div>
 
               <div className="space-y-2">
@@ -127,13 +82,8 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input id="location" name="location" placeholder="e.g., Tamworth, NSW" />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="state">State/Territory</Label>
-                <Select name="state">
+                <Select name="state" required>
                   <SelectTrigger>
                     <SelectValue placeholder="Select your state" />
                   </SelectTrigger>
@@ -141,22 +91,6 @@ export default function RegisterPage() {
                     {australianStates.map((state) => (
                       <SelectItem key={state.value} value={state.value}>
                         {state.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="propertyType">Property Type</Label>
-                <Select name="propertyType">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your property type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {propertyTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -205,10 +139,19 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {state?.message && (
+              {state?.message && !state.success && (
                 <Alert className="border-red-200 bg-red-50">
                   <AlertCircle className="h-4 w-4 text-red-600" />
                   <AlertDescription className="text-red-800">{state.message}</AlertDescription>
+                </Alert>
+              )}
+
+              {state?.success && (
+                <Alert className="border-green-200 bg-green-50">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-800">
+                    Registration successful! Redirecting to dashboard...
+                  </AlertDescription>
                 </Alert>
               )}
 

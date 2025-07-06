@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Users } from "lucide-react"
 import Link from "next/link"
+import { useFormState } from "react-dom"
+import { sendPasswordReset } from "@/app/actions/password-reset"
 
 export default function ForgotPasswordPage() {
+  const [state, action, isPending] = useFormState(sendPasswordReset, null)
+
   return (
     <div className="grid h-screen place-items-center bg-gray-100">
       <Card className="w-[450px] shadow-lg">
@@ -47,14 +51,19 @@ export default function ForgotPasswordPage() {
           <CardDescription>Enter your email address and we will send you a reset link.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" />
-          </div>
+          <form action={action} className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" placeholder="Enter your email" required />
+            </div>
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Sending..." : "Send Reset Link"}
+            </Button>
+          </form>
+          {state?.message && (
+            <div className={`text-sm ${state.success ? "text-green-600" : "text-red-600"}`}>{state.message}</div>
+          )}
         </CardContent>
-        <CardFooter>
-          <Button className="w-full">Send Reset Link</Button>
-        </CardFooter>
       </Card>
     </div>
   )

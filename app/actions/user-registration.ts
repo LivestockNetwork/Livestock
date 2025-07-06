@@ -1,5 +1,8 @@
 "use server"
 
+import { redirect } from "next/navigation"
+import { userStorage } from "@/lib/user-storage"
+
 interface RegistrationResult {
   success: boolean
   message: string
@@ -7,24 +10,23 @@ interface RegistrationResult {
     id: string
     email: string
     name: string
-    location?: string
-    propertyType?: string
+    state?: string
   }
 }
 
 export async function registerUser(prevState: any, formData: FormData): Promise<RegistrationResult> {
-  const firstName = formData.get("firstName") as string
-  const lastName = formData.get("lastName") as string
+  const name = formData.get("name") as string
   const email = formData.get("email") as string
   const password = formData.get("password") as string
   const confirmPassword = formData.get("confirmPassword") as string
-  const location = formData.get("location") as string
-  const propertyType = formData.get("propertyType") as string
+  const state = formData.get("state") as string
+
+  console.log("Registration attempt for:", email, "from state:", state)
 
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 1500))
 
-  if (!firstName || !lastName || !email || !password) {
+  if (!name || !email || !password || !state) {
     return {
       success: false,
       message: "Please fill in all required fields",
@@ -45,27 +47,26 @@ export async function registerUser(prevState: any, formData: FormData): Promise<
     }
   }
 
-  // Check if email already exists (mock check)
-  const existingEmails = ["demo@rural.com", "farmer@example.com", "sarah@station.com"]
-  if (existingEmails.includes(email)) {
+  // Check if email already exists
+  const existingUser = userStorage.findUserByEmail(email)
+  if (existingUser) {
     return {
       success: false,
       message: "An account with this email already exists",
     }
   }
 
-  // Simulate successful registration
-  const newUser = {
-    id: `user_${Date.now()}`,
+  // Create new user
+  const newUser = userStorage.createUser({
+    firstName: name.split(" ")[0],
+    lastName: name.split(" ").slice(1).join(" ") || "",
     email,
-    name: `${firstName} ${lastName}`,
-    location,
-    propertyType,
-  }
+    password,
+    state,
+  })
 
-  return {
-    success: true,
-    message: `Welcome to Rural Community Hub, ${firstName}! Your account has been created successfully.`,
-    user: newUser,
-  }
+  console.log("Registration successful for:", email)
+
+  // Redirect to dashboard on successful registration
+  redirect("/dashboard")
 }
