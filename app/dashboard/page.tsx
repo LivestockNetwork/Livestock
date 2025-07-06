@@ -2,99 +2,58 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Progress } from "@/components/ui/progress"
 import {
-  User,
+  Shield,
+  Users,
   MapPin,
   AlertTriangle,
-  Users,
-  MessageSquare,
   Calendar,
-  Flame,
-  CloudRain,
-  Wind,
   Thermometer,
-  LogOut,
+  Droplets,
+  Wind,
+  Sun,
+  CloudRain,
+  Flame,
 } from "lucide-react"
-import Link from "next/link"
 
-interface UserData {
-  name: string
+interface User {
   email: string
-  location: string
-  propertyType: string
-}
-
-const stateRisks = {
-  NSW: [
-    { type: "bushfire", level: "high", description: "Bushfire season approaching" },
-    { type: "flood", level: "moderate", description: "La Niña conditions possible" },
-  ],
-  VIC: [
-    { type: "bushfire", level: "extreme", description: "Extreme fire danger period" },
-    { type: "storm", level: "moderate", description: "Severe weather warnings" },
-  ],
-  QLD: [
-    { type: "flood", level: "high", description: "Cyclone season active" },
-    { type: "heatwave", level: "moderate", description: "Extended heat periods" },
-  ],
-}
-
-const riskIcons = {
-  bushfire: Flame,
-  flood: CloudRain,
-  storm: Wind,
-  heatwave: Thermometer,
-}
-
-const riskColors = {
-  low: "bg-green-100 text-green-800 border-green-200",
-  moderate: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  high: "bg-orange-100 text-orange-800 border-orange-200",
-  extreme: "bg-red-100 text-red-800 border-red-200",
+  name: string
+  property: string
+  isLoggedIn: boolean
 }
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<UserData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is logged in
-    const currentUser = localStorage.getItem("currentUser")
-    const isLoggedIn = localStorage.getItem("isLoggedIn")
-
-    if (!currentUser || !isLoggedIn) {
+    const userData = localStorage.getItem("user")
+    if (userData) {
+      setUser(JSON.parse(userData))
+    } else {
       router.push("/login")
-      return
     }
-
-    try {
-      const userData = JSON.parse(currentUser)
-      setUser(userData)
-    } catch (error) {
-      console.error("Error parsing user data:", error)
-      router.push("/login")
-    } finally {
-      setIsLoading(false)
-    }
+    setLoading(false)
   }, [router])
 
   const handleLogout = () => {
-    localStorage.removeItem("currentUser")
-    localStorage.removeItem("isLoggedIn")
+    localStorage.removeItem("user")
     router.push("/")
   }
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
     )
@@ -104,27 +63,23 @@ export default function DashboardPage() {
     return null
   }
 
-  const userState = user.location.split(", ").pop() || "NSW"
-  const risks = stateRisks[userState as keyof typeof stateRisks] || stateRisks.NSW
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🌾</span>
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-4">
+              <Shield className="h-8 w-8 text-green-600" />
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Rural Emergency Hub</h1>
+                <p className="text-sm text-gray-600">Welcome back, {user.name}</p>
               </div>
-              <span className="text-xl font-bold text-gray-900">Rural Community Hub</span>
-            </Link>
-
-            <div className="flex items-center gap-4">
-              <span className="text-gray-700">Welcome, {user.name}</span>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
+            </div>
+            <div className="flex items-center space-x-4">
+              <Badge variant="outline">{user.property}</Badge>
+              <Button variant="outline" onClick={handleLogout}>
+                Sign Out
               </Button>
             </div>
           </div>
@@ -132,68 +87,209 @@ export default function DashboardPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
+        {/* Emergency Status */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {user.name}! 👋</h1>
-          <p className="text-gray-600">Here's what's happening in your rural community</p>
+          <Card className="border-l-4 border-l-orange-500">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <AlertTriangle className="h-5 w-5 text-orange-500" />
+                  <CardTitle className="text-lg">Current Emergency Status</CardTitle>
+                </div>
+                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                  MODERATE RISK
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Bushfire season is approaching. Your property has moderate risk factors that need attention.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="text-red-600 border-red-200">
+                  <Flame className="h-3 w-3 mr-1" />
+                  Fire Danger: High
+                </Badge>
+                <Badge variant="outline" className="text-blue-600 border-blue-200">
+                  <CloudRain className="h-3 w-3 mr-1" />
+                  Flood Risk: Low
+                </Badge>
+                <Badge variant="outline" className="text-gray-600 border-gray-200">
+                  <Wind className="h-3 w-3 mr-1" />
+                  Storm Risk: Moderate
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Emergency Plans</p>
+                  <p className="text-2xl font-bold text-gray-900">3</p>
+                </div>
+                <Shield className="h-8 w-8 text-green-600" />
+              </div>
+              <div className="mt-4">
+                <Progress value={75} className="h-2" />
+                <p className="text-xs text-gray-500 mt-1">75% complete</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Community Connections</p>
+                  <p className="text-2xl font-bold text-gray-900">12</p>
+                </div>
+                <Users className="h-8 w-8 text-blue-600" />
+              </div>
+              <p className="text-xs text-gray-500 mt-4">+3 new this week</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Weather Alerts</p>
+                  <p className="text-2xl font-bold text-gray-900">2</p>
+                </div>
+                <AlertTriangle className="h-8 w-8 text-orange-500" />
+              </div>
+              <p className="text-xs text-gray-500 mt-4">Active warnings</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Last Plan Update</p>
+                  <p className="text-2xl font-bold text-gray-900">5d</p>
+                </div>
+                <Calendar className="h-8 w-8 text-purple-600" />
+              </div>
+              <p className="text-xs text-gray-500 mt-4">Days ago</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Profile Card */}
+          {/* Emergency Plans */}
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Your Profile
+                <CardTitle className="flex items-center space-x-2">
+                  <Shield className="h-5 w-5" />
+                  <span>Your Emergency Plans</span>
                 </CardTitle>
+                <CardDescription>Manage and update your property emergency preparedness plans</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-gray-500" />
-                    <span>{user.location}</span>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <Flame className="h-8 w-8 text-red-500" />
+                    <div>
+                      <h3 className="font-medium">Bushfire Emergency Plan</h3>
+                      <p className="text-sm text-gray-600">Last updated 5 days ago</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-500">Property:</span>
-                    <Badge variant="secondary">{user.propertyType}</Badge>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-500">Email:</span>
-                    <span>{user.email}</span>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary">80% Complete</Badge>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/preparedness/bushfire">Update</Link>
+                    </Button>
                   </div>
                 </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CloudRain className="h-8 w-8 text-blue-500" />
+                    <div>
+                      <h3 className="font-medium">Flood Emergency Plan</h3>
+                      <p className="text-sm text-gray-600">Last updated 2 weeks ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="secondary">65% Complete</Badge>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/preparedness/flood">Update</Link>
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <Wind className="h-8 w-8 text-gray-500" />
+                    <div>
+                      <h3 className="font-medium">Severe Weather Plan</h3>
+                      <p className="text-sm text-gray-600">Not started</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="outline">0% Complete</Badge>
+                    <Button variant="outline" size="sm">
+                      Start Plan
+                    </Button>
+                  </div>
+                </div>
+
+                <Button className="w-full" asChild>
+                  <Link href="/onboarding">Create New Emergency Plan</Link>
+                </Button>
               </CardContent>
             </Card>
+          </div>
 
-            {/* Emergency Risks */}
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Weather Widget */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-orange-600" />
-                  Current Risk Assessment - {userState}
+                <CardTitle className="flex items-center space-x-2">
+                  <Sun className="h-5 w-5" />
+                  <span>Current Weather</span>
                 </CardTitle>
-                <CardDescription>Emergency risks for your area based on current conditions</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {risks.map((risk, index) => {
-                    const RiskIcon = riskIcons[risk.type as keyof typeof riskIcons]
-                    const colorClass = riskColors[risk.level as keyof typeof riskColors]
-
-                    return (
-                      <Alert key={index} className="border-l-4">
-                        <RiskIcon className="h-4 w-4" />
-                        <AlertTitle className="flex items-center gap-2">
-                          {risk.type.charAt(0).toUpperCase() + risk.type.slice(1)} Risk
-                          <Badge className={colorClass}>{risk.level.toUpperCase()}</Badge>
-                        </AlertTitle>
-                        <AlertDescription>{risk.description}</AlertDescription>
-                      </Alert>
-                    )
-                  })}
+                <div className="text-center mb-4">
+                  <div className="text-3xl font-bold">24°C</div>
+                  <div className="text-gray-600">Partly Cloudy</div>
                 </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="flex items-center">
+                      <Thermometer className="h-4 w-4 mr-1" />
+                      Feels like
+                    </span>
+                    <span>26°C</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="flex items-center">
+                      <Droplets className="h-4 w-4 mr-1" />
+                      Humidity
+                    </span>
+                    <span>65%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="flex items-center">
+                      <Wind className="h-4 w-4 mr-1" />
+                      Wind
+                    </span>
+                    <span>15 km/h NE</span>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full mt-4 bg-transparent" asChild>
+                  <Link href="/weather">View Forecast</Link>
+                </Button>
               </CardContent>
             </Card>
 
@@ -202,106 +298,51 @@ export default function DashboardPage() {
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
                   <Link href="/community">
-                    <Button variant="outline" className="w-full justify-start bg-transparent">
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Community Feed
-                    </Button>
+                    <Users className="h-4 w-4 mr-2" />
+                    Community Feed
                   </Link>
-                  <Link href="/preparedness/bushfire">
-                    <Button variant="outline" className="w-full justify-start bg-transparent">
-                      <Flame className="h-4 w-4 mr-2" />
-                      Emergency Plans
-                    </Button>
+                </Button>
+                <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                  <Link href="/marketplace">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    Find Agistment
                   </Link>
-                  <Link href="/community">
-                    <Button variant="outline" className="w-full justify-start bg-transparent">
-                      <Users className="h-4 w-4 mr-2" />
-                      Find Neighbors
-                    </Button>
+                </Button>
+                <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
+                  <Link href="/emergency-alerts">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Emergency Alerts
                   </Link>
-                  <Link href="/community">
-                    <Button variant="outline" className="w-full justify-start bg-transparent">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Local Events
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Community Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Your Community</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Local Members</span>
-                    <span className="font-semibold">127</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Active Today</span>
-                    <span className="font-semibold">23</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Emergency Plans</span>
-                    <span className="font-semibold">45</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Resources Shared</span>
-                    <span className="font-semibold">89</span>
-                  </div>
-                </div>
+                </Button>
               </CardContent>
             </Card>
 
             {/* Recent Activity */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Recent Activity</CardTitle>
+                <CardTitle>Recent Activity</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                    <div>
-                      <p className="font-medium">New member joined</p>
-                      <p className="text-gray-500">Sarah from Mudgee, NSW</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                    <div>
-                      <p className="font-medium">Emergency plan shared</p>
-                      <p className="text-gray-500">Bushfire evacuation route</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                    <div>
-                      <p className="font-medium">Resource request</p>
-                      <p className="text-gray-500">Hay bales needed urgently</p>
-                    </div>
-                  </div>
+              <CardContent className="space-y-3">
+                <div className="text-sm">
+                  <div className="font-medium">Plan Updated</div>
+                  <div className="text-gray-600">Bushfire plan reviewed</div>
+                  <div className="text-xs text-gray-500">5 days ago</div>
+                </div>
+                <div className="text-sm">
+                  <div className="font-medium">New Connection</div>
+                  <div className="text-gray-600">Connected with Smith Farm</div>
+                  <div className="text-xs text-gray-500">1 week ago</div>
+                </div>
+                <div className="text-sm">
+                  <div className="font-medium">Alert Received</div>
+                  <div className="text-gray-600">Fire danger rating updated</div>
+                  <div className="text-xs text-gray-500">2 weeks ago</div>
                 </div>
               </CardContent>
             </Card>
-
-            {/* Weather Alert */}
-            <Alert>
-              <Wind className="h-4 w-4" />
-              <AlertTitle>Weather Alert</AlertTitle>
-              <AlertDescription>
-                Strong winds expected tomorrow. Secure loose items and check livestock shelter.
-              </AlertDescription>
-            </Alert>
           </div>
         </div>
       </div>
