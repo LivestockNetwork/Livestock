@@ -1,52 +1,30 @@
 "use server"
 
-interface LoginResult {
-  success: boolean
-  message: string
-  user?: {
-    id: string
-    email: string
-    name: string
-  }
-}
+export async function handleUserLogin(prevState: any, formData: FormData) {
+  try {
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
 
-export async function loginUser(prevState: any, formData: FormData): Promise<LoginResult> {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
+    // Simulate authentication
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  if (!email || !password) {
+    if (email && password) {
+      return {
+        success: true,
+        message: "Login successful!",
+        user: { email },
+      }
+    } else {
+      return {
+        success: false,
+        message: "Invalid credentials",
+      }
+    }
+  } catch (error) {
     return {
       success: false,
-      message: "Please enter both email and password",
+      message: "Login failed. Please try again.",
+      error: error instanceof Error ? error.message : "Unknown error",
     }
-  }
-
-  // Demo accounts for testing
-  const demoAccounts = [
-    { email: "demo@rural.com", password: "demo123", name: "Demo User" },
-    { email: "farmer@example.com", password: "farm123", name: "John Farmer" },
-    { email: "sarah@station.com", password: "sarah123", name: "Sarah Station" },
-  ]
-
-  const user = demoAccounts.find((account) => account.email === email && account.password === password)
-
-  if (user) {
-    return {
-      success: true,
-      message: `Welcome back, ${user.name}!`,
-      user: {
-        id: `user_${Date.now()}`,
-        email: user.email,
-        name: user.name,
-      },
-    }
-  }
-
-  return {
-    success: false,
-    message: "Invalid email or password. Try demo@rural.com / demo123",
   }
 }
