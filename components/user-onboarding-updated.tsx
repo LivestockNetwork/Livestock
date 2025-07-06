@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Heart } from "lucide-react" // Import Heart icon
+import { Heart } from "lucide-react"
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

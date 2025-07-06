@@ -1,250 +1,325 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
 import {
   Shield,
+  Bell,
   Users,
   MapPin,
+  Settings,
   AlertTriangle,
-  Calendar,
-  Thermometer,
-  Droplets,
-  Wind,
-  Sun,
-  CloudRain,
+  CheckCircle,
+  Clock,
   Flame,
+  CloudRain,
+  Wind,
+  Plus,
+  Eye,
+  Edit,
+  Share2,
+  Download,
 } from "lucide-react"
 
-interface User {
-  email: string
+interface EmergencyPlan {
+  id: string
   name: string
-  property: string
-  isLoggedIn: boolean
+  type: "bushfire" | "flood" | "storm" | "general"
+  status: "draft" | "complete" | "needs_update"
+  lastUpdated: Date
+  completionPercentage: number
 }
 
+interface RecentActivity {
+  id: string
+  type: "plan_created" | "alert_received" | "community_post" | "plan_shared"
+  message: string
+  timestamp: Date
+}
+
+const mockPlans: EmergencyPlan[] = [
+  {
+    id: "1",
+    name: "Bushfire Emergency Plan",
+    type: "bushfire",
+    status: "complete",
+    lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    completionPercentage: 100,
+  },
+  {
+    id: "2",
+    name: "Flood Response Plan",
+    type: "flood",
+    status: "draft",
+    lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    completionPercentage: 65,
+  },
+  {
+    id: "3",
+    name: "Severe Weather Plan",
+    type: "storm",
+    status: "needs_update",
+    lastUpdated: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    completionPercentage: 85,
+  },
+]
+
+const mockActivity: RecentActivity[] = [
+  {
+    id: "1",
+    type: "alert_received",
+    message: "Received bushfire watch alert for your area",
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+  },
+  {
+    id: "2",
+    type: "plan_created",
+    message: "Created new flood response plan",
+    timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: "3",
+    type: "community_post",
+    message: "New post in Hunter Valley Community Group",
+    timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000),
+  },
+]
+
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [plans, setPlans] = useState<EmergencyPlan[]>(mockPlans)
+  const [activity, setActivity] = useState<RecentActivity[]>(mockActivity)
+  const [currentTime, setCurrentTime] = useState(new Date())
 
   useEffect(() => {
-    const userData = localStorage.getItem("user")
-    if (userData) {
-      setUser(JSON.parse(userData))
-    } else {
-      router.push("/login")
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000) // Update every minute
+
+    return () => clearInterval(timer)
+  }, [])
+
+  const getStatusColor = (status: EmergencyPlan["status"]) => {
+    switch (status) {
+      case "complete":
+        return "bg-green-100 text-green-800"
+      case "draft":
+        return "bg-yellow-100 text-yellow-800"
+      case "needs_update":
+        return "bg-red-100 text-red-800"
+      default:
+        return "bg-gray-100 text-gray-800"
     }
-    setLoading(false)
-  }, [router])
-
-  const handleLogout = () => {
-    localStorage.removeItem("user")
-    router.push("/")
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
-        </div>
-      </div>
-    )
+  const getStatusIcon = (status: EmergencyPlan["status"]) => {
+    switch (status) {
+      case "complete":
+        return <CheckCircle className="h-4 w-4" />
+      case "draft":
+        return <Clock className="h-4 w-4" />
+      case "needs_update":
+        return <AlertTriangle className="h-4 w-4" />
+      default:
+        return <Clock className="h-4 w-4" />
+    }
   }
 
-  if (!user) {
-    return null
+  const getPlanIcon = (type: EmergencyPlan["type"]) => {
+    switch (type) {
+      case "bushfire":
+        return <Flame className="h-5 w-5 text-red-500" />
+      case "flood":
+        return <CloudRain className="h-5 w-5 text-blue-500" />
+      case "storm":
+        return <Wind className="h-5 w-5 text-gray-500" />
+      default:
+        return <Shield className="h-5 w-5 text-green-500" />
+    }
+  }
+
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date()
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+
+    if (diffInHours < 1) {
+      return "Just now"
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`
+    } else {
+      const days = Math.floor(diffInHours / 24)
+      return `${days}d ago`
+    }
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <Shield className="h-8 w-8 text-green-600" />
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Rural Emergency Hub</h1>
-                <p className="text-sm text-gray-600">Welcome back, {user.name}</p>
-              </div>
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center">
+                <Shield className="h-8 w-8 text-green-600" />
+                <span className="ml-2 text-xl font-bold text-gray-900">RuralGuard</span>
+              </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Badge variant="outline">{user.property}</Badge>
-              <Button variant="outline" onClick={handleLogout}>
-                Sign Out
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/community">
+                  <Users className="h-4 w-4 mr-2" />
+                  Community
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/profile">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Link>
               </Button>
             </div>
           </div>
         </div>
-      </header>
+      </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Emergency Status */}
+        {/* Header */}
         <div className="mb-8">
-          <Card className="border-l-4 border-l-orange-500">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <AlertTriangle className="h-5 w-5 text-orange-500" />
-                  <CardTitle className="text-lg">Current Emergency Status</CardTitle>
-                </div>
-                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                  MODERATE RISK
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">
-                Bushfire season is approaching. Your property has moderate risk factors that need attention.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="text-red-600 border-red-200">
-                  <Flame className="h-3 w-3 mr-1" />
-                  Fire Danger: High
-                </Badge>
-                <Badge variant="outline" className="text-blue-600 border-blue-200">
-                  <CloudRain className="h-3 w-3 mr-1" />
-                  Flood Risk: Low
-                </Badge>
-                <Badge variant="outline" className="text-gray-600 border-gray-200">
-                  <Wind className="h-3 w-3 mr-1" />
-                  Storm Risk: Moderate
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600 mt-2">Welcome back! Here's an overview of your emergency preparedness.</p>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Emergency Plans</p>
-                  <p className="text-2xl font-bold text-gray-900">3</p>
-                </div>
-                <Shield className="h-8 w-8 text-green-600" />
-              </div>
-              <div className="mt-4">
-                <Progress value={75} className="h-2" />
-                <p className="text-xs text-gray-500 mt-1">75% complete</p>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Active Alerts */}
+        <Alert className="mb-8 border-orange-200 bg-orange-50">
+          <AlertTriangle className="h-4 w-4 text-orange-600" />
+          <AlertDescription className="text-orange-800">
+            <strong>Weather Alert:</strong> Severe weather warning issued for your area.
+            <Link href="/weather" className="ml-2 underline font-medium">
+              View details →
+            </Link>
+          </AlertDescription>
+        </Alert>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Community Connections</p>
-                  <p className="text-2xl font-bold text-gray-900">12</p>
-                </div>
-                <Users className="h-8 w-8 text-blue-600" />
-              </div>
-              <p className="text-xs text-gray-500 mt-4">+3 new this week</p>
-            </CardContent>
-          </Card>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Quick Stats */}
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Emergency Plans</p>
+                      <p className="text-3xl font-bold text-gray-900">{plans.length}</p>
+                    </div>
+                    <Shield className="h-8 w-8 text-green-600" />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    {plans.filter((p) => p.status === "complete").length} completed
+                  </p>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Weather Alerts</p>
-                  <p className="text-2xl font-bold text-gray-900">2</p>
-                </div>
-                <AlertTriangle className="h-8 w-8 text-orange-500" />
-              </div>
-              <p className="text-xs text-gray-500 mt-4">Active warnings</p>
-            </CardContent>
-          </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Active Alerts</p>
+                      <p className="text-3xl font-bold text-gray-900">2</p>
+                    </div>
+                    <Bell className="h-8 w-8 text-orange-600" />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">1 weather, 1 community</p>
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Last Plan Update</p>
-                  <p className="text-2xl font-bold text-gray-900">5d</p>
-                </div>
-                <Calendar className="h-8 w-8 text-purple-600" />
-              </div>
-              <p className="text-xs text-gray-500 mt-4">Days ago</p>
-            </CardContent>
-          </Card>
-        </div>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">Community</p>
+                      <p className="text-3xl font-bold text-gray-900">24</p>
+                    </div>
+                    <Users className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">Connected neighbors</p>
+                </CardContent>
+              </Card>
+            </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Emergency Plans */}
-          <div className="lg:col-span-2">
+            {/* Emergency Plans */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Shield className="h-5 w-5" />
-                  <span>Your Emergency Plans</span>
-                </CardTitle>
-                <CardDescription>Manage and update your property emergency preparedness plans</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Emergency Plans</CardTitle>
+                    <CardDescription>Manage and update your emergency response plans</CardDescription>
+                  </div>
+                  <Button asChild>
+                    <Link href="/plans/create">
+                      <Plus className="h-4 w-4 mr-2" />
+                      New Plan
+                    </Link>
+                  </Button>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Flame className="h-8 w-8 text-red-500" />
-                    <div>
-                      <h3 className="font-medium">Bushfire Emergency Plan</h3>
-                      <p className="text-sm text-gray-600">Last updated 5 days ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="secondary">80% Complete</Badge>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href="/preparedness/bushfire">Update</Link>
-                    </Button>
-                  </div>
-                </div>
+              <CardContent>
+                <div className="space-y-4">
+                  {plans.map((plan) => (
+                    <div key={plan.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          {getPlanIcon(plan.type)}
+                          <div>
+                            <h3 className="font-medium text-gray-900">{plan.name}</h3>
+                            <p className="text-sm text-gray-500">Updated {formatTimeAgo(plan.lastUpdated)}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge className={getStatusColor(plan.status)}>
+                            {getStatusIcon(plan.status)}
+                            <span className="ml-1 capitalize">{plan.status.replace("_", " ")}</span>
+                          </Badge>
+                        </div>
+                      </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <CloudRain className="h-8 w-8 text-blue-500" />
-                    <div>
-                      <h3 className="font-medium">Flood Emergency Plan</h3>
-                      <p className="text-sm text-gray-600">Last updated 2 weeks ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="secondary">65% Complete</Badge>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href="/preparedness/flood">Update</Link>
-                    </Button>
-                  </div>
-                </div>
+                      <div className="mb-3">
+                        <div className="flex items-center justify-between text-sm mb-1">
+                          <span className="text-gray-600">Completion</span>
+                          <span className="font-medium">{plan.completionPercentage}%</span>
+                        </div>
+                        <Progress value={plan.completionPercentage} className="h-2" />
+                      </div>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Wind className="h-8 w-8 text-gray-500" />
-                    <div>
-                      <h3 className="font-medium">Severe Weather Plan</h3>
-                      <p className="text-sm text-gray-600">Not started</p>
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" variant="outline" asChild>
+                          <Link href={`/plans/${plan.id}`}>
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
+                          </Link>
+                        </Button>
+                        <Button size="sm" variant="outline" asChild>
+                          <Link href={`/plans/${plan.id}/edit`}>
+                            <Edit className="h-4 w-4 mr-1" />
+                            Edit
+                          </Link>
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Share2 className="h-4 w-4 mr-1" />
+                          Share
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Download className="h-4 w-4 mr-1" />
+                          Export
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant="outline">0% Complete</Badge>
-                    <Button variant="outline" size="sm">
-                      Start Plan
-                    </Button>
-                  </div>
+                  ))}
                 </div>
-
-                <Button className="w-full" asChild>
-                  <Link href="/onboarding">Create New Emergency Plan</Link>
-                </Button>
               </CardContent>
             </Card>
           </div>
@@ -254,41 +329,52 @@ export default function DashboardPage() {
             {/* Weather Widget */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Sun className="h-5 w-5" />
-                  <span>Current Weather</span>
-                </CardTitle>
+                <CardTitle className="text-lg">Current Weather</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center mb-4">
-                  <div className="text-3xl font-bold">24°C</div>
-                  <div className="text-gray-600">Partly Cloudy</div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-gray-900 mb-2">22°C</div>
+                  <p className="text-gray-600 mb-4">Partly Cloudy</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Wind:</span>
+                      <span>15 km/h NW</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Humidity:</span>
+                      <span>65%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Fire Danger:</span>
+                      <Badge className="bg-yellow-100 text-yellow-800">Moderate</Badge>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full mt-4 bg-transparent" asChild>
+                    <Link href="/weather">View Forecast</Link>
+                  </Button>
                 </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="flex items-center">
-                      <Thermometer className="h-4 w-4 mr-1" />
-                      Feels like
-                    </span>
-                    <span>26°C</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="flex items-center">
-                      <Droplets className="h-4 w-4 mr-1" />
-                      Humidity
-                    </span>
-                    <span>65%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="flex items-center">
-                      <Wind className="h-4 w-4 mr-1" />
-                      Wind
-                    </span>
-                    <span>15 km/h NE</span>
-                  </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {activity.map((item) => (
+                    <div key={item.id} className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-gray-900">{item.message}</p>
+                        <p className="text-xs text-gray-500">{formatTimeAgo(item.timestamp)}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <Button variant="outline" className="w-full mt-4 bg-transparent" asChild>
-                  <Link href="/weather">View Forecast</Link>
+                <Button size="sm" variant="outline" className="w-full mt-4 bg-transparent" asChild>
+                  <Link href="/activity">View All Activity</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -296,51 +382,27 @@ export default function DashboardPage() {
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
-                  <Link href="/community">
-                    <Users className="h-4 w-4 mr-2" />
-                    Community Feed
-                  </Link>
-                </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
-                  <Link href="/marketplace">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Find Agistment
-                  </Link>
-                </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent" asChild>
-                  <Link href="/emergency-alerts">
+                <Button className="w-full justify-start bg-transparent" variant="outline" asChild>
+                  <Link href="/emergency">
                     <AlertTriangle className="h-4 w-4 mr-2" />
-                    Emergency Alerts
+                    Report Emergency
                   </Link>
                 </Button>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="text-sm">
-                  <div className="font-medium">Plan Updated</div>
-                  <div className="text-gray-600">Bushfire plan reviewed</div>
-                  <div className="text-xs text-gray-500">5 days ago</div>
-                </div>
-                <div className="text-sm">
-                  <div className="font-medium">New Connection</div>
-                  <div className="text-gray-600">Connected with Smith Farm</div>
-                  <div className="text-xs text-gray-500">1 week ago</div>
-                </div>
-                <div className="text-sm">
-                  <div className="font-medium">Alert Received</div>
-                  <div className="text-gray-600">Fire danger rating updated</div>
-                  <div className="text-xs text-gray-500">2 weeks ago</div>
-                </div>
+                <Button className="w-full justify-start bg-transparent" variant="outline" asChild>
+                  <Link href="/community/post">
+                    <Users className="h-4 w-4 mr-2" />
+                    Post to Community
+                  </Link>
+                </Button>
+                <Button className="w-full justify-start bg-transparent" variant="outline" asChild>
+                  <Link href="/map">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    View Property Map
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           </div>

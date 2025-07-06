@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useActionState } from "react"
+import { useFormState } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,7 +23,7 @@ export default function BrowserRegistrationForm() {
   const [propertyType, setPropertyType] = useState("")
   const [primaryInterest, setPrimaryInterest] = useState("")
 
-  const [state, action, isPending] = useActionState(registerUserWithEmail, null)
+  const [state, action, isPending] = useFormState(registerUserWithEmail, null)
 
   useEffect(() => {
     // Load credentials from localStorage

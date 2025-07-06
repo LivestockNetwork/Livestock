@@ -1,11 +1,10 @@
 {
-  "name": "rural-community-hub",
+  "name": "livestock-emergency-system",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "export": "next build && next export",
     "lint": "next lint",
     "start": "next start"
   },
@@ -21,6 +20,7 @@
     "@radix-ui/react-progress": "latest",
     "@radix-ui/react-scroll-area": "latest",
     "@radix-ui/react-select": "latest",
+    "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "latest",
     "@radix-ui/react-switch": "latest",
     "@radix-ui/react-tabs": "^1.0.4",
@@ -41,11 +41,11 @@
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "autoprefixer": "^10.0.1",
-    "eslint": "^8",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.51.0",
     "eslint-config-next": "14.0.0",
     "postcss": "^8.5",
-    "tailwindcss": "^3.3.0",
+    "tailwindcss": "^3.3.5",
     "typescript": "^5"
   }
 }

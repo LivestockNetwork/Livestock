@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useActionState } from "react"
+import { useFormState } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { registerUser } from "@/app/actions/user-onboarding-simple"
 
 export default function SimpleOnboardingForm() {
-  const [state, formAction, isPending] = useActionState(registerUser, null)
+  const [state, formAction, isPending] = useFormState(registerUser, null)
   const [propertyType, setPropertyType] = useState("")
   const [primaryInterest, setPrimaryInterest] = useState("")
 

@@ -1,285 +1,308 @@
 "use client"
 
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { AlertTriangle, Flame, CloudRain, Wind, Bell, BellOff, MapPin, Clock, Phone, Mail } from "lucide-react"
+import {
+  AlertTriangle,
+  Flame,
+  CloudRain,
+  Wind,
+  Zap,
+  Phone,
+  MessageSquare,
+  Share2,
+  MapPin,
+  Clock,
+  CheckCircle,
+  X,
+} from "lucide-react"
 
 interface EmergencyAlert {
   id: string
-  type: "bushfire" | "flood" | "storm" | "general"
-  severity: "low" | "medium" | "high" | "extreme"
+  type: "fire" | "flood" | "storm" | "power" | "general"
   title: string
   message: string
   location: string
+  severity: "low" | "medium" | "high" | "critical"
   timestamp: Date
+  actions: string[]
   isActive: boolean
-  source: string
 }
 
 const mockAlerts: EmergencyAlert[] = [
   {
     id: "1",
-    type: "bushfire",
-    severity: "high",
-    title: "Bushfire Watch - Central West NSW",
+    type: "fire",
+    title: "Total Fire Ban",
     message:
-      "Extreme fire danger forecast for Central West NSW. Prepare your property and livestock evacuation plans. Monitor conditions closely.",
-    location: "Central West NSW",
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      "Total Fire Ban declared for Hunter Valley region. No fires permitted. Extreme fire danger conditions expected.",
+    location: "Hunter Valley, NSW",
+    severity: "critical",
+    timestamp: new Date(Date.now() - 30 * 60 * 1000),
+    actions: ["Prepare evacuation plan", "Check water supplies", "Clear property of flammable materials"],
     isActive: true,
-    source: "NSW Rural Fire Service",
   },
   {
     id: "2",
     type: "flood",
+    title: "Flood Warning",
+    message: "Minor flooding expected along Manning River. Water levels rising. Move livestock to higher ground.",
+    location: "Manning Valley, NSW",
     severity: "medium",
-    title: "Flood Warning - Murray River",
-    message: "Minor flooding expected along Murray River. Move livestock to higher ground and secure equipment.",
-    location: "Murray River",
-    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
+    timestamp: new Date(Date.now() - 45 * 60 * 1000),
+    actions: ["Move livestock to safety", "Secure loose items", "Monitor water levels"],
     isActive: true,
-    source: "Bureau of Meteorology",
   },
   {
     id: "3",
     type: "storm",
-    severity: "medium",
-    title: "Severe Weather Warning - Hunter Valley",
-    message: "Damaging winds and large hail possible. Secure loose items and shelter animals.",
-    location: "Hunter Valley",
-    timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
-    isActive: false,
-    source: "Bureau of Meteorology",
+    title: "Severe Weather Warning",
+    message: "Severe thunderstorms with damaging winds and large hail possible. Secure outdoor equipment.",
+    location: "Central Coast, NSW",
+    severity: "high",
+    timestamp: new Date(Date.now() - 60 * 60 * 1000),
+    actions: ["Secure loose objects", "Shelter animals", "Avoid travel if possible"],
+    isActive: true,
   },
 ]
 
+const getAlertIcon = (type: EmergencyAlert["type"]) => {
+  switch (type) {
+    case "fire":
+      return <Flame className="h-5 w-5" />
+    case "flood":
+      return <CloudRain className="h-5 w-5" />
+    case "storm":
+      return <Wind className="h-5 w-5" />
+    case "power":
+      return <Zap className="h-5 w-5" />
+    default:
+      return <AlertTriangle className="h-5 w-5" />
+  }
+}
+
+const getSeverityColor = (severity: EmergencyAlert["severity"]) => {
+  switch (severity) {
+    case "critical":
+      return "border-red-500 bg-red-50 text-red-900"
+    case "high":
+      return "border-orange-500 bg-orange-50 text-orange-900"
+    case "medium":
+      return "border-yellow-500 bg-yellow-50 text-yellow-900"
+    case "low":
+      return "border-blue-500 bg-blue-50 text-blue-900"
+    default:
+      return "border-gray-500 bg-gray-50 text-gray-900"
+  }
+}
+
+const getSeverityBadgeColor = (severity: EmergencyAlert["severity"]) => {
+  switch (severity) {
+    case "critical":
+      return "bg-red-600 text-white"
+    case "high":
+      return "bg-orange-600 text-white"
+    case "medium":
+      return "bg-yellow-600 text-white"
+    case "low":
+      return "bg-blue-600 text-white"
+    default:
+      return "bg-gray-600 text-white"
+  }
+}
+
+const formatTimeAgo = (timestamp: Date) => {
+  const now = new Date()
+  const diffInMinutes = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60))
+
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes}m ago`
+  } else {
+    const hours = Math.floor(diffInMinutes / 60)
+    return `${hours}h ago`
+  }
+}
+
 export default function EmergencyAlertSystem() {
   const [alerts, setAlerts] = useState<EmergencyAlert[]>(mockAlerts)
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
-  const [emailAlerts, setEmailAlerts] = useState(true)
-  const [smsAlerts, setSmsAlerts] = useState(false)
+  const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([])
 
-  const getAlertIcon = (type: string) => {
-    switch (type) {
-      case "bushfire":
-        return Flame
-      case "flood":
-        return CloudRain
-      case "storm":
-        return Wind
-      default:
-        return AlertTriangle
-    }
+  const activeAlerts = alerts.filter((alert) => alert.isActive && !dismissedAlerts.includes(alert.id))
+
+  const dismissAlert = (alertId: string) => {
+    setDismissedAlerts((prev) => [...prev, alertId])
   }
 
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "extreme":
-        return "bg-red-600 text-white"
-      case "high":
-        return "bg-red-500 text-white"
-      case "medium":
-        return "bg-orange-500 text-white"
-      case "low":
-        return "bg-yellow-500 text-black"
-      default:
-        return "bg-gray-500 text-white"
-    }
+  const acknowledgeAlert = (alertId: string) => {
+    // In a real app, this would send acknowledgment to the server
+    console.log(`Alert ${alertId} acknowledged`)
   }
 
-  const formatTimestamp = (timestamp: Date) => {
-    const now = new Date()
-    const diffInHours = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60 * 60))
-
-    if (diffInHours < 1) {
-      return "Just now"
-    } else if (diffInHours < 24) {
-      return `${diffInHours} hours ago`
+  const shareAlert = (alert: EmergencyAlert) => {
+    if (navigator.share) {
+      navigator.share({
+        title: alert.title,
+        text: alert.message,
+        url: window.location.href,
+      })
     } else {
-      return `${Math.floor(diffInHours / 24)} days ago`
+      // Fallback for browsers that don't support Web Share API
+      navigator.clipboard.writeText(`${alert.title}: ${alert.message}`)
     }
   }
 
-  const activeAlerts = alerts.filter((alert) => alert.isActive)
-  const recentAlerts = alerts.filter((alert) => !alert.isActive).slice(0, 5)
+  const callEmergencyServices = () => {
+    window.location.href = "tel:000"
+  }
+
+  if (activeAlerts.length === 0) {
+    return (
+      <Card className="border-green-200 bg-green-50">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center text-green-800">
+            <CheckCircle className="h-6 w-6 mr-2" />
+            <span className="font-medium">No active emergency alerts for your area</span>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <div className="space-y-6">
-      {/* Notification Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Bell className="h-5 w-5" />
-            <span>Alert Preferences</span>
-          </CardTitle>
-          <CardDescription>Configure how you want to receive emergency notifications</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Bell className="h-4 w-4" />
-              <Label htmlFor="notifications">Push Notifications</Label>
-            </div>
-            <Switch id="notifications" checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
-          </div>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900">Emergency Alerts</h2>
+        <Badge className="bg-red-600 text-white">
+          {activeAlerts.length} Active Alert{activeAlerts.length !== 1 ? "s" : ""}
+        </Badge>
+      </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Mail className="h-4 w-4" />
-              <Label htmlFor="email">Email Alerts</Label>
-            </div>
-            <Switch id="email" checked={emailAlerts} onCheckedChange={setEmailAlerts} />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Phone className="h-4 w-4" />
-              <Label htmlFor="sms">SMS Alerts</Label>
-            </div>
-            <Switch id="sms" checked={smsAlerts} onCheckedChange={setSmsAlerts} />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Active Alerts */}
-      {activeAlerts.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-red-600">
-              <AlertTriangle className="h-5 w-5" />
-              <span>Active Emergency Alerts</span>
-              <Badge variant="destructive">{activeAlerts.length}</Badge>
-            </CardTitle>
-            <CardDescription>Current emergency warnings affecting your area</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {activeAlerts.map((alert) => {
-              const Icon = getAlertIcon(alert.type)
-              return (
-                <Alert key={alert.id} className="border-l-4 border-l-red-500">
-                  <div className="flex items-start space-x-3">
-                    <Icon className="h-5 w-5 text-red-500 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold text-gray-900">{alert.title}</h3>
-                        <Badge className={getSeverityColor(alert.severity)}>{alert.severity.toUpperCase()}</Badge>
-                      </div>
-                      <AlertDescription className="text-gray-700 mb-3">{alert.message}</AlertDescription>
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <div className="flex items-center space-x-4">
-                          <span className="flex items-center">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            {alert.location}
-                          </span>
-                          <span className="flex items-center">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {formatTimestamp(alert.timestamp)}
-                          </span>
-                        </div>
-                        <span className="text-xs">{alert.source}</span>
-                      </div>
-                    </div>
-                  </div>
-                </Alert>
-              )
-            })}
-          </CardContent>
-        </Card>
+      {/* Critical Actions */}
+      {activeAlerts.some((alert) => alert.severity === "critical") && (
+        <Alert className="border-red-500 bg-red-50">
+          <AlertTriangle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-800">
+            <strong>Critical Alert Active:</strong> Immediate action may be required.
+            <Button size="sm" className="ml-4 bg-red-600 hover:bg-red-700" onClick={callEmergencyServices}>
+              <Phone className="h-4 w-4 mr-1" />
+              Call 000
+            </Button>
+          </AlertDescription>
+        </Alert>
       )}
 
-      {/* Recent Alerts */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Clock className="h-5 w-5" />
-            <span>Recent Alerts</span>
-          </CardTitle>
-          <CardDescription>Previously issued emergency alerts for your area</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {recentAlerts.length > 0 ? (
-            <div className="space-y-4">
-              {recentAlerts.map((alert) => {
-                const Icon = getAlertIcon(alert.type)
-                return (
-                  <div key={alert.id} className="flex items-start space-x-3 p-3 border rounded-lg bg-gray-50">
-                    <Icon className="h-4 w-4 text-gray-500 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-medium text-gray-900">{alert.title}</h4>
-                        <Badge variant="outline" className="text-xs">
-                          {alert.severity}
-                        </Badge>
+      {/* Alert Cards */}
+      <div className="space-y-4">
+        {activeAlerts.map((alert) => (
+          <Card key={alert.id} className={`border-2 ${getSeverityColor(alert.severity)}`}>
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-full ${getSeverityBadgeColor(alert.severity)}`}>
+                    {getAlertIcon(alert.type)}
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">{alert.title}</CardTitle>
+                    <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {alert.location}
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{alert.message}</p>
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span className="flex items-center">
-                          <MapPin className="h-3 w-3 mr-1" />
-                          {alert.location}
-                        </span>
-                        <span>{formatTimestamp(alert.timestamp)}</span>
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1" />
+                        {formatTimeAgo(alert.timestamp)}
                       </div>
                     </div>
                   </div>
-                )
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <BellOff className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No recent alerts</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge className={getSeverityBadgeColor(alert.severity)}>{alert.severity.toUpperCase()}</Badge>
+                  <Button size="sm" variant="ghost" onClick={() => dismissAlert(alert.id)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700 mb-4">{alert.message}</p>
+
+              {/* Recommended Actions */}
+              <div className="mb-4">
+                <h4 className="font-medium text-gray-900 mb-2">Recommended Actions:</h4>
+                <ul className="space-y-1">
+                  {alert.actions.map((action, index) => (
+                    <li key={index} className="flex items-center text-sm text-gray-700">
+                      <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                      {action}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => acknowledgeAlert(alert.id)}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <CheckCircle className="h-4 w-4 mr-1" />
+                  Acknowledge
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => shareAlert(alert)}>
+                  <Share2 className="h-4 w-4 mr-1" />
+                  Share
+                </Button>
+                <Button size="sm" variant="outline" asChild>
+                  <a href={`sms:?body=${encodeURIComponent(`${alert.title}: ${alert.message}`)}`}>
+                    <MessageSquare className="h-4 w-4 mr-1" />
+                    Send SMS
+                  </a>
+                </Button>
+                {alert.severity === "critical" && (
+                  <Button size="sm" variant="destructive" onClick={callEmergencyServices}>
+                    <Phone className="h-4 w-4 mr-1" />
+                    Call 000
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {/* Emergency Contacts */}
       <Card>
         <CardHeader>
           <CardTitle>Emergency Contacts</CardTitle>
-          <CardDescription>Important numbers for emergency situations</CardDescription>
+          <CardDescription>Quick access to important emergency numbers</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <h4 className="font-medium">Emergency Services</h4>
-              <div className="text-sm space-y-1">
-                <div className="flex justify-between">
-                  <span>Emergency (Fire, Police, Ambulance)</span>
-                  <span className="font-mono">000</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>NSW Rural Fire Service</span>
-                  <span className="font-mono">1800 679 737</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>SES (Flood/Storm)</span>
-                  <span className="font-mono">132 500</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="font-medium">Information Services</h4>
-              <div className="text-sm space-y-1">
-                <div className="flex justify-between">
-                  <span>Bureau of Meteorology</span>
-                  <span className="font-mono">1900 937 107</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>NSW Emergency Info</span>
-                  <span className="font-mono">1800 227 228</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Animal Emergency Hotline</span>
-                  <span className="font-mono">1800 814 647</span>
-                </div>
-              </div>
-            </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <Button variant="outline" className="h-auto p-4 flex-col bg-transparent" asChild>
+              <a href="tel:000">
+                <Phone className="h-6 w-6 mb-2 text-red-600" />
+                <span className="font-semibold">Emergency Services</span>
+                <span className="text-sm text-gray-600">000</span>
+              </a>
+            </Button>
+            <Button variant="outline" className="h-auto p-4 flex-col bg-transparent" asChild>
+              <a href="tel:132500">
+                <Flame className="h-6 w-6 mb-2 text-orange-600" />
+                <span className="font-semibold">Fire & Rescue</span>
+                <span className="text-sm text-gray-600">132 500</span>
+              </a>
+            </Button>
+            <Button variant="outline" className="h-auto p-4 flex-col bg-transparent" asChild>
+              <a href="tel:132625">
+                <Wind className="h-6 w-6 mb-2 text-blue-600" />
+                <span className="font-semibold">SES</span>
+                <span className="text-sm text-gray-600">132 625</span>
+              </a>
+            </Button>
           </div>
         </CardContent>
       </Card>
