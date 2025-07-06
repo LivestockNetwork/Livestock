@@ -1,139 +1,128 @@
 "use client"
+
 import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Heart, MessageCircle, Share2, Users } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Heart, MessageCircle, Share2, Play, Pause } from "lucide-react"
 
 interface VideoPostProps {
-  post: {
-    id: string
-    videoUrl: string
-    category: string
-    caption: string
-    author: string
+  id: string
+  author: {
+    name: string
+    avatar: string
     location: string
-    timestamp: Date
-    likes: number
-    comments: number
-    isBusinessPost?: boolean
   }
+  content: string
+  videoUrl: string
+  thumbnail: string
+  likes: number
+  comments: number
+  timestamp: string
 }
 
-export default function VideoPost({ post }: VideoPostProps) {
+export default function VideoPost({
+  id,
+  author,
+  content,
+  videoUrl,
+  thumbnail,
+  likes,
+  comments,
+  timestamp,
+}: VideoPostProps) {
+  const [isPlaying, setIsPlaying] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
-  const [likes, setLikes] = useState(post.likes)
+  const [likeCount, setLikeCount] = useState(likes)
 
   const handleLike = () => {
     setIsLiked(!isLiked)
-    setLikes(isLiked ? likes - 1 : likes + 1)
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1)
   }
 
-  const getCategoryInfo = (category: string) => {
-    const categories = {
-      "new-arrival": { emoji: "🐴", label: "New Arrival", color: "green" },
-      equipment: { emoji: "🚜", label: "Equipment Demo", color: "blue" },
-      "farm-update": { emoji: "🌾", label: "Farm Update", color: "yellow" },
-      "need-help": { emoji: "🚨", label: "Need Help", color: "red" },
-    }
-    return categories[category as keyof typeof categories] || { emoji: "📹", label: "Video", color: "gray" }
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying)
   }
-
-  const categoryInfo = getCategoryInfo(post.category)
-  const timeAgo = new Date().getTime() - post.timestamp.getTime()
-  const hoursAgo = Math.floor(timeAgo / (1000 * 60 * 60))
-  const timeDisplay = hoursAgo < 1 ? "Just now" : hoursAgo === 1 ? "1 hour ago" : `${hoursAgo} hours ago`
 
   return (
-    <Card
-      className={`border-0 shadow-xl rounded-2xl overflow-hidden ${
-        post.isBusinessPost ? "ring-2 ring-amber-400" : ""
-      } ${post.category === "need-help" ? "border-l-4 border-red-400" : ""}`}
-    >
-      <div className="relative">
-        <video
-          src={post.videoUrl}
-          controls
-          className="w-full h-48 object-cover"
-          poster="/placeholder.svg?height=300&width=400&text=Video+Loading"
-        />
-        <div className="absolute top-3 left-3">
-          {post.isBusinessPost && (
-            <Badge
-              className="text-white font-bold text-xs mb-2"
-              style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
-            >
-              🌟 Featured Business
-            </Badge>
-          )}
-          {post.category === "need-help" && (
-            <Badge className="bg-red-500 text-white font-bold text-xs">🚨 Need Help</Badge>
-          )}
-        </div>
-      </div>
-
-      <CardContent className="p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div
-            className="p-2 rounded-full"
-            style={{
-              background: post.isBusinessPost
-                ? "linear-gradient(135deg, #f59e0b, #d97706)"
-                : "linear-gradient(135deg, #7EC9BB, #6BB3A6)",
-            }}
-          >
-            <Users className="h-4 w-4 text-white" />
-          </div>
-          <div>
-            <div className="font-bold text-slate-800">{post.author}</div>
-            <div className="text-sm text-slate-600">{post.location}</div>
-          </div>
-          <div className="ml-auto">
-            <Badge
-              variant="outline"
-              className={`text-xs border-${categoryInfo.color}-200 text-${categoryInfo.color}-700`}
-            >
-              {categoryInfo.emoji} {categoryInfo.label}
-            </Badge>
+    <Card className="w-full max-w-2xl mx-auto mb-6">
+      <CardHeader className="pb-3">
+        <div className="flex items-center space-x-3">
+          <Avatar>
+            <AvatarImage src={author.avatar || "/placeholder.svg"} alt={author.name} />
+            <AvatarFallback>{author.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <h3 className="font-semibold text-sm">{author.name}</h3>
+            <p className="text-xs text-gray-500">
+              {author.location} • {timestamp}
+            </p>
           </div>
         </div>
+      </CardHeader>
 
-        <p className="text-slate-700 mb-4">{post.caption}</p>
+      <CardContent className="pt-0">
+        <p className="text-sm mb-4">{content}</p>
 
+        {/* Video Player */}
+        <div className="relative bg-black rounded-lg overflow-hidden mb-4">
+          <div className="aspect-video relative">
+            {!isPlaying ? (
+              <div
+                className="w-full h-full bg-cover bg-center cursor-pointer flex items-center justify-center"
+                style={{ backgroundImage: `url(${thumbnail})` }}
+                onClick={togglePlay}
+              >
+                <div className="bg-black bg-opacity-50 rounded-full p-4">
+                  <Play className="h-8 w-8 text-white" />
+                </div>
+              </div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                <div className="text-center text-white">
+                  <div className="mb-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+                  </div>
+                  <p className="text-sm">Video would play here</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 text-white border-white hover:bg-white hover:text-black bg-transparent"
+                    onClick={togglePlay}
+                  >
+                    <Pause className="h-4 w-4 mr-1" />
+                    Pause
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Action Buttons */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={handleLike}
-              className={`flex items-center gap-1 ${isLiked ? "text-red-500" : "text-slate-500"}`}
+              className={`flex items-center space-x-1 ${isLiked ? "text-red-500" : "text-gray-500"}`}
             >
               <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
-              {likes}
+              <span className="text-xs">{likeCount}</span>
             </Button>
-            <Button variant="ghost" size="sm" className="flex items-center gap-1 text-slate-500">
-              <MessageCircle className="h-4 w-4" />
-              {post.comments}
-            </Button>
-            <Button variant="ghost" size="sm" className="flex items-center gap-1 text-slate-500">
-              <Share2 className="h-4 w-4" />
-              Share
-            </Button>
-          </div>
-          <span className="text-xs text-slate-400">{timeDisplay}</span>
-        </div>
 
-        {post.isBusinessPost && (
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <Button
-              size="sm"
-              style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
-              className="text-white"
-            >
-              Visit Business
+            <Button variant="ghost" size="sm" className="flex items-center space-x-1 text-gray-500">
+              <MessageCircle className="h-4 w-4" />
+              <span className="text-xs">{comments}</span>
+            </Button>
+
+            <Button variant="ghost" size="sm" className="flex items-center space-x-1 text-gray-500">
+              <Share2 className="h-4 w-4" />
+              <span className="text-xs">Share</span>
             </Button>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   )

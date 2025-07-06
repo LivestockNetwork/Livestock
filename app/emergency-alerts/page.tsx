@@ -7,7 +7,7 @@ import Link from "next/link"
 
 export default function EmergencyAlertsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50">
+    <div className="min-h-screen bg-gray-50 p-4">
       <EmergencyTicker />
 
       {/* Header */}
@@ -57,9 +57,7 @@ export default function EmergencyAlertsPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <EmergencyAlertSystem />
-      </div>
+      <div className="max-w-6xl mx-auto">{EmergencyAlertSystem()}</div>
     </div>
   )
 }

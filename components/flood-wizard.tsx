@@ -9,7 +9,20 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
-import { AlertTriangle, MapPin, Users, Phone, Truck, Home, ArrowLeft, ArrowRight, Download } from "lucide-react"
+import {
+  AlertTriangle,
+  MapPin,
+  Users,
+  Phone,
+  Truck,
+  Home,
+  ArrowLeft,
+  ArrowRight,
+  Download,
+  Share2,
+  Plus,
+} from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 interface FloodWizardProps {
   onComplete?: (plan: any) => void
@@ -17,6 +30,8 @@ interface FloodWizardProps {
 
 export default function FloodWizard({ onComplete }: FloodWizardProps) {
   const [currentStep, setCurrentStep] = useState(1)
+  const [generatedPlan, setGeneratedPlan] = useState<any>(null)
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     // Property Information
     propertyName: "",
@@ -81,14 +96,171 @@ export default function FloodWizard({ onComplete }: FloodWizardProps) {
       ...formData,
       generatedAt: new Date().toISOString(),
       planType: "flood",
+      planId: `flood-${Date.now()}`,
     }
+
+    setGeneratedPlan(plan)
 
     if (onComplete) {
       onComplete(plan)
     }
 
-    // For demo purposes, show completion
+    // Show completion
     setCurrentStep(totalSteps + 1)
+
+    toast({
+      title: "Flood Emergency Plan Generated!",
+      description: "Your personalized plan is ready for download and sharing.",
+    })
+  }
+
+  const downloadPDF = () => {
+    if (!generatedPlan) return
+
+    // Create a simple text version of the plan for download
+    const planText = `
+FLOOD EMERGENCY PLAN
+Generated: ${new Date(generatedPlan.generatedAt).toLocaleDateString()}
+
+PROPERTY INFORMATION
+Property Name: ${generatedPlan.propertyName}
+Address: ${generatedPlan.address}
+Postcode: ${generatedPlan.postcode}
+Size: ${generatedPlan.propertySize} hectares
+Flood Risk: ${generatedPlan.floodRisk}
+
+LIVESTOCK
+Cattle: ${generatedPlan.cattle}
+Sheep: ${generatedPlan.sheep}
+Horses: ${generatedPlan.horses}
+Pigs: ${generatedPlan.pigs}
+Poultry: ${generatedPlan.poultry}
+Other: ${generatedPlan.other}
+
+INFRASTRUCTURE
+High Ground Available: ${generatedPlan.hasHighGround ? "Yes" : "No"}
+${generatedPlan.hasHighGround ? `High Ground Details: ${generatedPlan.highGroundLocation}` : ""}
+Boats Available: ${generatedPlan.hasBoats ? "Yes" : "No"}
+${generatedPlan.hasBoats ? `Boat Details: ${generatedPlan.boatDetails}` : ""}
+Evacuation Routes: ${generatedPlan.evacuationRoutes}
+
+EMERGENCY CONTACTS
+Primary Contact: ${generatedPlan.emergencyContact1}
+Secondary Contact: ${generatedPlan.emergencyContact2}
+Veterinarian: ${generatedPlan.veterinarian}
+Local SES: ${generatedPlan.localSES}
+
+RESOURCES
+Feed Storage: ${generatedPlan.feedStorage}
+Water Storage: ${generatedPlan.waterStorage}
+Fuel Storage: ${generatedPlan.fuelStorage}
+Equipment: ${generatedPlan.equipmentList}
+
+COMMUNITY SUPPORT
+Help Needed: ${generatedPlan.helpNeeded}
+Help Offered: ${generatedPlan.helpOffered}
+Special Needs: ${generatedPlan.specialNeeds}
+    `
+
+    const blob = new Blob([planText], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `flood-emergency-plan-${generatedPlan.propertyName || "property"}-${new Date().toISOString().split("T")[0]}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    toast({
+      title: "Plan Downloaded!",
+      description: "Your flood emergency plan has been saved to your device.",
+    })
+  }
+
+  const sharePlan = () => {
+    if (!generatedPlan) return
+
+    const shareText = `I've created a flood emergency plan for ${generatedPlan.propertyName}. Join our rural community emergency network to share resources and support each other during emergencies.`
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Flood Emergency Plan",
+          text: shareText,
+          url: window.location.origin + "/preparedness/flood",
+        })
+        .then(() => {
+          toast({
+            title: "Plan Shared!",
+            description: "Your emergency plan has been shared successfully.",
+          })
+        })
+        .catch(() => {
+          // Fallback to clipboard
+          copyToClipboard(shareText)
+        })
+    } else {
+      // Fallback to clipboard
+      copyToClipboard(shareText)
+    }
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Copied to Clipboard!",
+          description: "Share text has been copied. You can paste it anywhere.",
+        })
+      })
+      .catch(() => {
+        toast({
+          title: "Share Information",
+          description: text,
+        })
+      })
+  }
+
+  const createAnotherPlan = () => {
+    // Reset the wizard
+    setCurrentStep(1)
+    setGeneratedPlan(null)
+    setFormData({
+      propertyName: "",
+      address: "",
+      postcode: "",
+      propertySize: "",
+      floodRisk: "",
+      cattle: "",
+      sheep: "",
+      horses: "",
+      pigs: "",
+      poultry: "",
+      other: "",
+      hasHighGround: false,
+      highGroundLocation: "",
+      hasBoats: false,
+      boatDetails: "",
+      evacuationRoutes: "",
+      emergencyContact1: "",
+      emergencyContact2: "",
+      veterinarian: "",
+      localSES: "",
+      feedStorage: "",
+      waterStorage: "",
+      fuelStorage: "",
+      equipmentList: "",
+      helpNeeded: "",
+      helpOffered: "",
+      specialNeeds: "",
+    })
+
+    toast({
+      title: "New Plan Started",
+      description: "You can now create another flood emergency plan.",
+    })
   }
 
   const renderStep = () => {
@@ -516,12 +688,18 @@ export default function FloodWizard({ onComplete }: FloodWizardProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button className="bg-green-600 hover:bg-green-700">
+                <Button onClick={downloadPDF} className="bg-green-600 hover:bg-green-700">
                   <Download className="h-4 w-4 mr-2" />
-                  Download PDF Plan
+                  Download Plan
                 </Button>
-                <Button variant="outline">Share with Community</Button>
-                <Button variant="outline">Create Another Plan</Button>
+                <Button variant="outline" onClick={sharePlan}>
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share with Community
+                </Button>
+                <Button variant="outline" onClick={createAnotherPlan}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Another Plan
+                </Button>
               </div>
             </CardContent>
           </Card>

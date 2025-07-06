@@ -9,7 +9,21 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
-import { Flame, MapPin, Users, Phone, Truck, Home, ArrowLeft, ArrowRight, Download, AlertTriangle } from "lucide-react"
+import {
+  Flame,
+  MapPin,
+  Users,
+  Phone,
+  Truck,
+  Home,
+  ArrowLeft,
+  ArrowRight,
+  Download,
+  AlertTriangle,
+  Share2,
+  Plus,
+} from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 interface BushfireWizardProps {
   onComplete?: (plan: any) => void
@@ -17,6 +31,8 @@ interface BushfireWizardProps {
 
 export default function BushfireWizard({ onComplete }: BushfireWizardProps) {
   const [currentStep, setCurrentStep] = useState(1)
+  const [generatedPlan, setGeneratedPlan] = useState<any>(null)
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     // Property Information
     propertyName: "",
@@ -90,14 +106,187 @@ export default function BushfireWizard({ onComplete }: BushfireWizardProps) {
       ...formData,
       generatedAt: new Date().toISOString(),
       planType: "bushfire",
+      planId: `bushfire-${Date.now()}`,
     }
+
+    setGeneratedPlan(plan)
 
     if (onComplete) {
       onComplete(plan)
     }
 
-    // For demo purposes, show completion
+    // Show completion
     setCurrentStep(totalSteps + 1)
+
+    toast({
+      title: "Bushfire Emergency Plan Generated!",
+      description: "Your personalized plan is ready for download and sharing.",
+    })
+  }
+
+  const downloadPDF = () => {
+    if (!generatedPlan) return
+
+    // Create a comprehensive text version of the plan for download
+    const planText = `
+BUSHFIRE EMERGENCY PLAN
+Generated: ${new Date(generatedPlan.generatedAt).toLocaleDateString()}
+
+PROPERTY INFORMATION
+Property Name: ${generatedPlan.propertyName}
+Address: ${generatedPlan.address}
+Postcode: ${generatedPlan.postcode}
+Size: ${generatedPlan.propertySize} hectares
+Bushfire Risk: ${generatedPlan.bushfireRisk}
+Vegetation Type: ${generatedPlan.vegetationType}
+
+LIVESTOCK
+Cattle: ${generatedPlan.cattle}
+Sheep: ${generatedPlan.sheep}
+Horses: ${generatedPlan.horses}
+Pigs: ${generatedPlan.pigs}
+Poultry: ${generatedPlan.poultry}
+Other: ${generatedPlan.other}
+
+FIRE DEFENSES & INFRASTRUCTURE
+Fire Breaks: ${generatedPlan.hasFireBreaks ? "Yes" : "No"}
+${generatedPlan.hasFireBreaks ? `Fire Break Details: ${generatedPlan.fireBreakDetails}` : ""}
+Water Supply: ${generatedPlan.hasWaterSupply ? "Yes" : "No"}
+${generatedPlan.hasWaterSupply ? `Water Supply Details: ${generatedPlan.waterSupplyDetails}` : ""}
+Sprinklers: ${generatedPlan.hasSprinklers ? "Yes" : "No"}
+${generatedPlan.hasSprinklers ? `Sprinkler Details: ${generatedPlan.sprinklerDetails}` : ""}
+Building Materials: ${generatedPlan.buildingMaterials}
+
+EVACUATION PLANNING
+Evacuation Triggers: ${generatedPlan.evacuationTriggers}
+Evacuation Routes: ${generatedPlan.evacuationRoutes}
+Assembly Point: ${generatedPlan.assemblyPoint}
+Transport Arrangements: ${generatedPlan.transportArrangements}
+
+EMERGENCY CONTACTS
+Primary Contact: ${generatedPlan.emergencyContact1}
+Secondary Contact: ${generatedPlan.emergencyContact2}
+Veterinarian: ${generatedPlan.veterinarian}
+Local RFS: ${generatedPlan.localRFS}
+
+FIRE EQUIPMENT & RESOURCES
+Fire Equipment: ${generatedPlan.fireEquipment}
+Fuel Storage: ${generatedPlan.fuelStorage}
+Emergency Supplies: ${generatedPlan.emergencySupplies}
+Communication Equipment: ${generatedPlan.communicationEquipment}
+
+COMMUNITY SUPPORT
+Help Needed: ${generatedPlan.helpNeeded}
+Help Offered: ${generatedPlan.helpOffered}
+Special Considerations: ${generatedPlan.specialConsiderations}
+    `
+
+    const blob = new Blob([planText], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `bushfire-emergency-plan-${generatedPlan.propertyName || "property"}-${new Date().toISOString().split("T")[0]}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    toast({
+      title: "Plan Downloaded!",
+      description: "Your bushfire emergency plan has been saved to your device.",
+    })
+  }
+
+  const sharePlan = () => {
+    if (!generatedPlan) return
+
+    const shareText = `I've created a bushfire emergency plan for ${generatedPlan.propertyName}. Join our rural community emergency network to share resources and support each other during fire season.`
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Bushfire Emergency Plan",
+          text: shareText,
+          url: window.location.origin + "/preparedness/bushfire",
+        })
+        .then(() => {
+          toast({
+            title: "Plan Shared!",
+            description: "Your emergency plan has been shared successfully.",
+          })
+        })
+        .catch(() => {
+          // Fallback to clipboard
+          copyToClipboard(shareText)
+        })
+    } else {
+      // Fallback to clipboard
+      copyToClipboard(shareText)
+    }
+  }
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast({
+          title: "Copied to Clipboard!",
+          description: "Share text has been copied. You can paste it anywhere.",
+        })
+      })
+      .catch(() => {
+        toast({
+          title: "Share Information",
+          description: text,
+        })
+      })
+  }
+
+  const createAnotherPlan = () => {
+    // Reset the wizard
+    setCurrentStep(1)
+    setGeneratedPlan(null)
+    setFormData({
+      propertyName: "",
+      address: "",
+      postcode: "",
+      propertySize: "",
+      bushfireRisk: "",
+      vegetationType: "",
+      cattle: "",
+      sheep: "",
+      horses: "",
+      pigs: "",
+      poultry: "",
+      other: "",
+      hasFireBreaks: false,
+      fireBreakDetails: "",
+      hasWaterSupply: false,
+      waterSupplyDetails: "",
+      hasSprinklers: false,
+      sprinklerDetails: "",
+      buildingMaterials: "",
+      evacuationTriggers: "",
+      evacuationRoutes: "",
+      assemblyPoint: "",
+      transportArrangements: "",
+      emergencyContact1: "",
+      emergencyContact2: "",
+      veterinarian: "",
+      localRFS: "",
+      fireEquipment: "",
+      fuelStorage: "",
+      emergencySupplies: "",
+      communicationEquipment: "",
+      helpNeeded: "",
+      helpOffered: "",
+      specialConsiderations: "",
+    })
+
+    toast({
+      title: "New Plan Started",
+      description: "You can now create another bushfire emergency plan.",
+    })
   }
 
   const renderStep = () => {
@@ -632,12 +821,18 @@ export default function BushfireWizard({ onComplete }: BushfireWizardProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button className="bg-orange-600 hover:bg-orange-700">
+                <Button onClick={downloadPDF} className="bg-orange-600 hover:bg-orange-700">
                   <Download className="h-4 w-4 mr-2" />
-                  Download PDF Plan
+                  Download Plan
                 </Button>
-                <Button variant="outline">Share with Community</Button>
-                <Button variant="outline">Create Another Plan</Button>
+                <Button variant="outline" onClick={sharePlan}>
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share with Community
+                </Button>
+                <Button variant="outline" onClick={createAnotherPlan}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Another Plan
+                </Button>
               </div>
             </CardContent>
           </Card>

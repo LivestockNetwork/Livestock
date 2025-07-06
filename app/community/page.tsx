@@ -1,403 +1,338 @@
 "use client"
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
-import { Users, Plus, Search, Filter, AlertTriangle, Truck, Wrench, Wheat, ArrowLeft } from "lucide-react"
+import {
+  Users,
+  MessageCircle,
+  Heart,
+  Share2,
+  Search,
+  Filter,
+  MapPin,
+  Clock,
+  AlertTriangle,
+  Truck,
+  Home,
+  Plus,
+} from "lucide-react"
 import Link from "next/link"
-import CommunityPost from "@/components/community-post"
 import CreatePostModal from "@/components/create-post-modal"
-import EmergencyTicker from "@/components/emergency-ticker"
 
-export default function CommunityFeedPage() {
-  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false)
-  const [activeFilter, setActiveFilter] = useState("all")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [posts, setPosts] = useState([
-    {
-      id: "1",
-      type: "help-request",
-      author: "Sarah M.",
-      location: "Manning Valley, NSW",
-      timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
-      title: "Need urgent help - cattle stranded by flood",
-      content:
-        "Our back paddock is flooded and we have 20 head of cattle that need moving to higher ground. Anyone with a boat or high-clearance vehicle who can help? Will pay for fuel + more.",
-      images: ["/placeholder.svg?height=300&width=400&text=Flooded+Paddock"],
-      likes: 12,
-      comments: 8,
-      shares: 3,
-      isUrgent: true,
-      tags: ["cattle", "flood", "urgent-help"],
-    },
-    {
-      id: "2",
-      type: "equipment-share",
-      author: "Manning Valley Machinery",
-      location: "Taree, NSW",
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-      title: "John Deere 6120M available for hire",
-      content:
-        "Our 6120M tractor is available for hire this week. Perfect for hay cutting or cultivation work. $80/hour including operator. Call us on 0412 345 678.",
-      images: ["/placeholder.svg?height=300&width=400&text=John+Deere+Tractor"],
-      likes: 23,
-      comments: 5,
-      shares: 7,
-      isBusinessPost: true,
-      tags: ["tractor", "hire", "machinery"],
-    },
-    {
-      id: "3",
-      type: "farm-update",
-      author: "Tom & Jenny K.",
-      location: "Gloucester, NSW",
-      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-      title: "Beautiful morning on the farm",
-      content:
-        "The rain has finally stopped and the sun is out! Our new Angus calves are loving the fresh grass. Spring is definitely here in the Manning Valley. 🌱",
-      images: ["/placeholder.svg?height=300&width=400&text=Angus+Calves+in+Green+Paddock"],
-      likes: 45,
-      comments: 12,
-      shares: 4,
-      tags: ["cattle", "spring", "farm-life"],
-    },
-    {
-      id: "4",
-      type: "community-event",
-      author: "Manning Valley Show Society",
-      location: "Wingham, NSW",
-      timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
-      title: "Annual Show - Call for volunteers",
-      content:
-        "Our annual agricultural show is coming up in 6 weeks! We need volunteers for livestock judging, gate duties, and setup. Great way to meet your rural neighbors. Free entry for volunteers!",
-      images: ["/placeholder.svg?height=300&width=400&text=Agricultural+Show+Grounds"],
-      likes: 34,
-      comments: 18,
-      shares: 12,
-      isBusinessPost: true,
-      tags: ["show", "volunteers", "community"],
-    },
-    {
-      id: "5",
-      type: "livestock-sale",
-      author: "David R.",
-      location: "Krambach, NSW",
-      timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8 hours ago
-      title: "Quality Angus steers for sale",
-      content:
-        "15 Angus steers, 18-20 months old, grass fed, excellent condition. $1,800 each or $25,000 for the lot. Can deliver within 50km. Serious inquiries only.",
-      images: ["/placeholder.svg?height=300&width=400&text=Angus+Steers"],
-      likes: 19,
-      comments: 7,
-      shares: 5,
-      tags: ["cattle", "sale", "angus"],
-    },
-    {
-      id: "6",
-      type: "weather-alert",
-      author: "Manning Valley Weather Watch",
-      location: "Manning Valley, NSW",
-      timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000), // 10 hours ago
-      title: "Severe weather warning - prepare livestock",
-      content:
-        "BOM has issued a severe weather warning for our area. Heavy rain and strong winds expected tonight through tomorrow. Secure loose items and move livestock to shelter if possible.",
-      likes: 67,
-      comments: 23,
-      shares: 31,
-      isUrgent: true,
-      isBusinessPost: true,
-      tags: ["weather", "warning", "livestock-safety"],
-    },
-  ])
+export default function CommunityPage() {
+  const [showCreatePost, setShowCreatePost] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
 
-  const handleCreatePost = (newPost: any) => {
-    const post = {
-      ...newPost,
-      id: Date.now().toString(),
-      timestamp: new Date(),
-      likes: 0,
-      comments: 0,
-      shares: 0,
-    }
-    setPosts([post, ...posts])
-  }
-
-  const filteredPosts = posts.filter((post) => {
-    const matchesFilter = activeFilter === "all" || post.type === activeFilter
-    const matchesSearch =
-      searchQuery === "" ||
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-
-    return matchesFilter && matchesSearch
-  })
-
-  const postTypes = [
-    { id: "all", label: "All Posts", icon: Users, count: posts.length },
+  const communityPosts = [
     {
-      id: "help-request",
-      label: "Help Needed",
-      icon: AlertTriangle,
-      count: posts.filter((p) => p.type === "help-request").length,
+      id: 1,
+      author: {
+        name: "Sarah Mitchell",
+        location: "Tamworth, NSW",
+        avatar: "/placeholder.svg?height=40&width=40",
+        verified: true,
+      },
+      timestamp: "2 hours ago",
+      type: "emergency",
+      title: "Flood Update - Murray River",
+      content:
+        "Water levels rising rapidly near Corowa. We've moved all cattle to higher ground. Happy to help neighbors with livestock transport if needed. Have truck and trailer available.",
+      tags: ["flood", "livestock-transport", "mutual-aid"],
+      engagement: {
+        likes: 24,
+        comments: 8,
+        shares: 12,
+      },
+      urgent: true,
     },
     {
-      id: "equipment-share",
-      label: "Equipment",
-      icon: Wrench,
-      count: posts.filter((p) => p.type === "equipment-share").length,
+      id: 2,
+      author: {
+        name: "Tom Bradley",
+        location: "Warwick, QLD",
+        avatar: "/placeholder.svg?height=40&width=40",
+        verified: true,
+      },
+      timestamp: "4 hours ago",
+      type: "resource-sharing",
+      title: "Hay Available - Good Quality",
+      content:
+        "Have 200 bales of lucerne hay available. $12/bale. Can deliver within 50km of Warwick. Contact me if you need feed for drought affected areas.",
+      tags: ["hay", "drought-relief", "livestock-feed"],
+      engagement: {
+        likes: 18,
+        comments: 15,
+        shares: 6,
+      },
+      urgent: false,
     },
     {
-      id: "livestock-sale",
-      label: "Livestock",
-      icon: Users,
-      count: posts.filter((p) => p.type === "livestock-sale").length,
+      id: 3,
+      author: {
+        name: "Emma Chen",
+        location: "Mount Gambier, SA",
+        avatar: "/placeholder.svg?height=40&width=40",
+        verified: true,
+      },
+      timestamp: "6 hours ago",
+      type: "community-support",
+      title: "Community BBQ - Bushfire Recovery",
+      content:
+        "Organizing a community BBQ this Saturday to support families affected by recent bushfires. Bring a plate to share. All welcome. Let's come together as a community.",
+      tags: ["community-event", "bushfire-recovery", "support"],
+      engagement: {
+        likes: 45,
+        comments: 22,
+        shares: 18,
+      },
+      urgent: false,
     },
     {
-      id: "farm-update",
-      label: "Farm Updates",
-      icon: Wheat,
-      count: posts.filter((p) => p.type === "farm-update").length,
+      id: 4,
+      author: {
+        name: "Mike Johnson",
+        location: "Bendigo, VIC",
+        avatar: "/placeholder.svg?height=40&width=40",
+        verified: true,
+      },
+      timestamp: "8 hours ago",
+      type: "agistment",
+      title: "Agistment Available - 500 Acres",
+      content:
+        "Have 500 acres of improved pasture available for agistment. Good water, secure fencing. $8/head/week for cattle. Perfect for drought relief or temporary grazing.",
+      tags: ["agistment", "cattle", "drought-relief"],
+      engagement: {
+        likes: 32,
+        comments: 19,
+        shares: 14,
+      },
+      urgent: false,
+    },
+    {
+      id: 5,
+      author: {
+        name: "Lisa Thompson",
+        location: "Dubbo, NSW",
+        avatar: "/placeholder.svg?height=40&width=40",
+        verified: true,
+      },
+      timestamp: "12 hours ago",
+      type: "equipment-sharing",
+      title: "Tractor Available for Harvest Help",
+      content:
+        "John Deere 7830 with header available to help neighbors with harvest. Just finished our crop. Happy to help community members. Fuel costs only.",
+      tags: ["equipment-sharing", "harvest", "community-help"],
+      engagement: {
+        likes: 28,
+        comments: 11,
+        shares: 9,
+      },
+      urgent: false,
     },
   ]
 
+  const getPostTypeIcon = (type: string) => {
+    switch (type) {
+      case "emergency":
+        return <AlertTriangle className="h-4 w-4 text-red-500" />
+      case "resource-sharing":
+        return <Share2 className="h-4 w-4 text-blue-500" />
+      case "agistment":
+        return <Home className="h-4 w-4 text-green-500" />
+      case "equipment-sharing":
+        return <Truck className="h-4 w-4 text-orange-500" />
+      default:
+        return <Users className="h-4 w-4 text-purple-500" />
+    }
+  }
+
+  const getPostTypeColor = (type: string) => {
+    switch (type) {
+      case "emergency":
+        return "bg-red-100 text-red-800"
+      case "resource-sharing":
+        return "bg-blue-100 text-blue-800"
+      case "agistment":
+        return "bg-green-100 text-green-800"
+      case "equipment-sharing":
+        return "bg-orange-100 text-orange-800"
+      default:
+        return "bg-purple-100 text-purple-800"
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-green-50">
-      <EmergencyTicker />
-
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b sticky top-10 z-20">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Home
-                </Button>
-              </Link>
-
-              <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
-                  <Users className="h-6 w-6 text-white" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center">
+                <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center">
+                  <Users className="h-5 w-5 text-white" />
                 </div>
-                <div>
-                  <h1 className="text-xl font-bold text-slate-800">Manning Valley Community</h1>
-                  <p className="text-sm text-slate-600">450+ local members</p>
-                </div>
+                <span className="ml-2 text-xl font-bold text-gray-900">Rural Community Hub</span>
               </Link>
             </div>
-
-            <Button
-              onClick={() => setIsCreatePostOpen(true)}
-              className="bg-teal-500 hover:bg-teal-600 text-white font-semibold"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Create Post
-            </Button>
+            <div className="flex items-center space-x-4">
+              <Link href="/dashboard">
+                <Button variant="ghost">Dashboard</Button>
+              </Link>
+              <Link href="/profile">
+                <Button variant="ghost">Profile</Button>
+              </Link>
+              <Button onClick={() => setShowCreatePost(true)} className="bg-teal-500 hover:bg-teal-600">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Post
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar - Filters & Stats */}
-          <div className="lg:col-span-1">
-            <div className="space-y-6 sticky top-32">
-              {/* Search */}
-              <Card>
-                <CardContent className="p-4">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <Input
-                      placeholder="Search posts..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Community Feed</h1>
+          <p className="text-gray-600">Connect, share, and support your rural community</p>
+        </div>
 
-              {/* Post Type Filters */}
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                    <Filter className="h-4 w-4" />
-                    Post Types
-                  </h3>
-                  <div className="space-y-2">
-                    {postTypes.map((type) => (
-                      <button
-                        key={type.id}
-                        onClick={() => setActiveFilter(type.id)}
-                        className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-colors ${
-                          activeFilter === type.id
-                            ? "bg-teal-100 text-teal-700 font-medium"
-                            : "hover:bg-slate-100 text-slate-600"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <type.icon className="h-4 w-4" />
-                          {type.label}
-                        </div>
-                        <Badge variant="secondary" className="text-xs">
-                          {type.count}
-                        </Badge>
-                      </button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Community Stats */}
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-slate-800 mb-3">Community Stats</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-slate-600">Active Members</span>
-                      <span className="font-semibold text-teal-600">450+</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-slate-600">Posts This Week</span>
-                      <span className="font-semibold text-teal-600">127</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-slate-600">Help Requests</span>
-                      <span className="font-semibold text-amber-600">8</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-slate-600">Equipment Shared</span>
-                      <span className="font-semibold text-green-600">23</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Actions */}
-              <Card>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-slate-800 mb-3">Quick Actions</h3>
-                  <div className="space-y-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-start bg-transparent"
-                      onClick={() => setIsCreatePostOpen(true)}
-                    >
-                      <AlertTriangle className="h-4 w-4 mr-2 text-red-500" />
-                      Request Help
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-start bg-transparent"
-                      onClick={() => setIsCreatePostOpen(true)}
-                    >
-                      <Truck className="h-4 w-4 mr-2 text-blue-500" />
-                      Share Equipment
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-start bg-transparent"
-                      onClick={() => setIsCreatePostOpen(true)}
-                    >
-                      <Users className="h-4 w-4 mr-2 text-green-500" />
-                      Sell Livestock
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+        {/* Search and Filter */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search community posts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
           </div>
+          <Button variant="outline" className="flex items-center bg-transparent">
+            <Filter className="h-4 w-4 mr-2" />
+            Filter
+          </Button>
+        </div>
 
-          {/* Main Feed */}
-          <div className="lg:col-span-3">
-            <div className="space-y-6">
-              {/* Welcome Banner */}
-              <Card className="border-l-4 border-teal-500 bg-gradient-to-r from-teal-50 to-green-50">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center">
-                      <Users className="h-6 w-6 text-white" />
-                    </div>
+        {/* Community Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-teal-600 mb-1">8,630+</div>
+              <div className="text-sm text-gray-600">Community Members</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-blue-600 mb-1">1,247</div>
+              <div className="text-sm text-gray-600">Active This Week</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-green-600 mb-1">342</div>
+              <div className="text-sm text-gray-600">Resources Shared</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Posts Feed */}
+        <div className="space-y-6">
+          {communityPosts.map((post) => (
+            <Card key={post.id} className={`${post.urgent ? "border-red-200 bg-red-50" : ""}`}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Avatar>
+                      <AvatarImage src={post.author.avatar || "/placeholder.svg"} alt={post.author.name} />
+                      <AvatarFallback>
+                        {post.author.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </AvatarFallback>
+                    </Avatar>
                     <div>
-                      <h2 className="text-xl font-bold text-slate-800">Welcome to Manning Valley Community</h2>
-                      <p className="text-slate-600">
-                        Connect with 450+ local farmers, graziers, and rural families. Share resources, ask for help,
-                        and build stronger communities together.
-                      </p>
+                      <div className="flex items-center space-x-2">
+                        <h3 className="font-semibold text-gray-900">{post.author.name}</h3>
+                        {post.author.verified && (
+                          <Badge variant="secondary" className="text-xs">
+                            Verified
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-500 space-x-2">
+                        <MapPin className="h-3 w-3" />
+                        <span>{post.author.location}</span>
+                        <span>•</span>
+                        <Clock className="h-3 w-3" />
+                        <span>{post.timestamp}</span>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Active Filter Display */}
-              {activeFilter !== "all" && (
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-sm">
-                    Showing: {postTypes.find((t) => t.id === activeFilter)?.label}
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setActiveFilter("all")}
-                    className="text-slate-500 hover:text-slate-700"
-                  >
-                    Clear filter
+                  <div className="flex items-center space-x-2">
+                    {post.urgent && (
+                      <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                        <AlertTriangle className="h-3 w-3 mr-1" />
+                        Urgent
+                      </Badge>
+                    )}
+                    <Badge className={getPostTypeColor(post.type)}>
+                      {getPostTypeIcon(post.type)}
+                      <span className="ml-1 capitalize">{post.type.replace("-", " ")}</span>
+                    </Badge>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <h4 className="font-semibold text-lg mb-2">{post.title}</h4>
+                <p className="text-gray-700 mb-4">{post.content}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {post.tags.map((tag) => (
+                    <Badge key={tag} variant="outline" className="text-xs">
+                      #{tag}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <div className="flex items-center space-x-6">
+                    <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
+                      <Heart className="h-4 w-4" />
+                      <span className="text-sm">{post.engagement.likes}</span>
+                    </button>
+                    <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors">
+                      <MessageCircle className="h-4 w-4" />
+                      <span className="text-sm">{post.engagement.comments}</span>
+                    </button>
+                    <button className="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors">
+                      <Share2 className="h-4 w-4" />
+                      <span className="text-sm">{post.engagement.shares}</span>
+                    </button>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Contact
                   </Button>
                 </div>
-              )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-              {/* Posts Feed */}
-              <div className="space-y-6">
-                {filteredPosts.length === 0 ? (
-                  <Card>
-                    <CardContent className="p-12 text-center">
-                      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Search className="h-8 w-8 text-slate-400" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-slate-800 mb-2">No posts found</h3>
-                      <p className="text-slate-600 mb-4">
-                        {searchQuery ? `No posts match "${searchQuery}"` : "No posts in this category yet"}
-                      </p>
-                      <Button onClick={() => setIsCreatePostOpen(true)} className="bg-teal-500 hover:bg-teal-600">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create First Post
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  filteredPosts.map((post) => <CommunityPost key={post.id} post={post} />)
-                )}
-              </div>
-
-              {/* Load More */}
-              {filteredPosts.length > 0 && (
-                <div className="text-center py-8">
-                  <Button variant="outline" className="border-slate-300 text-slate-700 bg-transparent">
-                    Load More Posts
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
+        {/* Load More */}
+        <div className="text-center mt-8">
+          <Button variant="outline" size="lg">
+            Load More Posts
+          </Button>
         </div>
       </div>
 
       {/* Create Post Modal */}
-      <CreatePostModal
-        isOpen={isCreatePostOpen}
-        onClose={() => setIsCreatePostOpen(false)}
-        onCreatePost={handleCreatePost}
-      />
+      <CreatePostModal open={showCreatePost} onOpenChange={setShowCreatePost} />
     </div>
   )
 }
