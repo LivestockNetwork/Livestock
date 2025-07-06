@@ -8,106 +8,55 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
-import { Shield, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react"
+import { Shield, Eye, EyeOff, Loader2 } from "lucide-react"
 import { loginUser } from "@/app/actions/user-login"
 
-const demoAccounts = [
-  {
-    email: "demo@rural.com",
-    password: "demo123",
-    name: "Demo User",
-    type: "Cattle Station",
-  },
-  {
-    email: "farmer@example.com",
-    password: "farm123",
-    name: "John Farmer",
-    type: "Mixed Farm",
-  },
-  {
-    email: "sarah@station.com",
-    password: "sarah123",
-    name: "Sarah Mitchell",
-    type: "Sheep Station",
-  },
-]
+const initialState = {
+  success: false,
+  message: "",
+  user: null,
+}
 
 export default function LoginPage() {
-  const [state, formAction, isPending] = useFormState(loginUser, null)
+  const [state, formAction] = useFormState(loginUser, initialState)
   const [showPassword, setShowPassword] = useState(false)
-  const [selectedDemo, setSelectedDemo] = useState<string>("")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleDemoLogin = (email: string, password: string) => {
-    setSelectedDemo(email)
-    // Auto-fill the form
-    const emailInput = document.getElementById("email") as HTMLInputElement
-    const passwordInput = document.getElementById("password") as HTMLInputElement
-    if (emailInput && passwordInput) {
-      emailInput.value = email
-      passwordInput.value = password
-    }
+  const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true)
+    await formAction(formData)
+    setIsLoading(false)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center">
+        <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-6">
             <Shield className="h-8 w-8 text-green-600" />
-            <span className="text-2xl font-bold text-gray-900">RuralGuard</span>
+            <span className="text-2xl font-bold text-gray-900">Rural Community Hub</span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-gray-600 mt-2">Sign in to your account to access your emergency plans</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+          <p className="text-gray-600">Sign in to access your rural community dashboard</p>
         </div>
 
-        {/* Demo Accounts */}
-        <Card className="border-blue-200 bg-blue-50">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-blue-800">Demo Accounts</CardTitle>
-            <CardDescription className="text-xs text-blue-600">
-              Click any account below to auto-fill the login form
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {demoAccounts.map((account) => (
-              <button
-                key={account.email}
-                onClick={() => handleDemoLogin(account.email, account.password)}
-                className="w-full text-left p-2 rounded border border-blue-200 hover:bg-blue-100 transition-colors"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="font-medium text-sm text-blue-900">{account.name}</div>
-                    <div className="text-xs text-blue-600">{account.email}</div>
-                  </div>
-                  <Badge variant="secondary" className="text-xs">
-                    {account.type}
-                  </Badge>
-                </div>
-              </button>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Login Form */}
         <Card>
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
-            <CardDescription>Enter your email and password to access your account</CardDescription>
+            <CardDescription>Enter your credentials to access your account</CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={formAction} className="space-y-4">
+            <form action={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="your.email@example.com"
                   required
-                  className={selectedDemo ? "border-blue-300" : ""}
+                  className="w-full"
                 />
               </div>
 
@@ -120,7 +69,7 @@ export default function LoginPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     required
-                    className={selectedDemo ? "border-blue-300" : ""}
+                    className="w-full pr-10"
                   />
                   <button
                     type="button"
@@ -132,61 +81,73 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {state?.error && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{state.error}</AlertDescription>
-                </Alert>
-              )}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <input id="remember" name="remember" type="checkbox" className="rounded border-gray-300" />
+                  <Label htmlFor="remember" className="text-sm">
+                    Remember me
+                  </Label>
+                </div>
+                <Link href="/forgot-password" className="text-sm text-green-600 hover:text-green-700">
+                  Forgot password?
+                </Link>
+              </div>
 
-              {state?.success && (
-                <Alert className="border-green-200 bg-green-50">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-800">
-                    Login successful! Redirecting to dashboard...
+              {state?.message && (
+                <Alert className={state.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+                  <AlertDescription className={state.success ? "text-green-800" : "text-red-800"}>
+                    {state.message}
                   </AlertDescription>
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "Signing in..." : "Sign In"}
+              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing In...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
 
-            <div className="mt-6 space-y-4">
-              <div className="text-center">
-                <Link href="/forgot-password" className="text-sm text-green-600 hover:text-green-700">
-                  Forgot your password?
-                </Link>
-              </div>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+            {/* Demo Accounts */}
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <h3 className="font-semibold text-blue-900 mb-2">Demo Accounts</h3>
+              <div className="text-sm text-blue-800 space-y-1">
+                <div>
+                  <strong>demo@rural.com</strong> / demo123
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-gray-500">Or</span>
+                <div>
+                  <strong>farmer@example.com</strong> / farm123
+                </div>
+                <div>
+                  <strong>sarah@station.com</strong> / sarah123
                 </div>
               </div>
+            </div>
 
-              <div className="text-center">
-                <span className="text-sm text-gray-600">Don't have an account? </span>
-                <Link href="/register" className="text-sm text-green-600 hover:text-green-700 font-medium">
-                  Sign up
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
+                Don't have an account?{" "}
+                <Link href="/register" className="text-green-600 hover:text-green-700 font-medium">
+                  Sign up here
                 </Link>
-              </div>
+              </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Security Notice */}
-        <div className="text-center text-xs text-gray-500">
-          <p>
-            Protected by enterprise-grade security.
-            <Link href="/security" className="text-green-600 hover:text-green-700 ml-1">
-              Learn more
-            </Link>
-          </p>
+        {/* Features */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500 mb-4">Trusted by rural communities across Australia</p>
+          <div className="flex justify-center space-x-6 text-xs text-gray-400">
+            <span>🔒 Secure</span>
+            <span>📱 Mobile Ready</span>
+            <span>🇦🇺 Australian Made</span>
+          </div>
         </div>
       </div>
     </div>

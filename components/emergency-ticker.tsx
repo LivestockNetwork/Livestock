@@ -5,49 +5,54 @@ import { AlertTriangle, Flame, CloudRain, Wind, Zap } from "lucide-react"
 
 interface EmergencyAlert {
   id: string
-  type: "fire" | "flood" | "storm" | "power" | "general"
-  message: string
+  type: "fire" | "flood" | "storm" | "drought" | "general"
+  severity: "low" | "medium" | "high" | "extreme"
+  title: string
   location: string
-  severity: "low" | "medium" | "high" | "critical"
-  timestamp: Date
+  time: string
+  description: string
 }
 
 const mockAlerts: EmergencyAlert[] = [
   {
     id: "1",
     type: "fire",
-    message: "Total Fire Ban declared for Hunter Valley region",
-    location: "Hunter Valley, NSW",
     severity: "high",
-    timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
+    title: "Bushfire Warning",
+    location: "Blue Mountains, NSW",
+    time: "2 hours ago",
+    description: "Total fire ban in effect. Extreme fire danger conditions.",
   },
   {
     id: "2",
     type: "flood",
-    message: "Minor flooding expected along Manning River",
-    location: "Manning Valley, NSW",
     severity: "medium",
-    timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
+    title: "Flood Watch",
+    location: "Murray River, VIC",
+    time: "4 hours ago",
+    description: "Minor flooding expected in low-lying areas.",
   },
   {
     id: "3",
     type: "storm",
-    message: "Severe thunderstorm warning issued for Central Coast",
-    location: "Central Coast, NSW",
     severity: "high",
-    timestamp: new Date(Date.now() - 60 * 60 * 1000), // 1 hour ago
+    title: "Severe Storm Warning",
+    location: "Southeast QLD",
+    time: "1 hour ago",
+    description: "Damaging winds and large hail possible.",
   },
   {
     id: "4",
-    type: "power",
-    message: "Planned power outage scheduled for maintenance work",
-    location: "Taree, NSW",
-    severity: "low",
-    timestamp: new Date(Date.now() - 90 * 60 * 1000), // 1.5 hours ago
+    type: "drought",
+    severity: "medium",
+    title: "Drought Conditions",
+    location: "Central NSW",
+    time: "6 hours ago",
+    description: "Water restrictions in place. Livestock support available.",
   },
 ]
 
-const getAlertIcon = (type: EmergencyAlert["type"]) => {
+const getAlertIcon = (type: string) => {
   switch (type) {
     case "fire":
       return <Flame className="h-4 w-4" />
@@ -55,110 +60,90 @@ const getAlertIcon = (type: EmergencyAlert["type"]) => {
       return <CloudRain className="h-4 w-4" />
     case "storm":
       return <Wind className="h-4 w-4" />
-    case "power":
+    case "drought":
       return <Zap className="h-4 w-4" />
     default:
       return <AlertTriangle className="h-4 w-4" />
   }
 }
 
-const getSeverityColor = (severity: EmergencyAlert["severity"]) => {
+const getSeverityColor = (severity: string) => {
   switch (severity) {
-    case "critical":
-      return "text-red-600 bg-red-100"
+    case "extreme":
+      return "bg-red-600 text-white"
     case "high":
-      return "text-orange-600 bg-orange-100"
+      return "bg-orange-500 text-white"
     case "medium":
-      return "text-yellow-600 bg-yellow-100"
+      return "bg-yellow-500 text-black"
     case "low":
-      return "text-blue-600 bg-blue-100"
+      return "bg-blue-500 text-white"
     default:
-      return "text-gray-600 bg-gray-100"
-  }
-}
-
-const formatTimeAgo = (timestamp: Date) => {
-  const now = new Date()
-  const diffInMinutes = Math.floor((now.getTime() - timestamp.getTime()) / (1000 * 60))
-
-  if (diffInMinutes < 60) {
-    return `${diffInMinutes}m ago`
-  } else {
-    const hours = Math.floor(diffInMinutes / 60)
-    return `${hours}h ago`
+      return "bg-gray-500 text-white"
   }
 }
 
 export default function EmergencyTicker() {
-  const [alerts, setAlerts] = useState<EmergencyAlert[]>(mockAlerts)
-  const [isPaused, setIsPaused] = useState(false)
+  const [currentAlertIndex, setCurrentAlertIndex] = useState(0)
+  const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
-    // Simulate real-time updates
     const interval = setInterval(() => {
-      // Randomly add new alerts occasionally
-      if (Math.random() < 0.1) {
-        // 10% chance every 30 seconds
-        const newAlert: EmergencyAlert = {
-          id: Date.now().toString(),
-          type: ["fire", "flood", "storm", "power", "general"][Math.floor(Math.random() * 5)] as any,
-          message: "New emergency alert - check local conditions",
-          location: "Your Area",
-          severity: ["low", "medium", "high"][Math.floor(Math.random() * 3)] as any,
-          timestamp: new Date(),
-        }
-        setAlerts((prev) => [newAlert, ...prev.slice(0, 4)]) // Keep only 5 most recent
-      }
-    }, 30000) // Check every 30 seconds
+      setCurrentAlertIndex((prev) => (prev + 1) % mockAlerts.length)
+    }, 5000)
 
     return () => clearInterval(interval)
   }, [])
 
-  if (alerts.length === 0) {
+  if (!isVisible || mockAlerts.length === 0) {
     return null
   }
 
+  const currentAlert = mockAlerts[currentAlertIndex]
+
   return (
-    <div className="bg-red-600 text-white py-2 overflow-hidden relative">
-      <div className="flex items-center">
-        <div className="flex-shrink-0 px-4 flex items-center gap-2 bg-red-700">
-          <AlertTriangle className="h-4 w-4 animate-pulse" />
-          <span className="font-semibold text-sm">EMERGENCY ALERTS</span>
+    <div className="bg-red-600 text-white py-2 px-4 relative overflow-hidden">
+      <div className="flex items-center justify-between max-w-7xl mx-auto">
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
+          <div className="flex items-center space-x-2 flex-shrink-0">
+            {getAlertIcon(currentAlert.type)}
+            <span className="font-semibold text-sm">EMERGENCY ALERT</span>
+          </div>
+
+          <div className="flex items-center space-x-2 min-w-0 flex-1">
+            <span className={`px-2 py-1 rounded text-xs font-medium ${getSeverityColor(currentAlert.severity)}`}>
+              {currentAlert.severity.toUpperCase()}
+            </span>
+            <div className="truncate">
+              <span className="font-medium">{currentAlert.title}</span>
+              <span className="mx-2">•</span>
+              <span>{currentAlert.location}</span>
+              <span className="mx-2">•</span>
+              <span className="text-red-200">{currentAlert.time}</span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex-1 relative" onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
-          <div className={`flex items-center gap-8 ${isPaused ? "" : "animate-scroll"}`}>
-            {alerts.concat(alerts).map((alert, index) => (
-              <div key={`${alert.id}-${index}`} className="flex items-center gap-3 whitespace-nowrap">
-                <div
-                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${getSeverityColor(alert.severity)}`}
-                >
-                  {getAlertIcon(alert.type)}
-                  <span className="uppercase">{alert.severity}</span>
-                </div>
-                <span className="text-sm font-medium">{alert.message}</span>
-                <span className="text-xs opacity-75">• {alert.location}</span>
-                <span className="text-xs opacity-60">• {formatTimeAgo(alert.timestamp)}</span>
-              </div>
+        <div className="flex items-center space-x-2 flex-shrink-0 ml-4">
+          <div className="flex space-x-1">
+            {mockAlerts.map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full ${index === currentAlertIndex ? "bg-white" : "bg-red-300"}`}
+              />
             ))}
           </div>
+          <button
+            onClick={() => setIsVisible(false)}
+            className="text-red-200 hover:text-white ml-2"
+            aria-label="Close alert"
+          >
+            ×
+          </button>
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(100%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-        
-        .animate-scroll {
-          animation: scroll 60s linear infinite;
-        }
-      `}</style>
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-red-500 to-red-600 opacity-20 animate-pulse" />
     </div>
   )
 }
