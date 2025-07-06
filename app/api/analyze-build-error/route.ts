@@ -1,5 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+export async function GET() {
+  return NextResponse.json({
+    message: "Build error analysis endpoint",
+    status: "active",
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { buildOutput } = await request.json()
@@ -52,11 +59,7 @@ export async function POST(request: NextRequest) {
 
     // Check for React/Next.js specific errors
     const reactErrors = lines.filter(
-      (line) =>
-        line.includes("useActionState") ||
-        line.includes("useFormState") ||
-        line.includes("React Hook") ||
-        line.includes("Invalid hook call"),
+      (line) => line.includes("useFormState") || line.includes("React Hook") || line.includes("Invalid hook call"),
     )
     reactErrors.forEach((error) => {
       errors.push({
@@ -65,16 +68,12 @@ export async function POST(request: NextRequest) {
         details: error,
       })
 
-      if (error.includes("useActionState")) {
+      if (error.includes("useFormState")) {
         suggestions.push({
           priority: "HIGH",
-          title: "Replace useActionState with useFormState",
-          description: "useActionState is from React 19, but you're using React 18",
-          code: `// Replace this:
-import { useActionState } from "react"
-const [state, formAction] = useActionState(action, initialState)
-
-// With this:
+          title: "Check useFormState import",
+          description: "useFormState requires import from react-dom",
+          code: `// Make sure you have this import:
 import { useFormState } from "react-dom"
 const [state, formAction] = useFormState(action, initialState)`,
         })
@@ -104,22 +103,16 @@ const [state, formAction] = useFormState(action, initialState)`,
     })
 
     // Generate suggestions based on error patterns
-    if (buildOutput.includes("useActionState")) {
+    if (buildOutput.includes("useFormState")) {
       suggestions.push({
         priority: "CRITICAL",
         title: "Fix React Hook Compatibility",
-        description: "Replace React 19 hooks with React 18 compatible versions",
-        code: `// In all files using useActionState, replace:
-import { useActionState } from "react"
-
-// With:
+        description: "Ensure useFormState is properly imported from react-dom",
+        code: `// In all files using useFormState, make sure you have:
 import { useFormState } from "react-dom"
 
-// And replace:
-const [state, action] = useActionState(...)
-
-// With:
-const [state, action] = useFormState(...)`,
+// And use it like:
+const [state, action] = useFormState(serverAction, initialState)`,
       })
     }
 

@@ -1,18 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
-  trailingSlash: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3000", "*.vercel.app"],
+    },
+  },
   images: {
+    domains: ["placeholder.svg"],
     unoptimized: true,
   },
-  assetPrefix: process.env.NODE_ENV === "production" ? "" : "",
-  basePath: process.env.NODE_ENV === "production" ? "" : "",
 }
 
 module.exports = nextConfig

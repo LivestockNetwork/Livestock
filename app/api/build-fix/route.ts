@@ -3,6 +3,13 @@ import fs from "fs"
 import path from "path"
 
 export async function GET() {
+  return NextResponse.json({
+    message: "Build fix endpoint",
+    status: "ready",
+  })
+}
+
+export async function POST() {
   try {
     const fixes: any[] = []
     const projectRoot = process.cwd()
@@ -61,18 +68,9 @@ export async function GET() {
           let content = fs.readFileSync(fullPath, "utf-8")
           let updated = false
 
-          // Fix useActionState imports
-          if (content.includes('import { useActionState } from "react"')) {
-            content = content.replace(
-              'import { useActionState } from "react"',
-              'import { useFormState } from "react-dom"',
-            )
-            updated = true
-          }
-
-          // Fix useActionState usage
-          if (content.includes("useActionState(")) {
-            content = content.replace(/useActionState\(/g, "useFormState(")
+          // Fix useFormState imports - ensure they're properly imported
+          if (content.includes("useFormState") && !content.includes('from "react-dom"')) {
+            content = 'import { useFormState } from "react-dom"\n' + content
             updated = true
           }
 
@@ -89,7 +87,7 @@ export async function GET() {
             fixes.push({
               type: "React Hook Fix",
               file: filePath,
-              description: "Fixed useActionState to useFormState for React 18 compatibility",
+              description: "Fixed useFormState import for React 18 compatibility",
             })
           }
         }

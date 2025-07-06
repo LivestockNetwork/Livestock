@@ -44,17 +44,7 @@ export async function GET() {
         const lines = content.split("\n")
 
         lines.forEach((line, index) => {
-          // Check for useActionState (React 19 only)
-          if (line.includes("useActionState")) {
-            issues.push({
-              file: filePath.replace(projectRoot, ""),
-              line: index + 1,
-              issue: "useActionState is React 19 only",
-              fix: "Replace with useFormState from react-dom",
-            })
-          }
-
-          // Check for missing react-dom import when using useFormState
+          // Check for useFormState without proper import
           if (
             line.includes("useFormState") &&
             !content.includes('from "react-dom"') &&
@@ -127,6 +117,9 @@ export async function GET() {
     }
 
     return NextResponse.json({
+      test: "build-endpoint",
+      status: "working",
+      message: "Test build API is functional",
       success: true,
       filesScanned: files.length,
       issuesFound: issues.length,
@@ -136,6 +129,9 @@ export async function GET() {
   } catch (error) {
     return NextResponse.json(
       {
+        test: "build-endpoint",
+        status: "error",
+        message: "Failed to scan project",
         success: false,
         error: "Failed to scan project",
         details: error instanceof Error ? error.message : "Unknown error",

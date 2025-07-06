@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useFormState } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -29,40 +28,39 @@ interface DiagnosticResult {
   }
 }
 
-async function runDiagnosticsAction(prevState: any, formData: FormData) {
-  try {
-    const response = await fetch("/api/build-diagnostics")
-    const data = await response.json()
-    return data
-  } catch (error) {
-    return {
-      success: false,
-      errors: [{ file: "API Error", line: 0, error: "Failed to run diagnostics", fix: "Check API endpoint" }],
-      warnings: [],
-      buildOutput: "",
-      packageIssues: [],
-      summary: { totalFiles: 0, errorCount: 1, warningCount: 0, buildSuccess: false },
-    }
-  }
-}
-
 export default function BuildDiagnosticsPage() {
-  const [state, formAction, isPending] = useFormState(runDiagnosticsAction, null)
+  const [result, setResult] = useState<DiagnosticResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const runDiagnostics = async () => {
     setIsLoading(true)
     try {
       const response = await fetch("/api/build-diagnostics")
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
       const data = await response.json()
-      // Handle the response data here if needed
+      setResult(data)
     } catch (error) {
       console.error("Diagnostics failed:", error)
+      setResult({
+        success: false,
+        errors: [
+          {
+            file: "API Connection",
+            line: 0,
+            error: `Failed to connect to diagnostics API: ${error instanceof Error ? error.message : "Unknown error"}`,
+            fix: "Check if the API route exists at /api/build-diagnostics and server is running",
+          },
+        ],
+        warnings: [],
+        buildOutput: "Could not run diagnostics due to API error",
+        packageIssues: [],
+        summary: { totalFiles: 0, errorCount: 1, warningCount: 0, buildSuccess: false },
+      })
     }
     setIsLoading(false)
   }
-
-  const result = state as DiagnosticResult | null
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -70,40 +68,38 @@ export default function BuildDiagnosticsPage() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
             <Bug className="h-8 w-8 text-blue-600" />
-            Advanced Build Diagnostics
+            Build Diagnostics Tool
           </h1>
-          <p className="text-gray-600">Run actual build process to catch real deployment errors</p>
+          <p className="text-gray-600">Scan your project for build-breaking issues</p>
         </div>
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>🚀 Real Build Analysis</CardTitle>
+            <CardTitle>🔍 Project Health Check</CardTitle>
           </CardHeader>
           <CardContent>
-            <form action={formAction}>
-              <Button type="submit" disabled={isPending || isLoading} className="w-full">
-                {isPending || isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Running Real Build Process...
-                  </>
-                ) : (
-                  <>
-                    <Terminal className="mr-2 h-4 w-4" />
-                    Run Actual Build Test
-                  </>
-                )}
-              </Button>
-            </form>
+            <Button onClick={runDiagnostics} disabled={isLoading} className="w-full">
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Scanning Project Files...
+                </>
+              ) : (
+                <>
+                  <Terminal className="mr-2 h-4 w-4" />
+                  Run Diagnostic Scan
+                </>
+              )}
+            </Button>
             <p className="text-sm text-gray-600 mt-2">
-              This will run `npm run build` to catch the exact same errors that occur during deployment
+              This will check for common build issues like Server Actions conflicts, React Hook problems, and missing
+              imports
             </p>
           </CardContent>
         </Card>
 
         {result && (
           <div className="space-y-6">
-            {/* Build Status */}
             <Card className={result.summary.buildSuccess ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -112,25 +108,25 @@ export default function BuildDiagnosticsPage() {
                   ) : (
                     <AlertCircle className="h-5 w-5 text-red-600" />
                   )}
-                  Build Status
+                  Diagnostic Results
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-lg font-semibold">
+                <div className="text-lg font-semibold mb-4">
                   {result.summary.buildSuccess ? (
-                    <span className="text-green-700">✅ Build Successful</span>
+                    <span className="text-green-700">✅ No Critical Issues Found</span>
                   ) : (
-                    <span className="text-red-700">❌ Build Failed</span>
+                    <span className="text-red-700">❌ Issues Found That May Prevent Deployment</span>
                   )}
                 </div>
-                <div className="grid grid-cols-4 gap-4 mt-4">
+                <div className="grid grid-cols-4 gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900">{result.summary.totalFiles}</div>
-                    <div className="text-sm text-gray-600">Files Checked</div>
+                    <div className="text-sm text-gray-600">Files Scanned</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-red-600">{result.summary.errorCount}</div>
-                    <div className="text-sm text-gray-600">Errors</div>
+                    <div className="text-sm text-gray-600">Critical Issues</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-yellow-600">{result.summary.warningCount}</div>
@@ -144,24 +140,22 @@ export default function BuildDiagnosticsPage() {
               </CardContent>
             </Card>
 
-            {/* Build Output */}
             {result.buildOutput && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Terminal className="h-5 w-5" />
-                    Build Output (Last 2000 characters)
+                    Diagnostic Summary
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <pre className="bg-black text-green-400 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">
+                  <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">
                     {result.buildOutput}
                   </pre>
                 </CardContent>
               </Card>
             )}
 
-            {/* Package Issues */}
             {result.packageIssues.length > 0 && (
               <Card>
                 <CardHeader>
@@ -180,13 +174,12 @@ export default function BuildDiagnosticsPage() {
               </Card>
             )}
 
-            {/* Errors */}
             {result.errors.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-red-600">
                     <AlertCircle className="h-5 w-5" />
-                    Build Errors ({result.errors.length})
+                    Critical Issues ({result.errors.length})
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -204,14 +197,12 @@ export default function BuildDiagnosticsPage() {
                         </div>
                       </div>
                       <div className="mb-3">
-                        <p className="text-red-800 font-medium">Error:</p>
+                        <p className="text-red-800 font-medium">Issue:</p>
                         <p className="text-red-700 text-sm">{error.error}</p>
                       </div>
                       <div>
-                        <p className="text-red-800 font-medium">Fix:</p>
-                        <pre className="text-red-700 text-sm bg-red-100 p-2 rounded mt-1 overflow-x-auto">
-                          {error.fix}
-                        </pre>
+                        <p className="text-red-800 font-medium">How to Fix:</p>
+                        <div className="text-red-700 text-sm bg-red-100 p-2 rounded mt-1">{error.fix}</div>
                       </div>
                     </div>
                   ))}
@@ -219,7 +210,6 @@ export default function BuildDiagnosticsPage() {
               </Card>
             )}
 
-            {/* Warnings */}
             {result.warnings.length > 0 && (
               <Card>
                 <CardHeader>
@@ -242,41 +232,36 @@ export default function BuildDiagnosticsPage() {
               </Card>
             )}
 
-            {/* Success Message */}
             {result.success && result.summary.buildSuccess && (
               <Card className="border-green-200 bg-green-50">
                 <CardContent className="pt-6">
                   <div className="text-center">
                     <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-green-800 mb-2">🎉 Build Successful!</h3>
-                    <p className="text-green-700">Your project builds successfully and is ready for deployment!</p>
+                    <h3 className="text-lg font-semibold text-green-800 mb-2">🎉 Project Looks Good!</h3>
+                    <p className="text-green-700">No critical issues found. Your project should deploy successfully.</p>
                   </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* Quick Fixes */}
             {!result.success && (
               <Card className="border-blue-200 bg-blue-50">
                 <CardHeader>
-                  <CardTitle className="text-blue-800">🔧 Quick Fix Guide</CardTitle>
+                  <CardTitle className="text-blue-800">🔧 Common Solutions</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2 text-sm text-blue-700">
                     <p>
-                      • <strong>TypeScript errors:</strong> Fix type issues in the reported files
+                      • <strong>Server Actions Error:</strong> Remove `output: "export"` from next.config.js
                     </p>
                     <p>
-                      • <strong>Import errors:</strong> Check file paths and install missing packages
+                      • <strong>React Hook Error:</strong> Replace `useActionState` with `useFormState` from react-dom
                     </p>
                     <p>
-                      • <strong>React Hook errors:</strong> Replace useActionState with useFormState
+                      • <strong>Import Error:</strong> Check file paths and ensure all imports exist
                     </p>
                     <p>
-                      • <strong>Syntax errors:</strong> Check for missing brackets, semicolons, or quotes
-                    </p>
-                    <p>
-                      • <strong>Build configuration:</strong> Verify next.config.js and tsconfig.json
+                      • <strong>TypeScript Error:</strong> Fix type issues or temporarily disable strict mode
                     </p>
                   </div>
                 </CardContent>

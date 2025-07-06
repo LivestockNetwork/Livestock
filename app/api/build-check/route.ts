@@ -2,6 +2,14 @@ import { NextResponse } from "next/server"
 import fs from "fs"
 import path from "path"
 
+export async function GET() {
+  return NextResponse.json({
+    message: "Build check endpoint",
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+  })
+}
+
 export async function POST() {
   try {
     const issues: any[] = []
@@ -105,15 +113,15 @@ export async function POST() {
               const filePath = path.join(appDir, file)
               const content = fs.readFileSync(filePath, "utf-8")
 
-              // Check for useActionState (React 19 hook in React 18 project)
-              if (content.includes("useActionState")) {
+              // Check for useFormState without proper import
+              if (content.includes("useFormState") && !content.includes('from "react-dom"')) {
                 issues.push({
                   severity: "CRITICAL",
-                  type: "React Hook Compatibility",
+                  type: "React Hook Import Missing",
                   file: `app/${file}`,
-                  message: "useActionState is React 19 only, but project uses React 18",
-                  fix: "Replace useActionState with useFormState from 'react-dom'",
-                  details: "useActionState requires React 19, but this project uses React 18",
+                  message: "useFormState used but react-dom import missing",
+                  fix: "Add import { useFormState } from 'react-dom'",
+                  details: "useFormState requires import from react-dom",
                 })
               }
 
