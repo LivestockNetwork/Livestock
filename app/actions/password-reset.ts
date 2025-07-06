@@ -1,17 +1,7 @@
 "use server"
 
-interface PasswordResetResult {
-  success: boolean
-  message: string
-}
-
-export async function sendPasswordReset(prevState: any, formData: FormData): Promise<PasswordResetResult> {
+export async function sendPasswordReset(prevState: any, formData: FormData) {
   const email = formData.get("email") as string
-
-  console.log("Password reset requested for:", email)
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1500))
 
   if (!email) {
     return {
@@ -20,37 +10,21 @@ export async function sendPasswordReset(prevState: any, formData: FormData): Pro
     }
   }
 
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email)) {
-    return {
-      success: false,
-      message: "Please enter a valid email address",
-    }
-  }
-
   try {
-    // Here you would normally:
-    // 1. Check if user exists in database
-    // 2. Generate password reset token
-    // 3. Send email with reset link
-    // 4. Store token with expiration
+    // Here you would integrate with your email service (Resend)
+    // For now, we'll simulate the process
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // For now, simulate successful email sending
-    console.log("Password reset email would be sent to:", email)
-
-    // In production, you'd call your email service:
-    // await sendPasswordResetEmail(email, resetToken)
+    console.log(`Password reset email would be sent to: ${email}`)
 
     return {
       success: true,
-      message: "If an account with this email exists, you will receive a password reset link shortly.",
+      message: "If an account exists with this email, you will receive a reset link shortly.",
     }
   } catch (error) {
-    console.error("Password reset error:", error)
     return {
       success: false,
-      message: "Something went wrong. Please try again later.",
+      message: "Something went wrong. Please try again.",
     }
   }
 }

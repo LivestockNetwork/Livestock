@@ -1,14 +1,47 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Users } from "lucide-react"
-import Link from "next/link"
-import { useFormState } from "react-dom"
-import { sendPasswordReset } from "@/app/actions/password-reset"
 
 export default function ForgotPasswordPage() {
-  const [state, action, isPending] = useFormState(sendPasswordReset, null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState("")
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+    const email = formData.get("email") as string
+
+    if (!email) {
+      setMessage("Please enter your email address")
+      setIsSuccess(false)
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      setMessage("If an account exists with this email, you will receive a reset link shortly.")
+      setIsSuccess(true)
+    } catch (error) {
+      setMessage("Something went wrong. Please try again.")
+      setIsSuccess(false)
+    }
+
+    setIsLoading(false)
+  }
 
   return (
     <div className="grid h-screen place-items-center bg-gray-100">
@@ -36,7 +69,7 @@ export default function ForgotPasswordPage() {
                   Login
                 </Button>
               </Link>
-              <Link href="/onboarding">
+              <Link href="/register">
                 <Button
                   size="sm"
                   className="text-white font-semibold"
@@ -51,18 +84,16 @@ export default function ForgotPasswordPage() {
           <CardDescription>Enter your email address and we will send you a reset link.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <form action={action} className="grid gap-4">
+          <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" name="email" type="email" placeholder="Enter your email" required />
             </div>
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Sending..." : "Send Reset Link"}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Sending..." : "Send Reset Link"}
             </Button>
           </form>
-          {state?.message && (
-            <div className={`text-sm ${state.success ? "text-green-600" : "text-red-600"}`}>{state.message}</div>
-          )}
+          {message && <div className={`text-sm mt-2 ${isSuccess ? "text-green-600" : "text-red-600"}`}>{message}</div>}
         </CardContent>
       </Card>
     </div>
