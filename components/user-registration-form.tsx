@@ -1,8 +1,7 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
+import { useFormState } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,190 +9,138 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Shield, User, MapPin, Phone } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { Loader2, CheckCircle, AlertCircle } from "lucide-react"
+import { registerUser } from "@/app/actions/user-registration"
 
-interface UserRegistrationFormProps {
-  onSuccess?: (userData: any) => void
+const initialState = {
+  success: false,
+  message: "",
+  user: null,
 }
 
-export default function UserRegistrationForm({ onSuccess }: UserRegistrationFormProps) {
-  const { toast } = useToast()
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phone: "",
-    state: "",
-    region: "",
-    postcode: "",
-    propertyType: "",
-    emergencyContact: "",
-    emergencyPhone: "",
-    hasLivestock: false,
-    livestockTypes: [] as string[],
-    agreedToTerms: false,
-    wantsUpdates: true,
-  })
+const australianStates = [
+  { value: "NSW", label: "New South Wales" },
+  { value: "VIC", label: "Victoria" },
+  { value: "QLD", label: "Queensland" },
+  { value: "WA", label: "Western Australia" },
+  { value: "SA", label: "South Australia" },
+  { value: "TAS", label: "Tasmania" },
+  { value: "ACT", label: "Australian Capital Territory" },
+  { value: "NT", label: "Northern Territory" },
+]
 
-  const australianStates = [
-    { value: "nsw", label: "New South Wales" },
-    { value: "vic", label: "Victoria" },
-    { value: "qld", label: "Queensland" },
-    { value: "wa", label: "Western Australia" },
-    { value: "sa", label: "South Australia" },
-    { value: "tas", label: "Tasmania" },
-    { value: "act", label: "Australian Capital Territory" },
-    { value: "nt", label: "Northern Territory" },
-  ]
+const propertyTypes = [
+  "Cattle Station",
+  "Sheep Farm",
+  "Mixed Farming",
+  "Dairy Farm",
+  "Crop Farm",
+  "Horse Stud",
+  "Poultry Farm",
+  "Pig Farm",
+  "Goat Farm",
+  "Other",
+]
 
-  const propertyTypes = [
-    "Cattle Station",
-    "Sheep Farm",
-    "Mixed Farming",
-    "Crop Farm",
-    "Dairy Farm",
-    "Horse Stud",
-    "Rural Residential",
-    "Other",
-  ]
+export default function UserRegistrationForm() {
+  const [state, formAction] = useFormState(registerUser, initialState)
+  const [isLoading, setIsLoading] = useState(false)
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+  const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Password mismatch",
-        description: "Please ensure both password fields match.",
-        variant: "destructive",
-      })
-      return
+    if (agreedToTerms) {
+      formData.append("agreedToTerms", "on")
     }
 
-    if (!formData.agreedToTerms) {
-      toast({
-        title: "Terms required",
-        description: "Please agree to the terms of service to continue.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    const userData = {
-      ...formData,
-      id: Date.now().toString(),
-      registrationDate: new Date().toISOString(),
-      isVerified: false,
-    }
-
-    // Store user data
-    const existingUsers = JSON.parse(localStorage.getItem("users") || "[]")
-    existingUsers.push(userData)
-    localStorage.setItem("users", JSON.stringify(existingUsers))
-
-    toast({
-      title: "Registration successful!",
-      description: "Welcome to Rural Community Hub.",
-    })
-
-    if (onSuccess) {
-      onSuccess(userData)
-    }
+    await formAction(formData)
+    setIsLoading(false)
   }
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <User className="h-5 w-5" />
-          Create Your Account
-        </CardTitle>
-        <CardDescription>Join the Rural Community Hub and start building your emergency plans</CardDescription>
+        <CardTitle>Join Rural Community Hub</CardTitle>
+        <CardDescription>
+          Create your account to access emergency planning tools and connect with your rural community
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Information */}
+        <form action={handleSubmit} className="space-y-6">
+          {/* Basic Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Personal Information
-            </h3>
+            <h3 className="text-lg font-semibold">Basic Information</h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="firstName">First Name *</Label>
-                <Input
-                  id="firstName"
-                  value={formData.firstName}
-                  onChange={(e) => handleInputChange("firstName", e.target.value)}
-                  required
-                />
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name *</Label>
+                <Input id="name" name="name" type="text" placeholder="John Smith" required />
               </div>
-              <div>
-                <Label htmlFor="lastName">Last Name *</Label>
-                <Input
-                  id="lastName"
-                  value={formData.lastName}
-                  onChange={(e) => handleInputChange("lastName", e.target.value)}
-                  required
-                />
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input id="email" name="email" type="email" placeholder="john@example.com" required />
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="email">Email Address *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
                 <Label htmlFor="password">Password *</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  required
-                />
+                <Input id="password" name="password" type="password" placeholder="Create a strong password" required />
               </div>
-              <div>
+
+              <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password *</Label>
                 <Input
                   id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                  placeholder="Confirm your password"
                   required
                 />
               </div>
             </div>
           </div>
 
-          {/* Location Information */}
+          {/* Property Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              Location & Property
-            </h3>
+            <h3 className="text-lg font-semibold">Property Information</h3>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="state">State/Territory *</Label>
-                <Select value={formData.state} onValueChange={(value) => handleInputChange("state", value)}>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="propertyName">Property Name *</Label>
+                <Input id="propertyName" name="propertyName" type="text" placeholder="Smith Family Farm" required />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="propertyType">Property Type *</Label>
+                <Select name="propertyType" required>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select your state" />
+                    <SelectValue placeholder="Select property type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {propertyTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="location">Town/City *</Label>
+                <Input id="location" name="location" type="text" placeholder="Tamworth" required />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="state">State *</Label>
+                <Select name="state" required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select state" />
                   </SelectTrigger>
                   <SelectContent>
                     {australianStates.map((state) => (
@@ -204,98 +151,68 @@ export default function UserRegistrationForm({ onSuccess }: UserRegistrationForm
                   </SelectContent>
                 </Select>
               </div>
-              <div>
+
+              <div className="space-y-2">
                 <Label htmlFor="postcode">Postcode *</Label>
-                <Input
-                  id="postcode"
-                  value={formData.postcode}
-                  onChange={(e) => handleInputChange("postcode", e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="propertyType">Property Type *</Label>
-              <Select value={formData.propertyType} onValueChange={(value) => handleInputChange("propertyType", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your property type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {propertyTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Emergency Contact */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Phone className="h-4 w-4" />
-              Emergency Contact
-            </h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="emergencyContact">Contact Name *</Label>
-                <Input
-                  id="emergencyContact"
-                  value={formData.emergencyContact}
-                  onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="emergencyPhone">Contact Phone *</Label>
-                <Input
-                  id="emergencyPhone"
-                  type="tel"
-                  value={formData.emergencyPhone}
-                  onChange={(e) => handleInputChange("emergencyPhone", e.target.value)}
-                  required
-                />
+                <Input id="postcode" name="postcode" type="text" placeholder="2340" required />
               </div>
             </div>
           </div>
 
-          {/* Terms and Preferences */}
+          {/* Contact Information */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="agreedToTerms"
-                checked={formData.agreedToTerms}
-                onCheckedChange={(checked) => handleInputChange("agreedToTerms", checked)}
-              />
-              <Label htmlFor="agreedToTerms" className="text-sm">
-                I agree to the Terms of Service and Privacy Policy *
-              </Label>
-            </div>
+            <h3 className="text-lg font-semibold">Contact Information</h3>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="wantsUpdates"
-                checked={formData.wantsUpdates}
-                onCheckedChange={(checked) => handleInputChange("wantsUpdates", checked)}
-              />
-              <Label htmlFor="wantsUpdates" className="text-sm">
-                I want to receive emergency alerts and community updates
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input id="phone" name="phone" type="tel" placeholder="0412 345 678" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="emergencyContact">Emergency Contact</Label>
+                <Input id="emergencyContact" name="emergencyContact" type="text" placeholder="Emergency contact name" />
+              </div>
+            </div>
+          </div>
+
+          {/* Terms and Conditions */}
+          <div className="space-y-4">
+            <div className="flex items-start space-x-2">
+              <Checkbox id="agreedToTerms" checked={agreedToTerms} onCheckedChange={setAgreedToTerms} required />
+              <Label htmlFor="agreedToTerms" className="text-sm leading-relaxed">
+                I agree to the Terms of Service and Privacy Policy. I understand that this platform provides emergency
+                planning tools and community features for rural properties.
               </Label>
             </div>
           </div>
 
-          <Alert>
-            <Shield className="h-4 w-4" />
-            <AlertDescription>
-              Your information is secure and will only be used for emergency planning and community coordination.
-            </AlertDescription>
-          </Alert>
+          {state?.message && (
+            <Alert className={state.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+              {state.success ? (
+                <CheckCircle className="h-4 w-4 text-green-600" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-red-600" />
+              )}
+              <AlertDescription className={state.success ? "text-green-800" : "text-red-800"}>
+                {state.message}
+              </AlertDescription>
+            </Alert>
+          )}
 
-          <Button type="submit" className="w-full">
-            Create Account
+          <Button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-700"
+            disabled={isLoading || !agreedToTerms}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating Account...
+              </>
+            ) : (
+              "Create Account"
+            )}
           </Button>
         </form>
       </CardContent>

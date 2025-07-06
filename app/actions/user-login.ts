@@ -1,61 +1,52 @@
 "use server"
 
-export async function loginUser(formData: FormData) {
-  // Simulate processing delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+interface LoginResult {
+  success: boolean
+  message: string
+  user?: {
+    id: string
+    email: string
+    name: string
+  }
+}
 
+export async function loginUser(prevState: any, formData: FormData): Promise<LoginResult> {
   const email = formData.get("email") as string
   const password = formData.get("password") as string
 
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  if (!email || !password) {
+    return {
+      success: false,
+      message: "Please enter both email and password",
+    }
+  }
+
   // Demo accounts for testing
   const demoAccounts = [
-    {
-      email: "demo@rural.com",
-      password: "demo123",
-      firstName: "Demo",
-      lastName: "User",
-      state: "nsw",
-      propertyType: "Mixed Farming",
-    },
-    {
-      email: "farmer@example.com",
-      password: "farm123",
-      firstName: "John",
-      lastName: "Farmer",
-      state: "vic",
-      propertyType: "Cattle Station",
-    },
-    {
-      email: "sarah@station.com",
-      password: "sarah123",
-      firstName: "Sarah",
-      lastName: "Mitchell",
-      state: "qld",
-      propertyType: "Sheep Farm",
-    },
+    { email: "demo@rural.com", password: "demo123", name: "Demo User" },
+    { email: "farmer@example.com", password: "farm123", name: "John Farmer" },
+    { email: "sarah@station.com", password: "sarah123", name: "Sarah Station" },
   ]
 
-  // Check demo accounts
-  const demoAccount = demoAccounts.find((account) => account.email === email && account.password === password)
+  const user = demoAccounts.find((account) => account.email === email && account.password === password)
 
-  if (demoAccount) {
+  if (user) {
     return {
       success: true,
-      message: `Welcome back, ${demoAccount.firstName}!`,
+      message: `Welcome back, ${user.name}!`,
       user: {
-        ...demoAccount,
-        id: Date.now().toString(),
-        isDemo: true,
-        loginDate: new Date().toISOString(),
+        id: `user_${Date.now()}`,
+        email: user.email,
+        name: user.name,
       },
     }
   }
 
-  // In a real app, you would check against a database
-  // For demo purposes, we'll simulate a failed login
   return {
     success: false,
-    message: "Invalid email or password. Please try a demo account.",
-    user: null,
+    message: "Invalid email or password. Try demo@rural.com / demo123",
   }
 }

@@ -1,639 +1,375 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useFormState } from "react-dom"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import {
-  CheckCircle,
-  Circle,
-  ArrowRight,
-  ArrowLeft,
-  X,
-  Users,
-  AlertTriangle,
-  MapPin,
-  MessageCircle,
-  Shield,
-  Smartphone,
-  Bell,
-  Settings,
-  BookOpen,
-} from "lucide-react"
+import { Loader2, CheckCircle, AlertCircle, User, MapPin, Shield } from "lucide-react"
 
-interface OnboardingStep {
-  id: string
-  title: string
-  description: string
-  icon: React.ComponentType<any>
-  content: React.ReactNode
-  action?: {
-    label: string
-    onClick: () => void
+// Onboarding action
+async function processOnboarding(prevState: any, formData: FormData) {
+  const firstName = formData.get("firstName") as string
+  const lastName = formData.get("lastName") as string
+  const email = formData.get("email") as string
+  const location = formData.get("location") as string
+  const state = formData.get("state") as string
+  const propertyType = formData.get("propertyType") as string
+  const emergencyTypes = formData.getAll("emergencyTypes") as string[]
+  const agreedToTerms = formData.get("agreedToTerms") === "on"
+
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 2000))
+
+  if (!firstName || !email || !location || !state || !propertyType) {
+    return {
+      success: false,
+      message: "Please fill in all required fields",
+      step: "incomplete",
+    }
   }
-  completed: boolean
-  required: boolean
+
+  if (!agreedToTerms) {
+    return {
+      success: false,
+      message: "You must agree to the terms and conditions",
+      step: "incomplete",
+    }
+  }
+
+  return {
+    success: true,
+    message: `Welcome to Rural Community Hub, ${firstName}! Your account has been created.`,
+    step: "complete",
+    user: {
+      firstName,
+      lastName,
+      email,
+      location: `${location}, ${state}`,
+      propertyType,
+      emergencyTypes,
+    },
+  }
 }
 
-interface TutorialStep {
-  id: string
-  title: string
-  description: string
-  target: string
-  position: "top" | "bottom" | "left" | "right"
-  content: React.ReactNode
+const initialState = {
+  success: false,
+  message: "",
+  step: "start",
+  user: null,
+}
+
+const australianStates = [
+  { value: "NSW", label: "New South Wales" },
+  { value: "VIC", label: "Victoria" },
+  { value: "QLD", label: "Queensland" },
+  { value: "WA", label: "Western Australia" },
+  { value: "SA", label: "South Australia" },
+  { value: "TAS", label: "Tasmania" },
+  { value: "ACT", label: "Australian Capital Territory" },
+  { value: "NT", label: "Northern Territory" },
+]
+
+const propertyTypes = [
+  "Cattle Station",
+  "Sheep Farm",
+  "Mixed Farming",
+  "Dairy Farm",
+  "Crop Farm",
+  "Horse Stud",
+  "Poultry Farm",
+  "Rural Residential",
+  "Other",
+]
+
+const emergencyTypes = [
+  { id: "bushfire", label: "Bushfire", icon: "🔥" },
+  { id: "flood", label: "Flood", icon: "🌊" },
+  { id: "storm", label: "Severe Weather", icon: "⛈️" },
+  { id: "drought", label: "Drought", icon: "☀️" },
+]
+
+export function OnboardingProgress({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
+  const progress = (currentStep / totalSteps) * 100
+  return (
+    <div className="mb-6">
+      <div className="flex justify-between text-sm text-gray-600 mb-2">
+        <span>
+          Step {currentStep} of {totalSteps}
+        </span>
+        <span>{Math.round(progress)}% complete</span>
+      </div>
+      <Progress value={progress} className="h-2" />
+    </div>
+  )
 }
 
 export function UserOnboardingSystem() {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [showOnboarding, setShowOnboarding] = useState(true)
-  const [showTutorial, setShowTutorial] = useState(false)
-  const [tutorialStep, setTutorialStep] = useState(0)
-  const [userProgress, setUserProgress] = useState({
-    profileComplete: false,
-    emergencyPlanCreated: false,
-    communityJoined: false,
-    notificationsEnabled: false,
-    firstPostMade: false,
-  })
+  const [state, formAction] = useFormState(processOnboarding, initialState)
+  const [currentStep, setCurrentStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedEmergencyTypes, setSelectedEmergencyTypes] = useState<string[]>([])
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
 
-  const onboardingSteps: OnboardingStep[] = [
-    {
-      id: "welcome",
-      title: "Welcome to Rural Community Hub",
-      description: "Let's get you set up to connect with your local rural community",
-      icon: Users,
-      content: (
-        <div className="text-center space-y-4">
-          <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto">
-            <Users className="h-10 w-10 text-teal-600" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold mb-2">Welcome to Rural Community Hub!</h3>
-            <p className="text-slate-600 mb-4">
-              You're joining 8,630+ rural families across Australia who are building stronger, more resilient
-              communities.
-            </p>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <CheckCircle className="h-5 w-5 text-green-600 mb-1" />
-                <p className="font-medium">Emergency Preparedness</p>
-                <p className="text-slate-600">Get help when disasters strike</p>
-              </div>
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <Users className="h-5 w-5 text-blue-600 mb-1" />
-                <p className="font-medium">Community Support</p>
-                <p className="text-slate-600">Connect with local farmers</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
-      completed: false,
-      required: true,
-    },
-    {
-      id: "profile",
-      title: "Complete Your Profile",
-      description: "Tell us about your property and livestock so we can connect you with the right people",
-      icon: Settings,
-      content: (
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold">Complete Your Profile</h3>
-          <p className="text-slate-600">
-            Help your community understand how to help you in emergencies and what resources you can offer.
-          </p>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-              <MapPin className="h-5 w-5 text-slate-600" />
-              <div>
-                <p className="font-medium">Property Location</p>
-                <p className="text-sm text-slate-600">Help neighbors find you</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-              <Users className="h-5 w-5 text-slate-600" />
-              <div>
-                <p className="font-medium">Livestock & Equipment</p>
-                <p className="text-sm text-slate-600">What you have and what you need</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-              <Shield className="h-5 w-5 text-slate-600" />
-              <div>
-                <p className="font-medium">Emergency Contacts</p>
-                <p className="text-sm text-slate-600">Who to contact in emergencies</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
-      action: {
-        label: "Complete Profile",
-        onClick: () => {
-          setUserProgress((prev) => ({ ...prev, profileComplete: true }))
-          setCurrentStep(currentStep + 1)
-        },
-      },
-      completed: userProgress.profileComplete,
-      required: true,
-    },
-    {
-      id: "emergency-plan",
-      title: "Create Your Emergency Plan",
-      description: "Build a personalized emergency plan for your property and livestock",
-      icon: AlertTriangle,
-      content: (
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold">Create Your Emergency Plan</h3>
-          <p className="text-slate-600">
-            Having a plan before disaster strikes can save lives - both human and animal.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 border-2 border-red-200 rounded-lg">
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="h-4 w-4 text-red-600" />
-                </div>
-                <h4 className="font-semibold">Bushfire Plan</h4>
-              </div>
-              <p className="text-sm text-slate-600 mb-3">
-                Evacuation routes, livestock safety, and property protection
-              </p>
-              <Badge className="bg-red-100 text-red-700">Most Popular</Badge>
-            </div>
-            <div className="p-4 border-2 border-blue-200 rounded-lg">
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="h-4 w-4 text-blue-600" />
-                </div>
-                <h4 className="font-semibold">Flood Plan</h4>
-              </div>
-              <p className="text-sm text-slate-600 mb-3">Safe zones, evacuation timing, and community coordination</p>
-              <Badge className="bg-blue-100 text-blue-700">Essential</Badge>
-            </div>
-          </div>
-        </div>
-      ),
-      action: {
-        label: "Create Emergency Plan",
-        onClick: () => {
-          setUserProgress((prev) => ({ ...prev, emergencyPlanCreated: true }))
-          setCurrentStep(currentStep + 1)
-        },
-      },
-      completed: userProgress.emergencyPlanCreated,
-      required: true,
-    },
-    {
-      id: "notifications",
-      title: "Enable Emergency Notifications",
-      description: "Get instant alerts for emergencies and community updates",
-      icon: Bell,
-      content: (
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold">Enable Emergency Notifications</h3>
-          <p className="text-slate-600">
-            Stay informed about emergencies, weather alerts, and community requests for help.
-          </p>
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <div className="flex items-center space-x-2 mb-2">
-              <AlertTriangle className="h-5 w-5 text-amber-600" />
-              <h4 className="font-semibold text-amber-800">Critical for Safety</h4>
-            </div>
-            <p className="text-sm text-amber-700">
-              Emergency notifications can be the difference between safety and disaster. We recommend enabling all
-              notification types.
-            </p>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <Bell className="h-5 w-5 text-slate-600" />
-                <div>
-                  <p className="font-medium">Push Notifications</p>
-                  <p className="text-sm text-slate-600">Instant alerts on your device</p>
-                </div>
-              </div>
-              <Badge className="bg-green-100 text-green-700">Recommended</Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <Smartphone className="h-5 w-5 text-slate-600" />
-                <div>
-                  <p className="font-medium">SMS Alerts</p>
-                  <p className="text-sm text-slate-600">Text messages for critical alerts</p>
-                </div>
-              </div>
-              <Badge className="bg-red-100 text-red-700">Critical</Badge>
-            </div>
-          </div>
-        </div>
-      ),
-      action: {
-        label: "Enable Notifications",
-        onClick: () => {
-          setUserProgress((prev) => ({ ...prev, notificationsEnabled: true }))
-          setCurrentStep(currentStep + 1)
-        },
-      },
-      completed: userProgress.notificationsEnabled,
-      required: true,
-    },
-    {
-      id: "community",
-      title: "Join Your Local Community",
-      description: "Connect with farmers and rural families in your area",
-      icon: Users,
-      content: (
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold">Join Your Local Community</h3>
-          <p className="text-slate-600">
-            Connect with other rural families in your area. Share resources, ask for help, and build relationships
-            before you need them.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-slate-50 rounded-lg">
-              <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Users className="h-6 w-6 text-teal-600" />
-              </div>
-              <h4 className="font-semibold mb-1">Manning Valley</h4>
-              <p className="text-sm text-slate-600">127 members</p>
-              <Badge className="bg-green-100 text-green-700 mt-2">Your Area</Badge>
-            </div>
-            <div className="text-center p-4 bg-slate-50 rounded-lg">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <MessageCircle className="h-6 w-6 text-blue-600" />
-              </div>
-              <h4 className="font-semibold mb-1">Emergency Response</h4>
-              <p className="text-sm text-slate-600">89 members</p>
-              <Badge className="bg-red-100 text-red-700 mt-2">Critical</Badge>
-            </div>
-            <div className="text-center p-4 bg-slate-50 rounded-lg">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Shield className="h-6 w-6 text-purple-600" />
-              </div>
-              <h4 className="font-semibold mb-1">Equipment Sharing</h4>
-              <p className="text-sm text-slate-600">156 members</p>
-              <Badge className="bg-blue-100 text-blue-700 mt-2">Popular</Badge>
-            </div>
-          </div>
-        </div>
-      ),
-      action: {
-        label: "Join Communities",
-        onClick: () => {
-          setUserProgress((prev) => ({ ...prev, communityJoined: true }))
-          setCurrentStep(currentStep + 1)
-        },
-      },
-      completed: userProgress.communityJoined,
-      required: false,
-    },
-    {
-      id: "complete",
-      title: "You're All Set!",
-      description: "Welcome to the Rural Community Hub family",
-      icon: CheckCircle,
-      content: (
-        <div className="text-center space-y-4">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle className="h-10 w-10 text-green-600" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold mb-2">Welcome to the Community!</h3>
-            <p className="text-slate-600 mb-4">
-              You're now connected with your local rural community. Here's what you can do next:
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <MessageCircle className="h-5 w-5 text-blue-600 mb-1" />
-                <p className="font-medium">Make Your First Post</p>
-                <p className="text-slate-600">Introduce yourself to the community</p>
-              </div>
-              <div className="p-3 bg-green-50 rounded-lg">
-                <BookOpen className="h-5 w-5 text-green-600 mb-1" />
-                <p className="font-medium">Take the Tutorial</p>
-                <p className="text-slate-600">Learn all the features</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
-      action: {
-        label: "Start Tutorial",
-        onClick: () => {
-          setShowOnboarding(false)
-          setShowTutorial(true)
-        },
-      },
-      completed: false,
-      required: false,
-    },
-  ]
+  const totalSteps = 3
+  const progress = (currentStep / totalSteps) * 100
 
-  const tutorialSteps: TutorialStep[] = [
-    {
-      id: "navigation",
-      title: "Navigation Menu",
-      description: "Access all features from the main navigation",
-      target: "nav-menu",
-      position: "bottom",
-      content: (
-        <div>
-          <p className="mb-2">Use the navigation menu to access:</p>
-          <ul className="text-sm space-y-1">
-            <li>• Community feed and discussions</li>
-            <li>• Emergency alerts and planning</li>
-            <li>• Resource marketplace</li>
-            <li>• Weather and climate data</li>
-          </ul>
-        </div>
-      ),
-    },
-    {
-      id: "emergency-button",
-      title: "Emergency Alert",
-      description: "Quick access to emergency features",
-      target: "emergency-btn",
-      position: "left",
-      content: (
-        <div>
-          <p className="mb-2">In an emergency, use this button to:</p>
-          <ul className="text-sm space-y-1">
-            <li>• Send emergency alerts to neighbors</li>
-            <li>• Request immediate help</li>
-            <li>• Access your emergency plan</li>
-            <li>• Call emergency services</li>
-          </ul>
-        </div>
-      ),
-    },
-    {
-      id: "community-feed",
-      title: "Community Feed",
-      description: "Stay connected with your local community",
-      target: "community-feed",
-      position: "top",
-      content: (
-        <div>
-          <p className="mb-2">The community feed shows:</p>
-          <ul className="text-sm space-y-1">
-            <li>• Local posts and updates</li>
-            <li>• Help requests from neighbors</li>
-            <li>• Equipment sharing opportunities</li>
-            <li>• Weather and emergency alerts</li>
-          </ul>
-        </div>
-      ),
-    },
-  ]
+  const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true)
 
-  const completedSteps = onboardingSteps.filter((step) => step.completed).length
-  const totalSteps = onboardingSteps.length
-  const progressPercentage = (completedSteps / totalSteps) * 100
+    selectedEmergencyTypes.forEach((type) => {
+      formData.append("emergencyTypes", type)
+    })
+
+    if (agreedToTerms) {
+      formData.append("agreedToTerms", "on")
+    }
+
+    await formAction(formData)
+    setIsLoading(false)
+  }
+
+  const handleEmergencyTypeToggle = (type: string) => {
+    setSelectedEmergencyTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]))
+  }
 
   const nextStep = () => {
-    if (currentStep < onboardingSteps.length - 1) {
+    if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
     }
   }
 
   const prevStep = () => {
-    if (currentStep > 0) {
+    if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
     }
   }
 
-  const skipOnboarding = () => {
-    setShowOnboarding(false)
-  }
-
-  const nextTutorialStep = () => {
-    if (tutorialStep < tutorialSteps.length - 1) {
-      setTutorialStep(tutorialStep + 1)
-    } else {
-      setShowTutorial(false)
-    }
-  }
-
-  const skipTutorial = () => {
-    setShowTutorial(false)
-  }
-
-  if (showTutorial) {
-    const currentTutorialStep = tutorialSteps[tutorialStep]
+  if (state.success && state.step === "complete") {
     return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">{currentTutorialStep.title}</CardTitle>
-              <Button variant="ghost" size="sm" onClick={skipTutorial}>
-                <X className="h-4 w-4" />
-              </Button>
+      <Card className="w-full max-w-2xl mx-auto border-green-200 bg-green-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-green-800">
+            <CheckCircle className="h-5 w-5" />
+            Welcome to Rural Community Hub!
+          </CardTitle>
+          <CardDescription className="text-green-700">
+            Your account has been successfully created, {state.user?.firstName}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <Label className="text-green-700">Location</Label>
+              <p className="font-medium text-green-900">{state.user?.location}</p>
             </div>
-            <p className="text-sm text-slate-600">{currentTutorialStep.description}</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {currentTutorialStep.content}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-slate-600">
-                  {tutorialStep + 1} of {tutorialSteps.length}
-                </span>
-                <Progress value={((tutorialStep + 1) / tutorialSteps.length) * 100} className="w-20" />
-              </div>
-              <div className="flex space-x-2">
-                <Button variant="outline" onClick={skipTutorial}>
-                  Skip Tutorial
-                </Button>
-                <Button onClick={nextTutorialStep}>
-                  {tutorialStep === tutorialSteps.length - 1 ? "Finish" : "Next"}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
+            <div>
+              <Label className="text-green-700">Property Type</Label>
+              <p className="font-medium text-green-900">{state.user?.propertyType}</p>
+            </div>
+          </div>
+
+          {state.user?.emergencyTypes && state.user.emergencyTypes.length > 0 && (
+            <div>
+              <Label className="text-green-700">Emergency Preparedness</Label>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {state.user.emergencyTypes.map((type: string) => {
+                  const emergencyType = emergencyTypes.find((et) => et.id === type)
+                  return (
+                    <span key={type} className="bg-green-200 text-green-800 px-2 py-1 rounded text-xs">
+                      {emergencyType?.icon} {emergencyType?.label}
+                    </span>
+                  )
+                })}
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+
+          <div className="flex gap-4">
+            <Button className="bg-green-600 hover:bg-green-700">Access Dashboard</Button>
+            <Button variant="outline" className="border-green-300 text-green-700 hover:bg-green-100 bg-transparent">
+              Create Emergency Plan
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
-  if (!showOnboarding) {
-    return null
-  }
-
-  const currentOnboardingStep = onboardingSteps[currentStep]
-
   return (
-    <Dialog open={showOnboarding} onOpenChange={setShowOnboarding}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl">Getting Started</DialogTitle>
-            <Button variant="ghost" size="sm" onClick={skipOnboarding}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Progress value={progressPercentage} className="flex-1" />
-            <span className="text-sm text-slate-600">
-              {currentStep + 1} of {totalSteps}
-            </span>
-          </div>
-        </DialogHeader>
-
-        <div className="space-y-6">
-          {/* Step Indicator */}
-          <div className="flex items-center justify-center space-x-2">
-            {onboardingSteps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    index === currentStep
-                      ? "bg-teal-500 text-white"
-                      : step.completed
-                        ? "bg-green-500 text-white"
-                        : "bg-slate-200 text-slate-600"
-                  }`}
-                >
-                  {step.completed ? (
-                    <CheckCircle className="h-4 w-4" />
-                  ) : (
-                    <span className="text-sm font-medium">{index + 1}</span>
-                  )}
-                </div>
-                {index < onboardingSteps.length - 1 && (
-                  <div className={`w-8 h-0.5 ${step.completed ? "bg-green-500" : "bg-slate-200"}`} />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Step Content */}
-          <div className="min-h-[400px]">{currentOnboardingStep.content}</div>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-between pt-4 border-t">
-            <div className="flex space-x-2">
-              <Button variant="outline" onClick={skipOnboarding}>
-                Skip Setup
-              </Button>
-              {currentStep > 0 && (
-                <Button variant="outline" onClick={prevStep}>
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
-                </Button>
-              )}
-            </div>
-
-            <div className="flex space-x-2">
-              {currentOnboardingStep.action ? (
-                <Button onClick={currentOnboardingStep.action.onClick} className="bg-teal-500 hover:bg-teal-600">
-                  {currentOnboardingStep.action.label}
-                </Button>
-              ) : (
-                <Button onClick={nextStep} className="bg-teal-500 hover:bg-teal-600">
-                  {currentStep === onboardingSteps.length - 1 ? "Get Started" : "Continue"}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-export function OnboardingProgress() {
-  const [userProgress, setUserProgress] = useState({
-    profileComplete: false,
-    emergencyPlanCreated: false,
-    communityJoined: false,
-    notificationsEnabled: false,
-    firstPostMade: false,
-  })
-
-  const tasks = [
-    {
-      id: "profile",
-      title: "Complete your profile",
-      description: "Add your property details and contact information",
-      completed: userProgress.profileComplete,
-      required: true,
-    },
-    {
-      id: "emergency",
-      title: "Create emergency plan",
-      description: "Build a personalized emergency plan for your property",
-      completed: userProgress.emergencyPlanCreated,
-      required: true,
-    },
-    {
-      id: "notifications",
-      title: "Enable notifications",
-      description: "Get alerts for emergencies and community updates",
-      completed: userProgress.notificationsEnabled,
-      required: true,
-    },
-    {
-      id: "community",
-      title: "Join local community",
-      description: "Connect with farmers in your area",
-      completed: userProgress.communityJoined,
-      required: false,
-    },
-    {
-      id: "post",
-      title: "Make your first post",
-      description: "Introduce yourself to the community",
-      completed: userProgress.firstPostMade,
-      required: false,
-    },
-  ]
-
-  const completedTasks = tasks.filter((task) => task.completed).length
-  const requiredTasks = tasks.filter((task) => task.required)
-  const completedRequiredTasks = requiredTasks.filter((task) => task.completed).length
-
-  if (completedRequiredTasks === requiredTasks.length && completedTasks === tasks.length) {
-    return null // Hide when all tasks are complete
-  }
-
-  return (
-    <Card className="mb-6">
+    <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Complete Your Setup</CardTitle>
-          <Badge variant="secondary">
-            {completedTasks}/{tasks.length} Complete
-          </Badge>
-        </div>
-        <Progress value={(completedTasks / tasks.length) * 100} className="w-full" />
+        <CardTitle className="flex items-center gap-2">
+          <Shield className="h-5 w-5" />
+          Join Rural Community Hub
+        </CardTitle>
+        <CardDescription>Quick setup to get you connected with your rural community</CardDescription>
+        <OnboardingProgress currentStep={currentStep} totalSteps={totalSteps} />
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          {tasks
-            .filter((task) => !task.completed)
-            .slice(0, 3)
-            .map((task) => (
-              <div key={task.id} className="flex items-center space-x-3 p-3 bg-slate-50 rounded-lg">
-                <Circle className="h-5 w-5 text-slate-400" />
-                <div className="flex-1">
-                  <p className="font-medium">{task.title}</p>
-                  <p className="text-sm text-slate-600">{task.description}</p>
+        <form action={handleSubmit} className="space-y-6">
+          {/* Step 1: Personal Information */}
+          {currentStep === 1 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Personal Information
+              </h3>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name *</Label>
+                  <Input id="firstName" name="firstName" type="text" placeholder="John" required />
                 </div>
-                {task.required && <Badge className="bg-red-100 text-red-700">Required</Badge>}
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input id="lastName" name="lastName" type="text" placeholder="Smith" />
+                </div>
               </div>
-            ))}
-        </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input id="email" name="email" type="email" placeholder="john@example.com" required />
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Location & Property */}
+          {currentStep === 2 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                Location & Property
+              </h3>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="location">Town/City *</Label>
+                  <Input id="location" name="location" type="text" placeholder="Tamworth" required />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="state">State/Territory *</Label>
+                  <Select name="state" required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your state" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {australianStates.map((state) => (
+                        <SelectItem key={state.value} value={state.value}>
+                          {state.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="propertyType">Property Type *</Label>
+                <Select name="propertyType" required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your property type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {propertyTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Emergency Preparedness */}
+          {currentStep === 3 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Emergency Preparedness
+              </h3>
+
+              <div>
+                <Label className="text-base">Which emergency types affect your area?</Label>
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  {emergencyTypes.map((type) => (
+                    <div
+                      key={type.id}
+                      className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
+                        selectedEmergencyTypes.includes(type.id)
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                      onClick={() => handleEmergencyTypeToggle(type.id)}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xl">{type.icon}</span>
+                        <span className="font-medium text-sm">{type.label}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-2">
+                <Checkbox id="agreedToTerms" checked={agreedToTerms} onCheckedChange={setAgreedToTerms} required />
+                <Label htmlFor="agreedToTerms" className="text-sm leading-relaxed">
+                  I agree to the Terms of Service and Privacy Policy. I understand that this platform provides emergency
+                  planning tools and community features for rural properties.
+                </Label>
+              </div>
+            </div>
+          )}
+
+          {state?.message && (
+            <Alert className={state.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+              {state.success ? (
+                <CheckCircle className="h-4 w-4 text-green-600" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-red-600" />
+              )}
+              <AlertDescription className={state.success ? "text-green-800" : "text-red-800"}>
+                {state.message}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Navigation */}
+          <div className="flex justify-between pt-4">
+            <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1}>
+              Previous
+            </Button>
+
+            {currentStep < totalSteps ? (
+              <Button type="button" onClick={nextStep}>
+                Next
+              </Button>
+            ) : (
+              <Button type="submit" disabled={isLoading || !agreedToTerms}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  "Complete Setup"
+                )}
+              </Button>
+            )}
+          </div>
+        </form>
       </CardContent>
     </Card>
   )
 }
+
+// Export the main component as default
+export default UserOnboardingSystem

@@ -1,367 +1,448 @@
 "use client"
 
 import { useState } from "react"
+import { useFormState } from "react-dom"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Progress } from "@/components/ui/progress"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CheckCircle, MapPin, User, Home, ArrowRight, ArrowLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Progress } from "@/components/ui/progress"
+import { Shield, ArrowLeft, ArrowRight, CheckCircle, AlertTriangle, Users } from "lucide-react"
+import { registerUser } from "@/app/actions/user-registration"
+
+const initialState = {
+  success: false,
+  message: "",
+  user: null,
+}
+
+const steps = [
+  { id: 1, title: "Personal Details", description: "Basic information about you" },
+  { id: 2, title: "Property Information", description: "Details about your rural property" },
+  { id: 3, title: "Emergency Planning", description: "Set up your emergency preferences" },
+  { id: 4, title: "Community Connection", description: "Connect with your local community" },
+]
 
 const australianStates = [
-  { code: "NSW", name: "New South Wales", emoji: "🏙️" },
-  { code: "VIC", name: "Victoria", emoji: "🌿" },
-  { code: "QLD", name: "Queensland", emoji: "☀️" },
-  { code: "WA", name: "Western Australia", emoji: "🌊" },
-  { code: "SA", name: "South Australia", emoji: "🍷" },
-  { code: "TAS", name: "Tasmania", emoji: "🏔️" },
-  { code: "ACT", name: "Australian Capital Territory", emoji: "🏛️" },
-  { code: "NT", name: "Northern Territory", emoji: "🦘" },
+  { value: "NSW", label: "New South Wales" },
+  { value: "VIC", label: "Victoria" },
+  { value: "QLD", label: "Queensland" },
+  { value: "WA", label: "Western Australia" },
+  { value: "SA", label: "South Australia" },
+  { value: "TAS", label: "Tasmania" },
+  { value: "ACT", label: "Australian Capital Territory" },
+  { value: "NT", label: "Northern Territory" },
 ]
 
 const propertyTypes = [
-  { id: "cattle", name: "Cattle Station", emoji: "🐄", description: "Beef cattle farming" },
-  { id: "dairy", name: "Dairy Farm", emoji: "🥛", description: "Dairy cattle operation" },
-  { id: "sheep", name: "Sheep Station", emoji: "🐑", description: "Sheep farming for wool/meat" },
-  { id: "mixed", name: "Mixed Farming", emoji: "🌾", description: "Crops and livestock" },
-  { id: "cropping", name: "Cropping", emoji: "🌽", description: "Grain and crop production" },
-  { id: "horse", name: "Horse Stud", emoji: "🐎", description: "Horse breeding/training" },
-  { id: "poultry", name: "Poultry Farm", emoji: "🐔", description: "Chicken/egg production" },
-  { id: "vineyard", name: "Vineyard", emoji: "🍇", description: "Wine grape production" },
-  { id: "orchard", name: "Orchard", emoji: "🍎", description: "Fruit tree farming" },
-  { id: "other", name: "Other Rural", emoji: "🏡", description: "Other rural property" },
+  "Cattle Station",
+  "Sheep Farm",
+  "Mixed Farming",
+  "Dairy Farm",
+  "Crop Farm",
+  "Horse Stud",
+  "Poultry Farm",
+  "Other",
+]
+
+const emergencyTypes = [
+  { id: "bushfire", label: "Bushfire", icon: "🔥" },
+  { id: "flood", label: "Flood", icon: "🌊" },
+  { id: "storm", label: "Severe Weather", icon: "⛈️" },
+  { id: "drought", label: "Drought", icon: "☀️" },
 ]
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState(1)
+  const [state, formAction] = useFormState(registerUser, initialState)
+  const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    password: "",
+    confirmPassword: "",
     phone: "",
-    state: "",
-    location: "",
+    propertyName: "",
     propertyType: "",
+    location: "",
+    state: "",
+    postcode: "",
     propertySize: "",
-    experience: "",
+    emergencyTypes: [] as string[],
+    hasInsurance: false,
+    wantsAlerts: true,
+    joinCommunity: true,
+    agreedToTerms: false,
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const router = useRouter()
 
-  const progress = (step / 3) * 100
+  const progress = (currentStep / steps.length) * 100
 
-  const handleNext = () => {
-    if (step < 3) {
-      setStep(step + 1)
+  const handleInputChange = (field: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleEmergencyTypeToggle = (type: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      emergencyTypes: prev.emergencyTypes.includes(type)
+        ? prev.emergencyTypes.filter((t) => t !== type)
+        : [...prev.emergencyTypes, type],
+    }))
+  }
+
+  const nextStep = () => {
+    if (currentStep < steps.length) {
+      setCurrentStep(currentStep + 1)
     }
   }
 
-  const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1)
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1)
     }
   }
 
   const handleSubmit = async () => {
-    setIsSubmitting(true)
+    const submitFormData = new FormData()
+    Object.entries(formData).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((item) => submitFormData.append(key, item))
+      } else if (typeof value === "boolean") {
+        if (value) submitFormData.append(key, "on")
+      } else {
+        submitFormData.append(key, value.toString())
+      }
+    })
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // Store user data in localStorage (same as login system)
-    const userData = {
-      name: formData.name,
-      email: formData.email,
-      location: `${formData.location}, ${formData.state}`,
-      propertyType: propertyTypes.find((p) => p.id === formData.propertyType)?.name || formData.propertyType,
-    }
-
-    localStorage.setItem("currentUser", JSON.stringify(userData))
-    localStorage.setItem("isLoggedIn", "true")
-
-    // Redirect to dashboard
-    router.push("/dashboard")
+    await formAction(submitFormData)
   }
 
   const canProceed = () => {
-    switch (step) {
+    switch (currentStep) {
       case 1:
-        return formData.name && formData.email && formData.phone
+        return formData.name && formData.email && formData.password && formData.confirmPassword
       case 2:
-        return formData.state && formData.location
+        return formData.propertyName && formData.propertyType && formData.location && formData.state
       case 3:
-        return formData.propertyType && formData.propertySize
+        return formData.emergencyTypes.length > 0
+      case 4:
+        return formData.agreedToTerms
       default:
         return false
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-green-50 to-blue-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-2xl">🌾</span>
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center space-x-2">
+              <Shield className="h-8 w-8 text-green-600" />
+              <span className="text-xl font-bold text-gray-900">Rural Community Hub</span>
+            </Link>
+            <div className="text-sm text-gray-600">
+              Step {currentStep} of {steps.length}
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Join Rural Community Hub</h1>
-          <p className="text-gray-600">Connect with your rural community in just 3 steps</p>
         </div>
+      </div>
 
-        {/* Progress Bar */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Progress */}
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700">Step {step} of 3</span>
-            <span className="text-sm text-gray-500">{Math.round(progress)}% complete</span>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-bold text-gray-900">{steps[currentStep - 1].title}</h1>
+            <span className="text-sm text-gray-600">{Math.round(progress)}% Complete</span>
           </div>
           <Progress value={progress} className="h-2" />
+          <p className="text-gray-600 mt-2">{steps[currentStep - 1].description}</p>
         </div>
 
-        <Card className="shadow-xl">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              {step === 1 && (
-                <>
-                  <User className="h-5 w-5" /> Personal Information
-                </>
-              )}
-              {step === 2 && (
-                <>
-                  <MapPin className="h-5 w-5" /> Location Details
-                </>
-              )}
-              {step === 3 && (
-                <>
-                  <Home className="h-5 w-5" /> Property Information
-                </>
-              )}
-            </CardTitle>
-            <CardDescription>
-              {step === 1 && "Tell us about yourself"}
-              {step === 2 && "Where is your property located?"}
-              {step === 3 && "What type of rural property do you have?"}
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
-            {/* Step 1: Personal Information */}
-            {step === 1 && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Full Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Enter your full name"
-                  />
+        <Card>
+          <CardContent className="p-8">
+            {/* Step 1: Personal Details */}
+            {currentStep === 1 && (
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      placeholder="John Smith"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      placeholder="john@example.com"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="email">Email Address *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="your@email.com"
-                  />
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password *</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => handleInputChange("password", e.target.value)}
+                      placeholder="Create a strong password"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                      placeholder="Confirm your password"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="0400 000 000"
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    placeholder="0412 345 678"
                   />
                 </div>
-
-                <Alert>
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    Your information is secure and will only be shared with your local rural community members.
-                  </AlertDescription>
-                </Alert>
               </div>
             )}
 
-            {/* Step 2: Location */}
-            {step === 2 && (
-              <div className="space-y-4">
+            {/* Step 2: Property Information */}
+            {currentStep === 2 && (
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="propertyName">Property Name *</Label>
+                    <Input
+                      id="propertyName"
+                      value={formData.propertyName}
+                      onChange={(e) => handleInputChange("propertyName", e.target.value)}
+                      placeholder="Smith Family Farm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="propertyType">Property Type *</Label>
+                    <Select
+                      value={formData.propertyType}
+                      onValueChange={(value) => handleInputChange("propertyType", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select property type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {propertyTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Town/City *</Label>
+                    <Input
+                      id="location"
+                      value={formData.location}
+                      onChange={(e) => handleInputChange("location", e.target.value)}
+                      placeholder="Tamworth"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state">State *</Label>
+                    <Select value={formData.state} onValueChange={(value) => handleInputChange("state", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select state" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {australianStates.map((state) => (
+                          <SelectItem key={state.value} value={state.value}>
+                            {state.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="postcode">Postcode *</Label>
+                    <Input
+                      id="postcode"
+                      value={formData.postcode}
+                      onChange={(e) => handleInputChange("postcode", e.target.value)}
+                      placeholder="2340"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="propertySize">Property Size</Label>
+                  <Select
+                    value={formData.propertySize}
+                    onValueChange={(value) => handleInputChange("propertySize", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select property size" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Small (&lt; 10 hectares)</SelectItem>
+                      <SelectItem value="medium">Medium (10-100 hectares)</SelectItem>
+                      <SelectItem value="large">Large (100-1000 hectares)</SelectItem>
+                      <SelectItem value="very-large">Very Large (&gt; 1000 hectares)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Emergency Planning */}
+            {currentStep === 3 && (
+              <div className="space-y-6">
                 <div>
-                  <Label htmlFor="state">State/Territory *</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    {australianStates.map((state) => (
-                      <Button
-                        key={state.code}
-                        variant={formData.state === state.code ? "default" : "outline"}
-                        className="justify-start h-auto p-3"
-                        onClick={() => setFormData({ ...formData, state: state.code })}
+                  <h3 className="text-lg font-semibold mb-4">Which emergency types affect your area?</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {emergencyTypes.map((type) => (
+                      <div
+                        key={type.id}
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                          formData.emergencyTypes.includes(type.id)
+                            ? "border-green-500 bg-green-50"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                        onClick={() => handleEmergencyTypeToggle(type.id)}
                       >
-                        <span className="mr-2">{state.emoji}</span>
-                        <div className="text-left">
-                          <div className="font-medium">{state.code}</div>
-                          <div className="text-xs opacity-70">{state.name}</div>
+                        <div className="flex items-center space-x-3">
+                          <span className="text-2xl">{type.icon}</span>
+                          <div>
+                            <h4 className="font-medium">{type.label}</h4>
+                            <p className="text-sm text-gray-600">
+                              {type.id === "bushfire" && "Wildfire and grass fire risks"}
+                              {type.id === "flood" && "River and flash flooding"}
+                              {type.id === "storm" && "Severe weather and storms"}
+                              {type.id === "drought" && "Extended dry conditions"}
+                            </p>
+                          </div>
                         </div>
-                      </Button>
+                      </div>
                     ))}
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="location">Town/Region *</Label>
-                  <Input
-                    id="location"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    placeholder="e.g., Mudgee, Central Coast, Hunter Valley"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Enter your nearest town or region to connect with local community members
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="hasInsurance"
+                      checked={formData.hasInsurance}
+                      onCheckedChange={(checked) => handleInputChange("hasInsurance", checked)}
+                    />
+                    <Label htmlFor="hasInsurance">I have rural/farm insurance coverage</Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="wantsAlerts"
+                      checked={formData.wantsAlerts}
+                      onCheckedChange={(checked) => handleInputChange("wantsAlerts", checked)}
+                    />
+                    <Label htmlFor="wantsAlerts">Send me emergency alerts and weather warnings</Label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Community Connection */}
+            {currentStep === 4 && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <Users className="h-16 w-16 text-green-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Connect with Your Community</h3>
+                  <p className="text-gray-600 mb-6">
+                    Join your local rural community to share resources, coordinate during emergencies, and support each
+                    other.
                   </p>
                 </div>
 
-                {formData.state && (
-                  <div className="bg-teal-50 p-4 rounded-lg border border-teal-200">
-                    <h4 className="font-semibold text-teal-800 mb-2">
-                      {australianStates.find((s) => s.code === formData.state)?.emoji} Welcome to {formData.state}!
-                    </h4>
-                    <p className="text-sm text-teal-700">
-                      You'll be connected with rural community members in {formData.state} who can help during
-                      emergencies and share local knowledge.
-                    </p>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="joinCommunity"
+                      checked={formData.joinCommunity}
+                      onCheckedChange={(checked) => handleInputChange("joinCommunity", checked)}
+                    />
+                    <Label htmlFor="joinCommunity">
+                      Join my local community group for {formData.location}, {formData.state}
+                    </Label>
                   </div>
+
+                  <div className="flex items-start space-x-2">
+                    <Checkbox
+                      id="agreedToTerms"
+                      checked={formData.agreedToTerms}
+                      onCheckedChange={(checked) => handleInputChange("agreedToTerms", checked)}
+                    />
+                    <Label htmlFor="agreedToTerms" className="text-sm leading-relaxed">
+                      I agree to the Terms of Service and Privacy Policy. I understand that this platform provides
+                      emergency planning tools and community features for rural properties.
+                    </Label>
+                  </div>
+                </div>
+
+                {state?.message && (
+                  <Alert className={state.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+                    {state.success ? (
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                    )}
+                    <AlertDescription className={state.success ? "text-green-800" : "text-red-800"}>
+                      {state.message}
+                    </AlertDescription>
+                  </Alert>
                 )}
               </div>
             )}
 
-            {/* Step 3: Property Information */}
-            {step === 3 && (
-              <div className="space-y-4">
-                <div>
-                  <Label>Property Type *</Label>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    {propertyTypes.map((property) => (
-                      <Button
-                        key={property.id}
-                        variant={formData.propertyType === property.id ? "default" : "outline"}
-                        className="justify-start h-auto p-3"
-                        onClick={() => setFormData({ ...formData, propertyType: property.id })}
-                      >
-                        <span className="mr-2">{property.emoji}</span>
-                        <div className="text-left">
-                          <div className="font-medium text-sm">{property.name}</div>
-                          <div className="text-xs opacity-70">{property.description}</div>
-                        </div>
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="propertySize">Property Size</Label>
-                  <select
-                    id="propertySize"
-                    value={formData.propertySize}
-                    onChange={(e) => setFormData({ ...formData, propertySize: e.target.value })}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  >
-                    <option value="">Select property size</option>
-                    <option value="small">Small (Under 50 acres)</option>
-                    <option value="medium">Medium (50-500 acres)</option>
-                    <option value="large">Large (500-5,000 acres)</option>
-                    <option value="station">Station (Over 5,000 acres)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <Label htmlFor="experience">Rural Experience</Label>
-                  <select
-                    id="experience"
-                    value={formData.experience}
-                    onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  >
-                    <option value="">Select your experience level</option>
-                    <option value="new">New to rural life (0-2 years)</option>
-                    <option value="some">Some experience (2-10 years)</option>
-                    <option value="experienced">Experienced (10+ years)</option>
-                    <option value="generational">Generational farmer/grazier</option>
-                  </select>
-                </div>
-
-                {formData.propertyType && (
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                    <h4 className="font-semibold text-green-800 mb-2">
-                      {propertyTypes.find((p) => p.id === formData.propertyType)?.emoji} Perfect!
-                    </h4>
-                    <p className="text-sm text-green-700">
-                      You'll be connected with other{" "}
-                      {propertyTypes.find((p) => p.id === formData.propertyType)?.name.toLowerCase()} operators in your
-                      area who understand your specific challenges and opportunities.
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between pt-6">
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                disabled={step === 1}
-                className="flex items-center gap-2 bg-transparent"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back
+            {/* Navigation */}
+            <div className="flex justify-between mt-8 pt-6 border-t">
+              <Button variant="outline" onClick={prevStep} disabled={currentStep === 1} className="bg-transparent">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Previous
               </Button>
 
-              {step < 3 ? (
-                <Button
-                  onClick={handleNext}
-                  disabled={!canProceed()}
-                  className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700"
-                >
+              {currentStep < steps.length ? (
+                <Button onClick={nextStep} disabled={!canProceed()} className="bg-green-600 hover:bg-green-700">
                   Next
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               ) : (
-                <Button
-                  onClick={handleSubmit}
-                  disabled={!canProceed() || isSubmitting}
-                  className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      Creating Account...
-                    </>
-                  ) : (
-                    <>
-                      Join Community
-                      <CheckCircle className="h-4 w-4" />
-                    </>
-                  )}
+                <Button onClick={handleSubmit} disabled={!canProceed()} className="bg-green-600 hover:bg-green-700">
+                  Complete Setup
+                  <CheckCircle className="h-4 w-4 ml-2" />
                 </Button>
               )}
             </div>
           </CardContent>
         </Card>
-
-        {/* Footer */}
-        <div className="text-center mt-8 text-sm text-gray-600">
-          <p>
-            Already have an account?{" "}
-            <a href="/login" className="text-teal-600 hover:underline">
-              Sign in here
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   )
