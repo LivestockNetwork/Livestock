@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useFormState } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -28,8 +29,25 @@ interface DiagnosticResult {
   }
 }
 
+async function runDiagnosticsAction(prevState: any, formData: FormData) {
+  try {
+    const response = await fetch("/api/build-diagnostics")
+    const data = await response.json()
+    return data
+  } catch (error) {
+    return {
+      success: false,
+      errors: [{ file: "API Error", line: 0, error: "Failed to run diagnostics", fix: "Check API endpoint" }],
+      warnings: [],
+      buildOutput: "",
+      packageIssues: [],
+      summary: { totalFiles: 0, errorCount: 1, warningCount: 0, buildSuccess: false },
+    }
+  }
+}
+
 export default function BuildDiagnosticsPage() {
-  const [result, setResult] = useState<DiagnosticResult | null>(null)
+  const [state, formAction, isPending] = useFormState(runDiagnosticsAction, null)
   const [isLoading, setIsLoading] = useState(false)
 
   const runDiagnostics = async () => {
@@ -37,19 +55,14 @@ export default function BuildDiagnosticsPage() {
     try {
       const response = await fetch("/api/build-diagnostics")
       const data = await response.json()
-      setResult(data)
+      // Handle the response data here if needed
     } catch (error) {
-      setResult({
-        success: false,
-        errors: [{ file: "API Error", line: 0, error: "Failed to run diagnostics", fix: "Check API endpoint" }],
-        warnings: [],
-        buildOutput: "",
-        packageIssues: [],
-        summary: { totalFiles: 0, errorCount: 1, warningCount: 0, buildSuccess: false },
-      })
+      console.error("Diagnostics failed:", error)
     }
     setIsLoading(false)
   }
+
+  const result = state as DiagnosticResult | null
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -67,19 +80,21 @@ export default function BuildDiagnosticsPage() {
             <CardTitle>🚀 Real Build Analysis</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button onClick={runDiagnostics} disabled={isLoading} className="w-full">
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Running Real Build Process...
-                </>
-              ) : (
-                <>
-                  <Terminal className="mr-2 h-4 w-4" />
-                  Run Actual Build Test
-                </>
-              )}
-            </Button>
+            <form action={formAction}>
+              <Button type="submit" disabled={isPending || isLoading} className="w-full">
+                {isPending || isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Running Real Build Process...
+                  </>
+                ) : (
+                  <>
+                    <Terminal className="mr-2 h-4 w-4" />
+                    Run Actual Build Test
+                  </>
+                )}
+              </Button>
+            </form>
             <p className="text-sm text-gray-600 mt-2">
               This will run `npm run build` to catch the exact same errors that occur during deployment
             </p>

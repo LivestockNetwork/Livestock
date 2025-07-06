@@ -7,6 +7,8 @@ interface RegistrationResult {
     id: string
     email: string
     name: string
+    location?: string
+    propertyType?: string
   }
 }
 
@@ -15,6 +17,7 @@ export async function registerUser(prevState: any, formData: FormData): Promise<
   const lastName = formData.get("lastName") as string
   const email = formData.get("email") as string
   const password = formData.get("password") as string
+  const confirmPassword = formData.get("confirmPassword") as string
   const location = formData.get("location") as string
   const propertyType = formData.get("propertyType") as string
 
@@ -25,6 +28,13 @@ export async function registerUser(prevState: any, formData: FormData): Promise<
     return {
       success: false,
       message: "Please fill in all required fields",
+    }
+  }
+
+  if (password !== confirmPassword) {
+    return {
+      success: false,
+      message: "Passwords do not match",
     }
   }
 

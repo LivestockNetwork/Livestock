@@ -2,141 +2,122 @@
 
 import { useState } from "react"
 import { useFormState } from "react-dom"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
-import { Loader2, CheckCircle, AlertCircle, User, MapPin, Shield } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Loader2, CheckCircle, MapPin, User, Shield, Bell } from "lucide-react"
 
-// Onboarding action
-async function processOnboarding(prevState: any, formData: FormData) {
-  const firstName = formData.get("firstName") as string
-  const lastName = formData.get("lastName") as string
-  const email = formData.get("email") as string
-  const location = formData.get("location") as string
-  const state = formData.get("state") as string
-  const propertyType = formData.get("propertyType") as string
-  const emergencyTypes = formData.getAll("emergencyTypes") as string[]
-  const agreedToTerms = formData.get("agreedToTerms") === "on"
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-  if (!firstName || !email || !location || !state || !propertyType) {
-    return {
-      success: false,
-      message: "Please fill in all required fields",
-      step: "incomplete",
-    }
+interface OnboardingData {
+  personalInfo: {
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    dateOfBirth: string
   }
-
-  if (!agreedToTerms) {
-    return {
-      success: false,
-      message: "You must agree to the terms and conditions",
-      step: "incomplete",
-    }
+  locationInfo: {
+    address: string
+    suburb: string
+    state: string
+    postcode: string
+    propertyType: string
+    propertySize: string
   }
-
-  return {
-    success: true,
-    message: `Welcome to Rural Community Hub, ${firstName}! Your account has been created.`,
-    step: "complete",
-    user: {
-      firstName,
-      lastName,
-      email,
-      location: `${location}, ${state}`,
-      propertyType,
-      emergencyTypes,
-    },
+  livestockInfo: {
+    hasLivestock: boolean
+    livestockTypes: string[]
+    animalCount: number
+    primaryPurpose: string
+  }
+  emergencyInfo: {
+    emergencyContact: string
+    emergencyPhone: string
+    medicalConditions: string
+    specialNeeds: string
+  }
+  preferences: {
+    notifications: boolean
+    emailUpdates: boolean
+    communityParticipation: boolean
+    dataSharing: boolean
   }
 }
 
-const initialState = {
-  success: false,
-  message: "",
-  step: "start",
-  user: null,
+interface OnboardingState {
+  success: boolean
+  message: string
+  errors: Record<string, string>
+  data?: OnboardingData
 }
 
-const australianStates = [
-  { value: "NSW", label: "New South Wales" },
-  { value: "VIC", label: "Victoria" },
-  { value: "QLD", label: "Queensland" },
-  { value: "WA", label: "Western Australia" },
-  { value: "SA", label: "South Australia" },
-  { value: "TAS", label: "Tasmania" },
-  { value: "ACT", label: "Australian Capital Territory" },
-  { value: "NT", label: "Northern Territory" },
-]
+async function submitOnboardingAction(prevState: OnboardingState | null, formData: FormData): Promise<OnboardingState> {
+  try {
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
-const propertyTypes = [
-  "Cattle Station",
-  "Sheep Farm",
-  "Mixed Farming",
-  "Dairy Farm",
-  "Crop Farm",
-  "Horse Stud",
-  "Poultry Farm",
-  "Rural Residential",
-  "Other",
-]
+    const data: OnboardingData = {
+      personalInfo: {
+        firstName: formData.get("firstName") as string,
+        lastName: formData.get("lastName") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        dateOfBirth: formData.get("dateOfBirth") as string,
+      },
+      locationInfo: {
+        address: formData.get("address") as string,
+        suburb: formData.get("suburb") as string,
+        state: formData.get("state") as string,
+        postcode: formData.get("postcode") as string,
+        propertyType: formData.get("propertyType") as string,
+        propertySize: formData.get("propertySize") as string,
+      },
+      livestockInfo: {
+        hasLivestock: formData.get("hasLivestock") === "true",
+        livestockTypes: formData.getAll("livestockTypes") as string[],
+        animalCount: Number.parseInt(formData.get("animalCount") as string) || 0,
+        primaryPurpose: formData.get("primaryPurpose") as string,
+      },
+      emergencyInfo: {
+        emergencyContact: formData.get("emergencyContact") as string,
+        emergencyPhone: formData.get("emergencyPhone") as string,
+        medicalConditions: formData.get("medicalConditions") as string,
+        specialNeeds: formData.get("specialNeeds") as string,
+      },
+      preferences: {
+        notifications: formData.get("notifications") === "true",
+        emailUpdates: formData.get("emailUpdates") === "true",
+        communityParticipation: formData.get("communityParticipation") === "true",
+        dataSharing: formData.get("dataSharing") === "true",
+      },
+    }
 
-const emergencyTypes = [
-  { id: "bushfire", label: "Bushfire", icon: "🔥" },
-  { id: "flood", label: "Flood", icon: "🌊" },
-  { id: "storm", label: "Severe Weather", icon: "⛈️" },
-  { id: "drought", label: "Drought", icon: "☀️" },
-]
-
-export function OnboardingProgress({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
-  const progress = (currentStep / totalSteps) * 100
-  return (
-    <div className="mb-6">
-      <div className="flex justify-between text-sm text-gray-600 mb-2">
-        <span>
-          Step {currentStep} of {totalSteps}
-        </span>
-        <span>{Math.round(progress)}% complete</span>
-      </div>
-      <Progress value={progress} className="h-2" />
-    </div>
-  )
+    return {
+      success: true,
+      message: "Onboarding completed successfully! Welcome to the Livestock Emergency Network.",
+      errors: {},
+      data,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to complete onboarding. Please try again.",
+      errors: { general: "An unexpected error occurred" },
+    }
+  }
 }
 
 export function UserOnboardingSystem() {
-  const [state, formAction] = useFormState(processOnboarding, initialState)
   const [currentStep, setCurrentStep] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
-  const [selectedEmergencyTypes, setSelectedEmergencyTypes] = useState<string[]>([])
-  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [state, formAction, isPending] = useFormState(submitOnboardingAction, null)
 
-  const totalSteps = 3
+  const totalSteps = 5
   const progress = (currentStep / totalSteps) * 100
-
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true)
-
-    selectedEmergencyTypes.forEach((type) => {
-      formData.append("emergencyTypes", type)
-    })
-
-    if (agreedToTerms) {
-      formData.append("agreedToTerms", "on")
-    }
-
-    await formAction(formData)
-    setIsLoading(false)
-  }
-
-  const handleEmergencyTypeToggle = (type: string) => {
-    setSelectedEmergencyTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]))
-  }
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
@@ -150,51 +131,265 @@ export function UserOnboardingSystem() {
     }
   }
 
-  if (state.success && state.step === "complete") {
-    return (
-      <Card className="w-full max-w-2xl mx-auto border-green-200 bg-green-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-green-800">
-            <CheckCircle className="h-5 w-5" />
-            Welcome to Rural Community Hub!
-          </CardTitle>
-          <CardDescription className="text-green-700">
-            Your account has been successfully created, {state.user?.firstName}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <Label className="text-green-700">Location</Label>
-              <p className="font-medium text-green-900">{state.user?.location}</p>
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <User className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold">Personal Information</h3>
+              <p className="text-gray-600">Let's start with your basic details</p>
             </div>
-            <div>
-              <Label className="text-green-700">Property Type</Label>
-              <p className="font-medium text-green-900">{state.user?.propertyType}</p>
-            </div>
-          </div>
 
-          {state.user?.emergencyTypes && state.user.emergencyTypes.length > 0 && (
-            <div>
-              <Label className="text-green-700">Emergency Preparedness</Label>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {state.user.emergencyTypes.map((type: string) => {
-                  const emergencyType = emergencyTypes.find((et) => et.id === type)
-                  return (
-                    <span key={type} className="bg-green-200 text-green-800 px-2 py-1 rounded text-xs">
-                      {emergencyType?.icon} {emergencyType?.label}
-                    </span>
-                  )
-                })}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="firstName">First Name</Label>
+                <Input id="firstName" name="firstName" required />
+              </div>
+              <div>
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input id="lastName" name="lastName" required />
               </div>
             </div>
-          )}
 
-          <div className="flex gap-4">
-            <Button className="bg-green-600 hover:bg-green-700">Access Dashboard</Button>
-            <Button variant="outline" className="border-green-300 text-green-700 hover:bg-green-100 bg-transparent">
-              Create Emergency Plan
-            </Button>
+            <div>
+              <Label htmlFor="email">Email Address</Label>
+              <Input id="email" name="email" type="email" required />
+            </div>
+
+            <div>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input id="phone" name="phone" type="tel" required />
+            </div>
+
+            <div>
+              <Label htmlFor="dateOfBirth">Date of Birth</Label>
+              <Input id="dateOfBirth" name="dateOfBirth" type="date" required />
+            </div>
+          </div>
+        )
+
+      case 2:
+        return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <MapPin className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold">Location & Property</h3>
+              <p className="text-gray-600">Tell us about your property</p>
+            </div>
+
+            <div>
+              <Label htmlFor="address">Street Address</Label>
+              <Input id="address" name="address" required />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="suburb">Suburb</Label>
+                <Input id="suburb" name="suburb" required />
+              </div>
+              <div>
+                <Label htmlFor="postcode">Postcode</Label>
+                <Input id="postcode" name="postcode" required />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="state">State</Label>
+              <Select name="state" required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your state" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NSW">New South Wales</SelectItem>
+                  <SelectItem value="VIC">Victoria</SelectItem>
+                  <SelectItem value="QLD">Queensland</SelectItem>
+                  <SelectItem value="WA">Western Australia</SelectItem>
+                  <SelectItem value="SA">South Australia</SelectItem>
+                  <SelectItem value="TAS">Tasmania</SelectItem>
+                  <SelectItem value="ACT">Australian Capital Territory</SelectItem>
+                  <SelectItem value="NT">Northern Territory</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="propertyType">Property Type</Label>
+              <Select name="propertyType" required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select property type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="farm">Farm</SelectItem>
+                  <SelectItem value="hobby-farm">Hobby Farm</SelectItem>
+                  <SelectItem value="rural-residential">Rural Residential</SelectItem>
+                  <SelectItem value="grazing">Grazing Property</SelectItem>
+                  <SelectItem value="mixed-farming">Mixed Farming</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="propertySize">Property Size (hectares)</Label>
+              <Input id="propertySize" name="propertySize" type="number" min="0" step="0.1" />
+            </div>
+          </div>
+        )
+
+      case 3:
+        return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <div className="h-12 w-12 text-orange-600 mx-auto mb-4 text-2xl">🐄</div>
+              <h3 className="text-xl font-semibold">Livestock Information</h3>
+              <p className="text-gray-600">Details about your animals</p>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox id="hasLivestock" name="hasLivestock" value="true" />
+              <Label htmlFor="hasLivestock">I have livestock on my property</Label>
+            </div>
+
+            <div>
+              <Label>Livestock Types (select all that apply)</Label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {["Cattle", "Sheep", "Goats", "Pigs", "Horses", "Poultry", "Alpacas", "Other"].map((type) => (
+                  <div key={type} className="flex items-center space-x-2">
+                    <Checkbox id={type} name="livestockTypes" value={type.toLowerCase()} />
+                    <Label htmlFor={type}>{type}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="animalCount">Total Number of Animals</Label>
+              <Input id="animalCount" name="animalCount" type="number" min="0" />
+            </div>
+
+            <div>
+              <Label htmlFor="primaryPurpose">Primary Purpose</Label>
+              <Select name="primaryPurpose">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select primary purpose" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="commercial">Commercial Production</SelectItem>
+                  <SelectItem value="breeding">Breeding</SelectItem>
+                  <SelectItem value="hobby">Hobby/Personal Use</SelectItem>
+                  <SelectItem value="agistment">Agistment</SelectItem>
+                  <SelectItem value="conservation">Conservation</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )
+
+      case 4:
+        return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <Shield className="h-12 w-12 text-red-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold">Emergency Information</h3>
+              <p className="text-gray-600">Important details for emergency situations</p>
+            </div>
+
+            <div>
+              <Label htmlFor="emergencyContact">Emergency Contact Name</Label>
+              <Input id="emergencyContact" name="emergencyContact" required />
+            </div>
+
+            <div>
+              <Label htmlFor="emergencyPhone">Emergency Contact Phone</Label>
+              <Input id="emergencyPhone" name="emergencyPhone" type="tel" required />
+            </div>
+
+            <div>
+              <Label htmlFor="medicalConditions">Medical Conditions (optional)</Label>
+              <Input
+                id="medicalConditions"
+                name="medicalConditions"
+                placeholder="Any medical conditions we should be aware of"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="specialNeeds">Special Needs or Requirements (optional)</Label>
+              <Input
+                id="specialNeeds"
+                name="specialNeeds"
+                placeholder="Mobility issues, medication requirements, etc."
+              />
+            </div>
+          </div>
+        )
+
+      case 5:
+        return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <Bell className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold">Preferences & Consent</h3>
+              <p className="text-gray-600">How would you like to stay connected?</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="notifications" name="notifications" value="true" defaultChecked />
+                <Label htmlFor="notifications">Receive emergency notifications</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox id="emailUpdates" name="emailUpdates" value="true" defaultChecked />
+                <Label htmlFor="emailUpdates">Receive email updates and newsletters</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox id="communityParticipation" name="communityParticipation" value="true" />
+                <Label htmlFor="communityParticipation">Participate in community discussions</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox id="dataSharing" name="dataSharing" value="true" />
+                <Label htmlFor="dataSharing">Share anonymized data for research purposes</Label>
+              </div>
+            </div>
+
+            <Alert>
+              <AlertDescription>
+                By completing this onboarding, you agree to our Terms of Service and Privacy Policy. Your information
+                will be used to provide emergency services and community support.
+              </AlertDescription>
+            </Alert>
+          </div>
+        )
+
+      default:
+        return null
+    }
+  }
+
+  if (state?.success) {
+    return (
+      <Card className="max-w-2xl mx-auto">
+        <CardContent className="pt-6">
+          <div className="text-center">
+            <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-green-800 mb-2">Welcome to the Network!</h2>
+            <p className="text-green-700 mb-6">{state.message}</p>
+
+            <div className="bg-green-50 p-4 rounded-lg mb-6">
+              <h3 className="font-semibold text-green-800 mb-2">What's Next?</h3>
+              <ul className="text-sm text-green-700 space-y-1">
+                <li>• Check your email for a welcome message</li>
+                <li>• Explore the community features</li>
+                <li>• Set up your emergency plan</li>
+                <li>• Connect with local livestock owners</li>
+              </ul>
+            </div>
+
+            <Button className="w-full">Go to Dashboard</Button>
           </div>
         </CardContent>
       </Card>
@@ -202,148 +397,30 @@ export function UserOnboardingSystem() {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" />
-          Join Rural Community Hub
+        <CardTitle className="flex items-center justify-between">
+          <span>Livestock Emergency Network - Onboarding</span>
+          <Badge variant="outline">
+            Step {currentStep} of {totalSteps}
+          </Badge>
         </CardTitle>
-        <CardDescription>Quick setup to get you connected with your rural community</CardDescription>
-        <OnboardingProgress currentStep={currentStep} totalSteps={totalSteps} />
+        <div className="w-full">
+          <Progress value={progress} className="w-full" />
+        </div>
       </CardHeader>
+
       <CardContent>
-        <form action={handleSubmit} className="space-y-6">
-          {/* Step 1: Personal Information */}
-          {currentStep === 1 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Personal Information
-              </h3>
+        {state?.errors.general && (
+          <Alert className="mb-4">
+            <AlertDescription>{state.errors.general}</AlertDescription>
+          </Alert>
+        )}
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name *</Label>
-                  <Input id="firstName" name="firstName" type="text" placeholder="John" required />
-                </div>
+        <form action={formAction}>
+          {renderStepContent()}
 
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" name="lastName" type="text" placeholder="Smith" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
-                <Input id="email" name="email" type="email" placeholder="john@example.com" required />
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Location & Property */}
-          {currentStep === 2 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Location & Property
-              </h3>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="location">Town/City *</Label>
-                  <Input id="location" name="location" type="text" placeholder="Tamworth" required />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="state">State/Territory *</Label>
-                  <Select name="state" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your state" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {australianStates.map((state) => (
-                        <SelectItem key={state.value} value={state.value}>
-                          {state.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="propertyType">Property Type *</Label>
-                <Select name="propertyType" required>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your property type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {propertyTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Emergency Preparedness */}
-          {currentStep === 3 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Emergency Preparedness
-              </h3>
-
-              <div>
-                <Label className="text-base">Which emergency types affect your area?</Label>
-                <div className="grid grid-cols-2 gap-3 mt-3">
-                  {emergencyTypes.map((type) => (
-                    <div
-                      key={type.id}
-                      className={`p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                        selectedEmergencyTypes.includes(type.id)
-                          ? "border-green-500 bg-green-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                      onClick={() => handleEmergencyTypeToggle(type.id)}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xl">{type.icon}</span>
-                        <span className="font-medium text-sm">{type.label}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <Checkbox id="agreedToTerms" checked={agreedToTerms} onCheckedChange={setAgreedToTerms} required />
-                <Label htmlFor="agreedToTerms" className="text-sm leading-relaxed">
-                  I agree to the Terms of Service and Privacy Policy. I understand that this platform provides emergency
-                  planning tools and community features for rural properties.
-                </Label>
-              </div>
-            </div>
-          )}
-
-          {state?.message && (
-            <Alert className={state.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
-              {state.success ? (
-                <CheckCircle className="h-4 w-4 text-green-600" />
-              ) : (
-                <AlertCircle className="h-4 w-4 text-red-600" />
-              )}
-              <AlertDescription className={state.success ? "text-green-800" : "text-red-800"}>
-                {state.message}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Navigation */}
-          <div className="flex justify-between pt-4">
+          <div className="flex justify-between mt-8">
             <Button type="button" variant="outline" onClick={prevStep} disabled={currentStep === 1}>
               Previous
             </Button>
@@ -353,14 +430,14 @@ export function UserOnboardingSystem() {
                 Next
               </Button>
             ) : (
-              <Button type="submit" disabled={isLoading || !agreedToTerms}>
-                {isLoading ? (
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating Account...
+                    Completing...
                   </>
                 ) : (
-                  "Complete Setup"
+                  "Complete Onboarding"
                 )}
               </Button>
             )}
@@ -371,5 +448,18 @@ export function UserOnboardingSystem() {
   )
 }
 
-// Export the main component as default
-export default UserOnboardingSystem
+export function OnboardingProgress({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
+  const progress = (currentStep / totalSteps) * 100
+
+  return (
+    <div className="w-full max-w-md mx-auto mb-8">
+      <div className="flex justify-between text-sm text-gray-600 mb-2">
+        <span>
+          Step {currentStep} of {totalSteps}
+        </span>
+        <span>{Math.round(progress)}% Complete</span>
+      </div>
+      <Progress value={progress} className="w-full" />
+    </div>
+  )
+}
