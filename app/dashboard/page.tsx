@@ -13,15 +13,36 @@ export default async function DashboardPage() {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
+  // Fetch user profile data
+  const { data: profile } = await supabase.from("user_profiles").select("*").eq("user_id", user.id).single()
 
-  const { data: emergencyPlans } = await supabase.from("emergency_plans").select("*").eq("user_id", user.id)
-
-  const { data: alerts } = await supabase
-    .from("emergency_alerts")
+  // Fetch emergency plans
+  const { data: emergencyPlans } = await supabase
+    .from("emergency_plans")
     .select("*")
-    .eq("active", true)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
-  return <DashboardClient user={user} profile={profile} emergencyPlans={emergencyPlans || []} alerts={alerts || []} />
+  // Fetch recent community posts
+  const { data: communityPosts } = await supabase
+    .from("community_posts")
+    .select(`
+      *,
+      user_profiles (
+        full_name,
+        state,
+        property_type
+      )
+    `)
+    .order("created_at", { ascending: false })
+    .limit(5)
+
+  return (
+    <DashboardClient
+      user={user}
+      profile={profile}
+      emergencyPlans={emergencyPlans || []}
+      communityPosts={communityPosts || []}
+    />
+  )
 }
