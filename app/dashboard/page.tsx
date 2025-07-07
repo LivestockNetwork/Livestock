@@ -13,7 +13,6 @@ export default async function DashboardPage() {
     redirect("/auth/login")
   }
 
-  // Fetch user profile and other data server-side
   const { data: profile } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
 
   const { data: emergencyPlans } = await supabase.from("emergency_plans").select("*").eq("user_id", user.id)
