@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { AlertCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 const initialState = {
   success: false,
@@ -17,6 +19,17 @@ const initialState = {
 
 export default function RegisterPage() {
   const [state, formAction] = useFormState(registerUser, initialState)
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedState, setSelectedState] = useState("")
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true)
+    formData.set("state", selectedState)
+    console.log("Form submission started")
+    await formAction(formData)
+    setIsLoading(false)
+    console.log("Form submission completed")
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -26,20 +39,34 @@ export default function RegisterPage() {
           <p className="text-center text-gray-600">Just name, email, state and password to get started</p>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="space-y-4">
+          <form action={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="fullName">Full Name</Label>
-              <Input id="fullName" name="fullName" type="text" required placeholder="Enter your full name" />
+              <Input
+                id="fullName"
+                name="fullName"
+                type="text"
+                required
+                placeholder="Enter your full name"
+                disabled={isLoading}
+              />
             </div>
 
             <div>
               <Label htmlFor="email">Email Address</Label>
-              <Input id="email" name="email" type="email" required placeholder="Enter your email" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                placeholder="Enter your email"
+                disabled={isLoading}
+              />
             </div>
 
             <div>
               <Label htmlFor="state">State/Territory</Label>
-              <Select name="state" required>
+              <Select value={selectedState} onValueChange={setSelectedState} required disabled={isLoading}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your state" />
                 </SelectTrigger>
@@ -65,6 +92,7 @@ export default function RegisterPage() {
                 required
                 placeholder="Create a password"
                 minLength={6}
+                disabled={isLoading}
               />
             </div>
 
@@ -77,17 +105,26 @@ export default function RegisterPage() {
                 required
                 placeholder="Confirm your password"
                 minLength={6}
+                disabled={isLoading}
               />
             </div>
 
             {state?.error && (
               <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{state.error}</AlertDescription>
               </Alert>
             )}
 
-            <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-              Create Account
+            <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                "Create Account"
+              )}
             </Button>
           </form>
 
