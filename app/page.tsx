@@ -5,7 +5,7 @@ import { Shield, Users, AlertTriangle, MapPin, Phone, Mail, Clock, Star, ArrowRi
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
+    <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
       <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,37 +29,44 @@ export default function HomePage() {
               <Link href="/auth/signup">
                 <Button className="bg-emerald-600 hover:bg-emerald-700">Get Started</Button>
               </Link>
+              <Link href="/dashboard">
+                <Button className="bg-gray-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-700">
+                  Dashboard
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Protect Your Livestock,
-            <span className="text-emerald-600 block">Connect Your Community</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Join Australia's leading rural community platform for emergency preparedness, livestock protection, and
-            neighbor-to-neighbor support when it matters most.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/signup">
-              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8 py-3">
-                Get Started Free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-8">Livestock Emergency Planning</h1>
+          <p className="text-xl text-gray-600 mb-12">Community-driven livestock emergency preparedness platform</p>
+
+          <div className="space-x-4">
+            <Link
+              href="/auth/login"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 inline-block"
+            >
+              Sign In
             </Link>
-            <Link href="/how-it-works">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-3 bg-transparent">
-                How It Works
-              </Button>
+            <Link
+              href="/auth/signup"
+              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 inline-block"
+            >
+              Sign Up
+            </Link>
+            <Link
+              href="/dashboard"
+              className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 inline-block"
+            >
+              Dashboard
             </Link>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Features Section */}
       <section className="py-20 bg-white">

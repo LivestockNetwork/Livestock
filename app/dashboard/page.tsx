@@ -1,48 +1,74 @@
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
-import DashboardClient from "./dashboard-client"
+"use client"
 
-export default async function DashboardPage() {
-  const supabase = await createClient()
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
+import type { User } from "@supabase/supabase-js"
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
+export default function DashboardPage() {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-  if (error || !user) {
-    redirect("/auth/login")
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      setUser(user)
+      setLoading(false)
+
+      if (!user) {
+        router.push("/auth/login")
+      }
+    }
+
+    getUser()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+      if (!session?.user) {
+        router.push("/auth/login")
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [router])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push("/")
   }
 
-  // Fetch user profile data
-  const { data: profile } = await supabase.from("user_profiles").select("*").eq("user_id", user.id).single()
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  }
 
-  // Fetch emergency plans
-  const { data: emergencyPlans } = await supabase
-    .from("emergency_plans")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-
-  // Fetch recent community posts
-  const { data: communityPosts } = await supabase
-    .from("community_posts")
-    .select(`
-      *,
-      user_profiles (
-        full_name,
-        location
-      )
-    `)
-    .order("created_at", { ascending: false })
-    .limit(5)
+  if (!user) {
+    return <div className="min-h-screen flex items-center justify-center">Redirecting...</div>
+  }
 
   return (
-    <DashboardClient
-      user={user}
-      profile={profile}
-      emergencyPlans={emergencyPlans || []}
-      communityPosts={communityPosts || []}
-    />
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <button onClick={handleSignOut} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold mb-4">Welcome!</h2>
+          <p className="text-gray-600">Email: {user.email}</p>
+          <p className="text-gray-600">User ID: {user.id}</p>
+          <p className="text-gray-600">Created: {new Date(user.created_at).toLocaleDateString()}</p>
+        </div>
+      </div>
+    </div>
   )
 }
