@@ -1,16 +1,15 @@
 "use client"
 
 import { useFormState } from "react-dom"
-import { registerUser } from "@/app/actions/user-registration"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, Loader2 } from "lucide-react"
+import { Shield, AlertCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { registerUser } from "@/app/actions/user-registration"
 
 const initialState = {
   success: false,
@@ -18,55 +17,49 @@ const initialState = {
 }
 
 export default function RegisterPage() {
-  const [state, formAction] = useFormState(registerUser, initialState)
-  const [isLoading, setIsLoading] = useState(false)
-  const [selectedState, setSelectedState] = useState("")
+  const [state, formAction, isPending] = useFormState(registerUser, initialState)
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true)
-    formData.set("state", selectedState)
-    console.log("Form submission started")
-    await formAction(formData)
-    setIsLoading(false)
-    console.log("Form submission completed")
-  }
+  console.log("🎨 Register page state:", state, "isPending:", isPending)
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">Create Account</CardTitle>
-          <p className="text-center text-gray-600">Just name, email, state and password to get started</p>
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <Shield className="h-12 w-12 text-green-600" />
+          </div>
+          <CardTitle className="text-2xl">Create Account</CardTitle>
+          <CardDescription>Join Australia's rural emergency planning community</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleSubmit} className="space-y-4">
-            <div>
+          <form action={formAction} className="space-y-4">
+            <div className="space-y-2">
               <Label htmlFor="fullName">Full Name</Label>
               <Input
                 id="fullName"
                 name="fullName"
                 type="text"
-                required
                 placeholder="Enter your full name"
-                disabled={isLoading}
+                required
+                disabled={isPending}
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
+                placeholder="Enter your email address"
                 required
-                placeholder="Enter your email"
-                disabled={isLoading}
+                disabled={isPending}
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="state">State/Territory</Label>
-              <Select value={selectedState} onValueChange={setSelectedState} required disabled={isLoading}>
+              <Select name="state" required disabled={isPending}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your state" />
                 </SelectTrigger>
@@ -83,29 +76,29 @@ export default function RegisterPage() {
               </Select>
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
+                placeholder="Create a password (min 6 characters)"
                 required
-                placeholder="Create a password"
                 minLength={6}
-                disabled={isLoading}
+                disabled={isPending}
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
-                required
                 placeholder="Confirm your password"
+                required
                 minLength={6}
-                disabled={isLoading}
+                disabled={isPending}
               />
             </div>
 
@@ -116,8 +109,8 @@ export default function RegisterPage() {
               </Alert>
             )}
 
-            <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isLoading}>
-              {isLoading ? (
+            <Button type="submit" className="w-full bg-green-600 hover:bg-green-700" disabled={isPending}>
+              {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Creating Account...
@@ -131,7 +124,7 @@ export default function RegisterPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
-              <Link href="/login" className="text-green-600 hover:text-green-500 font-medium">
+              <Link href="/login" className="text-green-600 hover:text-green-700 font-medium">
                 Sign in here
               </Link>
             </p>

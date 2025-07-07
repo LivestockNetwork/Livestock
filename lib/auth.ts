@@ -1,119 +1,117 @@
 import { createClient } from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+export async function signUp(email: string, password: string, metadata: { full_name: string; state: string }) {
+  console.log("🔐 Auth signUp function called with:", { email, hasPassword: !!password, metadata })
 
-// Server-side client with service role key for admin operations
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
-
-export async function signUp(email: string, password: string, fullName: string, state: string) {
   try {
-    // Validate environment variables
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error("Missing Supabase configuration")
-    }
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-    // Create user account
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true, // Auto-confirm email for now
-      user_metadata: {
-        full_name: fullName,
-        state: state,
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
       },
     })
 
-    if (authError) {
-      console.error("Auth error:", authError)
-      throw new Error(authError.message)
-    }
+    console.log("📧 Calling Supabase signUp")
 
-    if (!authData.user) {
-      throw new Error("Failed to create user")
-    }
-
-    // Create user profile
-    const { error: profileError } = await supabaseAdmin.from("user_profiles").insert({
-      id: authData.user.id,
-      email: email,
-      full_name: fullName,
-      state: state,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: metadata,
+      },
     })
 
-    if (profileError) {
-      console.error("Profile error:", profileError)
-      // Don't throw here - user is created, profile creation is secondary
+    console.log("📊 Supabase signUp response:", {
+      hasData: !!data,
+      hasUser: !!data?.user,
+      hasError: !!error,
+      errorMessage: error?.message,
+    })
+
+    if (error) {
+      console.log("❌ Supabase auth error:", error)
+      return { error: error.message }
     }
+
+    if (!data.user) {
+      console.log("❌ No user returned from Supabase")
+      return { error: "Failed to create user account" }
+    }
+
+    console.log("✅ User created successfully:", data.user.id)
 
     return {
       success: true,
-      user: authData.user,
-      message: "Account created successfully",
+      user: data.user,
+      message: "Registration successful! Please check your email to verify your account.",
     }
   } catch (error) {
-    console.error("SignUp error:", error)
+    console.error("💥 Auth signUp error:", error)
     return {
-      success: false,
-      error: error instanceof Error ? error.message : "Registration failed",
+      error: error instanceof Error ? error.message : "Authentication service error",
     }
   }
 }
 
 export async function signIn(email: string, password: string) {
-  try {
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error("Missing Supabase configuration")
-    }
+  console.log("🔐 Auth signIn function called with:", { email, hasPassword: !!password })
 
-    const { data, error } = await supabaseAdmin.auth.signInWithPassword({
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
 
     if (error) {
-      throw new Error(error.message)
+      console.log("❌ SignIn error:", error)
+      return { error: error.message }
     }
 
-    return {
-      success: true,
-      user: data.user,
-      session: data.session,
-    }
+    console.log("✅ SignIn successful")
+    return { success: true, user: data.user }
   } catch (error) {
-    console.error("SignIn error:", error)
+    console.error("💥 Auth signIn error:", error)
     return {
-      success: false,
-      error: error instanceof Error ? error.message : "Login failed",
+      error: error instanceof Error ? error.message : "Authentication service error",
     }
   }
 }
 
 export async function resetPassword(email: string) {
-  try {
-    if (!supabaseUrl || !supabaseServiceKey) {
-      throw new Error("Missing Supabase configuration")
-    }
+  console.log("🔐 Auth resetPassword function called with:", { email })
 
-    const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/reset-password`,
     })
 
     if (error) {
-      throw new Error(error.message)
+      console.log("❌ Reset password error:", error)
+      return { error: error.message }
     }
 
+    console.log("✅ Reset password email sent successfully")
     return {
       success: true,
-      message: "Password reset email sent",
+      message: "Password reset email sent! Please check your inbox.",
     }
   } catch (error) {
-    console.error("Reset password error:", error)
+    console.error("💥 Auth resetPassword error:", error)
     return {
-      success: false,
-      error: error instanceof Error ? error.message : "Password reset failed",
+      error: error instanceof Error ? error.message : "Password reset service error",
     }
   }
 }
