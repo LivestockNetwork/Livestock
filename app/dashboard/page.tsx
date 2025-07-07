@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 import DashboardClient from "./dashboard-client"
 
 export default async function DashboardPage() {
@@ -7,9 +7,10 @@ export default async function DashboardPage() {
 
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser()
 
-  if (!user) {
+  if (error || !user) {
     redirect("/auth/login")
   }
 
@@ -30,8 +31,7 @@ export default async function DashboardPage() {
       *,
       user_profiles (
         full_name,
-        state,
-        property_type
+        location
       )
     `)
     .order("created_at", { ascending: false })
