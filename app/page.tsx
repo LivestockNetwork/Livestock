@@ -16,9 +16,6 @@ export default function HomePage() {
               <span className="text-xl font-bold text-gray-900">Rural Community Hub</span>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/login">
-                <Button variant="outline">Sign In</Button>
-              </Link>
               <Link href="/register">
                 <Button className="bg-green-600 hover:bg-green-700">Join Now</Button>
               </Link>

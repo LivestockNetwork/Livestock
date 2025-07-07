@@ -1,117 +1,119 @@
-import { supabase } from "./supabase"
-import type { UserProfile } from "./supabase"
+import { createClient } from "@supabase/supabase-js"
 
-export async function signUp(
-  email: string,
-  password: string,
-  userData: {
-    firstName: string
-    lastName?: string
-    state?: string
-    location?: string
-    propertyType?: string
-  },
-) {
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+// Server-side client with service role key for admin operations
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+
+export async function signUp(email: string, password: string, fullName: string, state: string) {
   try {
-    // Sign up with Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    // Validate environment variables
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error("Missing Supabase configuration")
+    }
+
+    // Create user account
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      options: {
-        data: {
-          first_name: userData.firstName,
-          last_name: userData.lastName || "",
-        },
+      email_confirm: true, // Auto-confirm email for now
+      user_metadata: {
+        full_name: fullName,
+        state: state,
       },
     })
 
-    if (authError) throw authError
-
-    // Create user profile
-    if (authData.user) {
-      const { error: profileError } = await supabase.from("user_profiles").insert({
-        id: authData.user.id,
-        first_name: userData.firstName,
-        last_name: userData.lastName || "",
-        email: email,
-        state: userData.state,
-        location: userData.location,
-        property_type: userData.propertyType,
-      })
-
-      if (profileError) throw profileError
+    if (authError) {
+      console.error("Auth error:", authError)
+      throw new Error(authError.message)
     }
 
-    return { user: authData.user, error: null }
+    if (!authData.user) {
+      throw new Error("Failed to create user")
+    }
+
+    // Create user profile
+    const { error: profileError } = await supabaseAdmin.from("user_profiles").insert({
+      id: authData.user.id,
+      email: email,
+      full_name: fullName,
+      state: state,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+
+    if (profileError) {
+      console.error("Profile error:", profileError)
+      // Don't throw here - user is created, profile creation is secondary
+    }
+
+    return {
+      success: true,
+      user: authData.user,
+      message: "Account created successfully",
+    }
   } catch (error) {
-    console.error("Sign up error:", error)
-    return { user: null, error }
+    console.error("SignUp error:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Registration failed",
+    }
   }
 }
 
 export async function signIn(email: string, password: string) {
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error("Missing Supabase configuration")
+    }
+
+    const { data, error } = await supabaseAdmin.auth.signInWithPassword({
       email,
       password,
     })
 
-    if (error) throw error
+    if (error) {
+      throw new Error(error.message)
+    }
 
-    return { user: data.user, error: null }
+    return {
+      success: true,
+      user: data.user,
+      session: data.session,
+    }
   } catch (error) {
-    console.error("Sign in error:", error)
-    return { user: null, error }
-  }
-}
-
-export async function signOut() {
-  try {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-    return { error: null }
-  } catch (error) {
-    console.error("Sign out error:", error)
-    return { error }
+    console.error("SignIn error:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Login failed",
+    }
   }
 }
 
 export async function resetPassword(email: string) {
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error("Missing Supabase configuration")
+    }
+
+    const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/reset-password`,
     })
 
-    if (error) throw error
-    return { error: null }
-  } catch (error) {
-    console.error("Password reset error:", error)
-    return { error }
-  }
-}
+    if (error) {
+      throw new Error(error.message)
+    }
 
-export async function getCurrentUser() {
-  try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser()
-    if (error) throw error
-    return { user, error: null }
+    return {
+      success: true,
+      message: "Password reset email sent",
+    }
   } catch (error) {
-    console.error("Get current user error:", error)
-    return { user: null, error }
-  }
-}
-
-export async function getUserProfile(userId: string): Promise<UserProfile | null> {
-  try {
-    const { data, error } = await supabase.from("user_profiles").select("*").eq("id", userId).single()
-
-    if (error) throw error
-    return data
-  } catch (error) {
-    console.error("Get user profile error:", error)
-    return null
+    console.error("Reset password error:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Password reset failed",
+    }
   }
 }

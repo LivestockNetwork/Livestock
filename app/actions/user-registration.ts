@@ -1,66 +1,64 @@
 "use server"
 
 import { signUp } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
 export async function registerUser(prevState: any, formData: FormData) {
   try {
-    const name = formData.get("name") as string
+    const fullName = formData.get("fullName") as string
     const email = formData.get("email") as string
+    const state = formData.get("state") as string
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirmPassword") as string
-    const state = formData.get("state") as string
 
     // Validation
-    if (!name || !email || !password || !confirmPassword || !state) {
+    if (!fullName || !email || !state || !password || !confirmPassword) {
       return {
         success: false,
-        message: "All fields are required",
-        user: null,
+        error: "All fields are required",
       }
     }
 
     if (password !== confirmPassword) {
       return {
         success: false,
-        message: "Passwords do not match",
-        user: null,
+        error: "Passwords do not match",
       }
     }
 
     if (password.length < 6) {
       return {
         success: false,
-        message: "Password must be at least 6 characters",
-        user: null,
+        error: "Password must be at least 6 characters",
       }
     }
 
-    // Register user with Supabase
-    const result = await signUp(email, password, {
-      full_name: name,
-      state: state,
-    })
-
-    if (result.error) {
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
       return {
         success: false,
-        message: result.error.message || "Registration failed",
-        user: null,
+        error: "Please enter a valid email address",
       }
     }
 
-    // Registration successful
-    return {
-      success: true,
-      message: "Registration successful! Please check your email to verify your account.",
-      user: result.user,
+    // Register user
+    const result = await signUp(email, password, fullName, state)
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error || "Registration failed",
+      }
     }
+
+    // Success - redirect to dashboard
+    redirect("/dashboard")
   } catch (error) {
     console.error("Registration error:", error)
     return {
       success: false,
-      message: "Registration failed. Please try again.",
-      user: null,
+      error: error instanceof Error ? error.message : "Registration failed",
     }
   }
 }
