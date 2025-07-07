@@ -25,32 +25,36 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  // Don't run middleware on auth routes to avoid redirect loops
-  if (request.nextUrl.pathname.startsWith("/auth/")) {
-    return supabaseResponse
-  }
-
-  // Don't run middleware on API routes
-  if (request.nextUrl.pathname.startsWith("/api/")) {
-    return supabaseResponse
-  }
-
-  // Don't run middleware on public routes
-  const publicRoutes = ["/", "/about", "/how-it-works"]
-  if (publicRoutes.includes(request.nextUrl.pathname)) {
-    return supabaseResponse
-  }
+  // IMPORTANT: Avoid writing any logic between createServerClient and
+  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
+  // issues with users being randomly logged out.
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Redirect to login if no user and trying to access protected route
-  if (!user && request.nextUrl.pathname.startsWith("/dashboard")) {
+  // Protected routes that require authentication
+  const protectedRoutes = ["/dashboard", "/profile", "/community", "/admin"]
+  const isProtectedRoute = protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
+
+  // Public routes that don't require authentication
+  const publicRoutes = ["/", "/about", "/how-it-works", "/auth"]
+  const isPublicRoute = publicRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
+
+  // If user is not authenticated and trying to access protected route
+  if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
     return NextResponse.redirect(url)
   }
 
+  // If user is authenticated and trying to access auth pages, redirect to dashboard
+  if (user && request.nextUrl.pathname.startsWith("/auth/") && !request.nextUrl.pathname.startsWith("/auth/callback")) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
+  }
+
+  // IMPORTANT: You *must* return the supabaseResponse object as it is.
   return supabaseResponse
 }

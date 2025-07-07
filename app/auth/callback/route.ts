@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/dashboard"
 
   if (code) {
-    const supabase = await createClient()
+    const supabase = createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host")
@@ -22,5 +22,6 @@ export async function GET(request: Request) {
     }
   }
 
+  // Return the user to an error page with instructions
   return NextResponse.redirect(`${origin}/auth/auth-code-error`)
 }

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import type { User } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
@@ -9,10 +11,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Shield, Users, MapPin, Bell, MessageSquare, BarChart3, Settings, LogOut } from "lucide-react"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabaseServer = createClient()
+  const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
 
   useEffect(() => {
     const getUser = async () => {
@@ -61,10 +64,18 @@ export default function DashboardPage() {
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut()
-      router.push("/")
+      window.location.href = "/"
     } catch (error) {
       console.error("Error signing out:", error)
     }
+  }
+
+  const {
+    data: { user: serverUser },
+  } = await supabaseServer.auth.getUser()
+
+  if (!serverUser) {
+    redirect("/auth/login")
   }
 
   if (loading) {
@@ -112,6 +123,26 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Account Information */}
+        <div className="border-4 border-dashed border-gray-200 rounded-lg p-8 mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Dashboard</h1>
+          <p className="text-gray-600 mb-4">Welcome, {user.email}!</p>
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Your Account</h2>
+            <div className="space-y-2">
+              <p>
+                <strong>Email:</strong> {user.email}
+              </p>
+              <p>
+                <strong>User ID:</strong> {user.id}
+              </p>
+              <p>
+                <strong>Created:</strong> {new Date(user.created_at).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>

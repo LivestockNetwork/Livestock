@@ -8,27 +8,31 @@ export default function AuthCodeErrorPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
             <AlertTriangle className="h-6 w-6 text-red-600" />
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900 mt-4">Authentication Error</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900">Authentication Error</CardTitle>
           <CardDescription>
-            There was a problem with your authentication. This could be due to an expired or invalid link.
+            Sorry, we couldn't authenticate you. This could be due to an expired or invalid link.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="text-center">
-            <p className="text-sm text-gray-600 mb-4">
-              Please try signing in again or contact support if the problem persists.
-            </p>
-            <div className="space-y-2">
-              <Button asChild className="w-full">
-                <Link href="/auth/login">Try Signing In Again</Link>
-              </Button>
-              <Button variant="outline" asChild className="w-full bg-transparent">
-                <Link href="/">Return to Home</Link>
-              </Button>
-            </div>
+          <div className="text-sm text-gray-600">
+            <p>This might happen if:</p>
+            <ul className="list-disc list-inside mt-2 space-y-1">
+              <li>The confirmation link has expired</li>
+              <li>The link has already been used</li>
+              <li>There was an error with the authentication process</li>
+            </ul>
+          </div>
+
+          <div className="flex flex-col space-y-2">
+            <Button asChild>
+              <Link href="/auth/login">Try Signing In Again</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/auth/signup">Create New Account</Link>
+            </Button>
           </div>
         </CardContent>
       </Card>
