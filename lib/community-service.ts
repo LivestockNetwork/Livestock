@@ -1,98 +1,89 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { supabase } from "./supabase"
 
 export interface CommunityPost {
   id: string
   user_id: string
   title: string
   content: string
-  post_type: "discussion" | "help_request" | "resource_share" | "alert"
-  tags?: string[]
-  location?: string
+  post_type: "general" | "emergency" | "resource" | "question"
   created_at: string
   updated_at: string
   user_profiles?: {
     full_name: string
-    state: string
+    location: string
   }
 }
 
-export class CommunityService {
-  private supabase = createClientComponentClient()
+export async function getCommunityPosts(): Promise<CommunityPost[]> {
+  const { data, error } = await supabase
+    .from("community_posts")
+    .select(`
+      *,
+      user_profiles (
+        full_name,
+        location
+      )
+    `)
+    .order("created_at", { ascending: false })
 
-  async getPosts(limit = 20, offset = 0): Promise<CommunityPost[]> {
-    const { data, error } = await this.supabase
-      .from("community_posts")
-      .select(`
-        *,
-        user_profiles (
-          full_name,
-          state
-        )
-      `)
-      .order("created_at", { ascending: false })
-      .range(offset, offset + limit - 1)
-
-    if (error) throw error
-    return data || []
+  if (error) {
+    console.error("Error fetching community posts:", error)
+    throw error
   }
 
-  async createPost(
-    post: Omit<CommunityPost, "id" | "created_at" | "updated_at" | "user_profiles">,
-  ): Promise<CommunityPost> {
-    const { data, error } = await this.supabase
-      .from("community_posts")
-      .insert(post)
-      .select(`
-        *,
-        user_profiles (
-          full_name,
-          state
-        )
-      `)
-      .single()
+  return data || []
+}
 
-    if (error) throw error
-    return data
+export async function createCommunityPost(
+  post: Omit<CommunityPost, "id" | "created_at" | "updated_at" | "user_profiles">,
+) {
+  const { data, error } = await supabase
+    .from("community_posts")
+    .insert([post])
+    .select(`
+      *,
+      user_profiles (
+        full_name,
+        location
+      )
+    `)
+    .single()
+
+  if (error) {
+    console.error("Error creating community post:", error)
+    throw error
   }
 
-  async updatePost(id: string, updates: Partial<CommunityPost>): Promise<CommunityPost> {
-    const { data, error } = await this.supabase
-      .from("community_posts")
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq("id", id)
-      .select(`
-        *,
-        user_profiles (
-          full_name,
-          state
-        )
-      `)
-      .single()
+  return data
+}
 
-    if (error) throw error
-    return data
+export async function updateCommunityPost(id: string, updates: Partial<CommunityPost>) {
+  const { data, error } = await supabase
+    .from("community_posts")
+    .update(updates)
+    .eq("id", id)
+    .select(`
+      *,
+      user_profiles (
+        full_name,
+        location
+      )
+    `)
+    .single()
+
+  if (error) {
+    console.error("Error updating community post:", error)
+    throw error
   }
 
-  async deletePost(id: string): Promise<void> {
-    const { error } = await this.supabase.from("community_posts").delete().eq("id", id)
+  return data
+}
 
-    if (error) throw error
-  }
+export async function deleteCommunityPost(id: string) {
+  const { error } = await supabase.from("community_posts").delete().eq("id", id)
 
-  async getPostsByType(postType: string): Promise<CommunityPost[]> {
-    const { data, error } = await this.supabase
-      .from("community_posts")
-      .select(`
-        *,
-        user_profiles (
-          full_name,
-          state
-        )
-      `)
-      .eq("post_type", postType)
-      .order("created_at", { ascending: false })
-
-    if (error) throw error
-    return data || []
+  if (error) {
+    console.error("Error deleting community post:", error)
+    throw error
   }
 }

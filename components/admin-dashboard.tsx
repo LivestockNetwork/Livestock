@@ -1,282 +1,327 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { EmergencyService, type EmergencyAlert } from "@/lib/emergency-service"
-import { AlertTriangle, Plus, Edit, Trash2 } from "lucide-react"
+import {
+  Users,
+  AlertTriangle,
+  MessageSquare,
+  Shield,
+  Settings,
+  Database,
+  Mail,
+  CheckCircle,
+  XCircle,
+} from "lucide-react"
+import { createClient } from "@supabase/supabase-js"
 
-export function AdminDashboard() {
-  const [alerts, setAlerts] = useState<EmergencyAlert[]>([])
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+
+export default function AdminDashboard() {
+  const [user, setUser] = useState<any>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [showCreateForm, setShowCreateForm] = useState(false)
-  const [editingAlert, setEditingAlert] = useState<EmergencyAlert | null>(null)
-  const [formData, setFormData] = useState({
-    title: "",
-    message: "",
-    severity: "medium" as const,
-    alert_type: "other" as const,
-    affected_areas: "",
-    expires_at: "",
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    activeAlerts: 0,
+    communityPosts: 0,
+    emergencyPlans: 0,
   })
 
-  const emergencyService = new EmergencyService()
-
   useEffect(() => {
-    loadAlerts()
+    checkAdminStatus()
+    loadStats()
   }, [])
 
-  const loadAlerts = async () => {
+  const checkAdminStatus = async () => {
     try {
-      const data = await emergencyService.getActiveAlerts()
-      setAlerts(data)
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      setUser(user)
+
+      if (user) {
+        // Check if user is admin (this would normally come from user metadata)
+        const adminCheck = user.app_metadata?.is_admin === true
+        setIsAdmin(adminCheck)
+      }
     } catch (error) {
-      console.error("Error loading alerts:", error)
+      console.error("Error checking admin status:", error)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const loadStats = async () => {
     try {
-      const alertData = {
-        ...formData,
-        affected_areas: formData.affected_areas.split(",").map((area) => area.trim()),
-        active: true,
-        expires_at: formData.expires_at || undefined,
-      }
+      // Load various statistics
+      const [usersResult, alertsResult, postsResult, plansResult] = await Promise.all([
+        supabase.from("user_profiles").select("count"),
+        supabase.from("emergency_alerts").select("count").eq("active", true),
+        supabase.from("community_posts").select("count"),
+        supabase.from("emergency_plans").select("count"),
+      ])
 
-      if (editingAlert) {
-        await emergencyService.updateAlert(editingAlert.id, alertData)
-      } else {
-        await emergencyService.createAlert(alertData)
-      }
-
-      await loadAlerts()
-      resetForm()
+      setStats({
+        totalUsers: usersResult.count || 0,
+        activeAlerts: alertsResult.count || 0,
+        communityPosts: postsResult.count || 0,
+        emergencyPlans: plansResult.count || 0,
+      })
     } catch (error) {
-      console.error("Error saving alert:", error)
+      console.error("Error loading stats:", error)
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this alert?")) {
-      try {
-        await emergencyService.deleteAlert(id)
-        await loadAlerts()
-      } catch (error) {
-        console.error("Error deleting alert:", error)
+  const createEmergencyAlert = async () => {
+    try {
+      const { error } = await supabase.from("emergency_alerts").insert({
+        title: "Test Emergency Alert",
+        message: "This is a test emergency alert created by admin.",
+        alert_type: "general",
+        severity: "medium",
+        active: true,
+        created_at: new Date().toISOString(),
+      })
+
+      if (error) {
+        console.error("Error creating alert:", error)
+      } else {
+        alert("Emergency alert created successfully!")
+        loadStats()
       }
-    }
-  }
-
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      message: "",
-      severity: "medium",
-      alert_type: "other",
-      affected_areas: "",
-      expires_at: "",
-    })
-    setShowCreateForm(false)
-    setEditingAlert(null)
-  }
-
-  const startEdit = (alert: EmergencyAlert) => {
-    setEditingAlert(alert)
-    setFormData({
-      title: alert.title,
-      message: alert.message,
-      severity: alert.severity,
-      alert_type: alert.alert_type,
-      affected_areas: alert.affected_areas.join(", "),
-      expires_at: alert.expires_at || "",
-    })
-    setShowCreateForm(true)
-  }
-
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "critical":
-        return "bg-red-500"
-      case "high":
-        return "bg-orange-500"
-      case "medium":
-        return "bg-yellow-500"
-      case "low":
-        return "bg-blue-500"
-      default:
-        return "bg-gray-500"
+    } catch (error) {
+      console.error("Error:", error)
     }
   }
 
   if (loading) {
-    return <div className="p-6">Loading admin dashboard...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Loading admin dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <Alert className="max-w-2xl mx-auto mt-8">
+        <XCircle className="h-4 w-4" />
+        <AlertDescription>You must be logged in to access the admin dashboard. Please log in first.</AlertDescription>
+      </Alert>
+    )
+  }
+
+  if (!isAdmin) {
+    return (
+      <Alert className="max-w-2xl mx-auto mt-8 border-red-200 bg-red-50">
+        <XCircle className="h-4 w-4" />
+        <AlertDescription className="text-red-700">
+          Access denied. You do not have administrator privileges.
+        </AlertDescription>
+      </Alert>
+    )
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <Button onClick={() => setShowCreateForm(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Create Alert
-        </Button>
-      </div>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+          <p className="text-gray-600">Livestock Emergency System Administration</p>
+          <Badge className="mt-2 bg-green-100 text-green-800">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Admin Access Granted
+          </Badge>
+        </div>
 
-      {showCreateForm && (
-        <Card>
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalUsers}</div>
+              <p className="text-xs text-muted-foreground">Registered users</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Alerts</CardTitle>
+              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.activeAlerts}</div>
+              <p className="text-xs text-muted-foreground">Emergency alerts</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Community Posts</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.communityPosts}</div>
+              <p className="text-xs text-muted-foreground">Total posts</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Emergency Plans</CardTitle>
+              <Shield className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.emergencyPlans}</div>
+              <p className="text-xs text-muted-foreground">Created plans</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Admin Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Emergency Management
+              </CardTitle>
+              <CardDescription>Create and manage emergency alerts</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button onClick={createEmergencyAlert} className="w-full">
+                Create Test Alert
+              </Button>
+              <Button variant="outline" className="w-full bg-transparent">
+                View All Alerts
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                User Management
+              </CardTitle>
+              <CardDescription>Manage user accounts and permissions</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button variant="outline" className="w-full bg-transparent">
+                View All Users
+              </Button>
+              <Button variant="outline" className="w-full bg-transparent">
+                Manage Permissions
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Content Moderation
+              </CardTitle>
+              <CardDescription>Moderate community posts and content</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button variant="outline" className="w-full bg-transparent">
+                Review Posts
+              </Button>
+              <Button variant="outline" className="w-full bg-transparent">
+                Moderation Queue
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                System Health
+              </CardTitle>
+              <CardDescription>Monitor system performance and health</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button variant="outline" className="w-full bg-transparent">
+                Database Status
+              </Button>
+              <Button variant="outline" className="w-full bg-transparent">
+                System Logs
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5" />
+                Email Management
+              </CardTitle>
+              <CardDescription>Configure and test email services</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button variant="outline" className="w-full bg-transparent">
+                Email Settings
+              </Button>
+              <Button variant="outline" className="w-full bg-transparent">
+                Send Test Email
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                System Settings
+              </CardTitle>
+              <CardDescription>Configure system-wide settings</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button variant="outline" className="w-full bg-transparent">
+                General Settings
+              </Button>
+              <Button variant="outline" className="w-full bg-transparent">
+                Security Settings
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Current User Info */}
+        <Card className="mt-8">
           <CardHeader>
-            <CardTitle>{editingAlert ? "Edit Alert" : "Create New Alert"}</CardTitle>
+            <CardTitle>Current Admin Session</CardTitle>
+            <CardDescription>Your current administrative session details</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="title">Alert Title</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="message">Message</Label>
-                <Textarea
-                  id="message"
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="severity">Severity</Label>
-                  <Select
-                    value={formData.severity}
-                    onValueChange={(value: any) => setFormData({ ...formData, severity: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="critical">Critical</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="alert_type">Alert Type</Label>
-                  <Select
-                    value={formData.alert_type}
-                    onValueChange={(value: any) => setFormData({ ...formData, alert_type: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bushfire">Bushfire</SelectItem>
-                      <SelectItem value="flood">Flood</SelectItem>
-                      <SelectItem value="drought">Drought</SelectItem>
-                      <SelectItem value="storm">Storm</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="affected_areas">Affected Areas (comma-separated)</Label>
-                <Input
-                  id="affected_areas"
-                  value={formData.affected_areas}
-                  onChange={(e) => setFormData({ ...formData, affected_areas: e.target.value })}
-                  placeholder="NSW, VIC, QLD"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="expires_at">Expires At (optional)</Label>
-                <Input
-                  id="expires_at"
-                  type="datetime-local"
-                  value={formData.expires_at}
-                  onChange={(e) => setFormData({ ...formData, expires_at: e.target.value })}
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <Button type="submit">{editingAlert ? "Update Alert" : "Create Alert"}</Button>
-                <Button type="button" variant="outline" onClick={resetForm}>
-                  Cancel
-                </Button>
-              </div>
-            </form>
+            <div className="space-y-2">
+              <p>
+                <strong>User ID:</strong> {user.id}
+              </p>
+              <p>
+                <strong>Email:</strong> {user.email}
+              </p>
+              <p>
+                <strong>Admin Status:</strong> <Badge className="bg-green-100 text-green-800">Active</Badge>
+              </p>
+              <p>
+                <strong>Last Login:</strong> {new Date(user.last_sign_in_at).toLocaleString()}
+              </p>
+            </div>
           </CardContent>
         </Card>
-      )}
-
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold">Active Emergency Alerts</h2>
-        {alerts.length === 0 ? (
-          <Alert>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>No active emergency alerts. Create one to notify users of emergencies.</AlertDescription>
-          </Alert>
-        ) : (
-          alerts.map((alert) => (
-            <Card key={alert.id}>
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      {alert.title}
-                      <Badge className={getSeverityColor(alert.severity)}>{alert.severity.toUpperCase()}</Badge>
-                    </CardTitle>
-                    <CardDescription>
-                      {alert.alert_type.toUpperCase()} • Created {new Date(alert.created_at).toLocaleDateString()}
-                    </CardDescription>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => startEdit(alert)}>
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(alert.id)}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-2">{alert.message}</p>
-                {alert.affected_areas.length > 0 && (
-                  <div className="flex gap-1 flex-wrap">
-                    {alert.affected_areas.map((area, index) => (
-                      <Badge key={index} variant="secondary">
-                        {area}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))
-        )}
       </div>
     </div>
   )

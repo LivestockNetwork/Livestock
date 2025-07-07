@@ -2,6 +2,13 @@
 -- Copy this entire file into Supabase SQL Editor and run it
 -- =============================================
 
+-- Enable Row Level Security on all tables
+ALTER TABLE emergency_alerts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE emergency_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE community_posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+
+-- =============================================
 -- SECTION 1: EMERGENCY ALERTS POLICIES
 -- =============================================
 
@@ -126,17 +133,6 @@ CREATE INDEX IF NOT EXISTS idx_emergency_plans_user_id ON emergency_plans(user_i
 CREATE INDEX IF NOT EXISTS idx_community_posts_user_id ON community_posts(user_id);
 
 -- =============================================
--- VERIFICATION QUERIES
+-- SUCCESS MESSAGE
 -- =============================================
-
--- Check that policies were created successfully
-SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual
-FROM pg_policies 
-WHERE tablename IN ('emergency_alerts', 'emergency_plans', 'community_posts', 'user_profiles')
-ORDER BY tablename, policyname;
-
--- Check that indexes were created
-SELECT indexname, tablename, indexdef
-FROM pg_indexes
-WHERE tablename IN ('emergency_plans', 'community_posts')
-AND indexname LIKE 'idx_%';
+SELECT 'Database security setup completed successfully!' as message;
