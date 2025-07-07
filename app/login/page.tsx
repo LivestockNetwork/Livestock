@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Shield, Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from "lucide-react"
+import { Shield, Eye, EyeOff, Loader2, CheckCircle, AlertCircle } from "lucide-react"
 import { loginUser } from "@/app/actions/user-login"
 
 const initialState = {
@@ -48,7 +48,7 @@ export default function LoginPage() {
             <span className="text-2xl font-bold text-gray-900">Rural Community Hub</span>
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-600">Sign in to access your emergency plans and community</p>
+          <p className="text-gray-600">Sign in to access your emergency planning and community</p>
         </div>
 
         <Card>
@@ -57,17 +57,10 @@ export default function LoginPage() {
             <CardDescription>Enter your credentials to access your account</CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={handleSubmit} className="space-y-6">
+            <form action={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="your.email@example.com"
-                  required
-                  className="w-full"
-                />
+                <Input id="email" name="email" type="email" placeholder="your.email@example.com" required />
               </div>
 
               <div className="space-y-2">
@@ -79,7 +72,7 @@ export default function LoginPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     required
-                    className="w-full pr-10"
+                    className="pr-10"
                   />
                   <button
                     type="button"
@@ -119,15 +112,11 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-6">
-              <div className="text-center">
-                <Link href="/forgot-password" className="text-sm text-green-600 hover:text-green-700">
-                  Forgot your password?
-                </Link>
-              </div>
-            </div>
+            <div className="mt-6 space-y-4 text-center">
+              <Link href="/forgot-password" className="text-green-600 hover:text-green-700 text-sm">
+                Forgot your password?
+              </Link>
 
-            <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Don't have an account?{" "}
                 <Link href="/register" className="text-green-600 hover:text-green-700 font-medium">
