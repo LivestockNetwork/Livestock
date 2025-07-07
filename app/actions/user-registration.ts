@@ -1,17 +1,12 @@
 "use server"
 
 import { redirect } from "next/navigation"
-import { userStorage } from "@/lib/user-storage"
+import { signUp } from "@/lib/auth"
 
 interface RegistrationResult {
   success: boolean
   message: string
-  user?: {
-    id: string
-    email: string
-    name: string
-    state?: string
-  }
+  user?: any
 }
 
 export async function registerUser(prevState: any, formData: FormData): Promise<RegistrationResult> {
@@ -22,9 +17,6 @@ export async function registerUser(prevState: any, formData: FormData): Promise<
   const state = formData.get("state") as string
 
   console.log("Registration attempt for:", email, "from state:", state)
-
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1500))
 
   if (!name || !email || !password || !state) {
     return {
@@ -47,26 +39,49 @@ export async function registerUser(prevState: any, formData: FormData): Promise<
     }
   }
 
-  // Check if email already exists
-  const existingUser = userStorage.findUserByEmail(email)
-  if (existingUser) {
-    return {
-      success: false,
-      message: "An account with this email already exists",
-    }
-  }
-
-  // Create new user
-  const newUser = userStorage.createUser({
+  // Register with Supabase
+  const { user, error } = await signUp(email, password, {
     firstName: name.split(" ")[0],
     lastName: name.split(" ").slice(1).join(" ") || "",
-    email,
-    password,
     state,
   })
 
-  console.log("Registration successful for:", email)
+  if (error) {
+    console.error("Registration error:", error)
+    return {
+      success: false,
+      message: error.message || "Registration failed. Please try again.",
+    }
+  }
 
-  // Redirect to dashboard on successful registration
-  redirect("/dashboard")
+  if (user) {
+    console.log("Registration successful for:", email)
+
+    // Send welcome email via existing Resend integration
+    try {
+      const response = await fetch(`${process.env.VERCEL_URL || "http://localhost:3000"}/api/resend/welcome`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          name: name.split(" ")[0],
+          state,
+        }),
+      })
+
+      if (!response.ok) {
+        console.error("Welcome email failed to send")
+      }
+    } catch (emailError) {
+      console.error("Welcome email error:", emailError)
+    }
+
+    // Redirect to dashboard on successful registration
+    redirect("/dashboard")
+  }
+
+  return {
+    success: false,
+    message: "Registration failed. Please try again.",
+  }
 }

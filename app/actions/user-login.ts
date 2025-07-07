@@ -1,17 +1,12 @@
 "use server"
 
 import { redirect } from "next/navigation"
-import { userStorage } from "@/lib/user-storage"
+import { signIn } from "@/lib/auth"
 
 interface LoginResult {
   success: boolean
   message: string
-  user?: {
-    id: string
-    email: string
-    name: string
-    state?: string
-  }
+  user?: any
 }
 
 export async function loginUser(prevState: any, formData: FormData): Promise<LoginResult> {
@@ -20,9 +15,6 @@ export async function loginUser(prevState: any, formData: FormData): Promise<Log
 
   console.log("Login attempt for:", email)
 
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
   if (!email || !password) {
     return {
       success: false,
@@ -30,19 +22,25 @@ export async function loginUser(prevState: any, formData: FormData): Promise<Log
     }
   }
 
-  // Try to validate user credentials
-  const user = userStorage.validateUserCredentials(email, password)
+  // Sign in with Supabase
+  const { user, error } = await signIn(email, password)
+
+  if (error) {
+    console.error("Login error:", error)
+    return {
+      success: false,
+      message: "Invalid email or password. Please check your credentials and try again.",
+    }
+  }
 
   if (user) {
     console.log("Login successful for:", email)
-
     // Redirect to dashboard on successful login
     redirect("/dashboard")
   }
 
-  console.log("Login failed for:", email)
   return {
     success: false,
-    message: "Invalid email or password. Try demo@rural.com / demo123",
+    message: "Login failed. Please try again.",
   }
 }
